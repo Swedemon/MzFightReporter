@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -7,16 +9,36 @@ public class FileWatcher {
     private HashMap<String,File> changeMap = new HashMap<>();
 
     public void run() throws Exception {
+
+        File gw2ie = new File(Parameters.Gw2EIExe);
+
+        if (gw2ie.exists()) {
+            System.out.println("Detected GuildWars2EliteInsights Application");
+        } else {
+            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + Parameters.Gw2EIExe);
+        }
+
         File folder = new File(Parameters.logFolder);
+
+        //loop to await folder detection
+        System.out.println("Awaiting presence of log folder created by ArcDps at: " + Parameters.logFolder);
+        while (true) {
+            if (folder.exists()) {
+                break;
+            }
+            Thread.sleep(10000L);
+            System.out.print(".");
+        }
+
         File[] listOfFiles = folder.listFiles((dir, name) -> name.endsWith(".zevtc") || name.endsWith(".evtc"));
         Arrays.stream(listOfFiles).forEach(f -> fileMap.put(f.getAbsolutePath(),f));
 
-        System.out.println("Monitoring ArcDps output files at: " + Parameters.logFolder);
+        System.out.println("\nMonitoring ArcDps output files at: " + Parameters.logFolder);
 
         //continuous file monitor loop
         while (true) {
 
-            //short pause
+           //short pause
             Thread.sleep(5000L);
 
             //update map of all files

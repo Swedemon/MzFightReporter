@@ -36,7 +36,7 @@ public class DiscordBot {
     private DiscordBot openSession() throws Exception
     {
         if (jdaSession == null) {
-            JDABuilder builder = JDABuilder.createDefault(Parameters.secretBotToken);
+            JDABuilder builder = JDABuilder.createDefault(Parameters.token);
             jdaSession = builder.build();
             jdaSession.awaitReady();
         }
@@ -60,6 +60,7 @@ public class DiscordBot {
         List<TextChannel> channelList = jdaSession.getTextChannelsByName(channelName, true);
         for (TextChannel c : channelList)
         {
+            System.out.println("Posting message to #" + c.getName() + " on " + c.getGuild().getName() + ".");
             c.sendMessage(embedBuilder.build()).queue();
         }
     }
