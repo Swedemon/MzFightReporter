@@ -1,6 +1,11 @@
+package org.vmy;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.vmy.Cleanser;
+import org.vmy.DPSer;
+import org.vmy.Stripper;
 
 import java.io.File;
 import java.io.FileInputStream;

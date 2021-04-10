@@ -1,11 +1,11 @@
+package org.vmy;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 public class ParseBot {
@@ -152,11 +152,23 @@ public class ParseBot {
     }
 
     public static void main(String[] args) throws Exception {
-        File f = new File(Parameters.logFolder + "20210404-210509_detailed_wvw_kill.json");
+        File f = new File(args[1]);
         if (f.exists()) {
             FightReport report = processWvwJsonLog(f);
-            DiscordBot bot = DiscordBot.getSingletonInstance();
-            bot.sendMessage("fight-reports",report);
+
+            FileOutputStream frf = null;
+            ObjectOutputStream o = null;
+            try {
+                frf = new FileOutputStream(new File(Parameters.getInstance().homeDir + "fightreport.bin"));
+                o = new ObjectOutputStream(frf);
+                // Write objects to file
+                o.writeObject(report);
+            } finally {
+                if (o!=null)
+                    o.close();
+                if (frf!=null)
+                    frf.close();
+            }
         }
     }
 }

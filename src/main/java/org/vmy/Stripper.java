@@ -1,3 +1,5 @@
+package org.vmy;
+
 public class Stripper implements Comparable<Stripper> {
     private String name;
     private String profession;

@@ -1,7 +1,13 @@
+package org.vmy;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-public class FightReport {
+public class FightReport implements Serializable {
     private String zone;
     private String duration;
     private String commander;
@@ -13,6 +19,29 @@ public class FightReport {
     private String url;
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
+
+    protected static FightReport readReportFile() throws Exception {
+        FightReport myReport = null;
+        File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + "fightreport.bin");
+
+        if (!reportFile.exists())
+            throw new Exception("Fight Report object file not found: " + reportFile.getAbsolutePath());
+
+        FileInputStream frf = null;
+        ObjectInputStream o = null;
+        try {
+            frf = new FileInputStream(reportFile);
+            o = new ObjectInputStream(frf);
+            // Write objects to file
+            myReport = (FightReport) o.readObject();
+        } finally {
+            if (o!=null)
+                o.close();
+            if (frf!=null)
+                frf.close();
+        }
+        return myReport;
+    }
 
     public HashMap<String, List<Object>> getDmgMap() {
         return dmgMap;

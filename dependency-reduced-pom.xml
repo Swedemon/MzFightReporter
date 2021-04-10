@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.vmy</groupId>
   <artifactId>MzFightReporter</artifactId>
-  <version>1.0-BETA</version>
+  <version>1.1-BETA</version>
   <build>
     <plugins>
       <plugin>
@@ -19,7 +19,7 @@
               <transformers>
                 <transformer>
                   <manifestEntries>
-                    <Main-Class>FileWatcher</Main-Class>
+                    <Main-Class>org.vmy.MainCore</Main-Class>
                     <Build-Number>1</Build-Number>
                   </manifestEntries>
                 </transformer>
