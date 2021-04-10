@@ -6,7 +6,7 @@
 
     <groupId>org.vmy</groupId>
     <artifactId>MzFightReporter</artifactId>
-    <version>1.0-BETA</version>
+    <version>1.1-BETA</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -51,7 +51,7 @@
                         <transformers>
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                 <manifestEntries>
-                                    <Main-Class>FileWatcher</Main-Class>
+                                    <Main-Class>org.vmy.MainCore</Main-Class>
                                     <Build-Number>1</Build-Number>
                                 </manifestEntries>
                             </transformer>
@@ -70,4 +70,12 @@
             <url>https://m2.dv8tion.net/releases</url>
         </repository>
     </repositories>
+
+    <!--<repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>-->
 </project>

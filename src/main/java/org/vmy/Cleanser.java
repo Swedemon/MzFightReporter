@@ -1,3 +1,5 @@
+package org.vmy;
+
 public class Cleanser implements Comparable<Cleanser> {
     private String name;
     private String profession;

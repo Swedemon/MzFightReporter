@@ -1,3 +1,5 @@
+package org.vmy;
+
 public class DPSer implements Comparable<DPSer> {
     private String name;
     private String profession;

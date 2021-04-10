@@ -1,9 +1,12 @@
+package org.vmy;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
+import java.io.File;
 import java.io.PrintStream;
 import java.time.Instant;
 import java.util.List;
@@ -30,13 +33,13 @@ public class DiscordBot {
 
     public static void main(String[] args) throws Exception {
         DiscordBot bot = new DiscordBot().openSession();
-        bot.sendMessage(Parameters.discordChannel,new FightReport());
+        bot.sendMessage(Parameters.getInstance().discordChannel,new FightReport());
     }
 
     private DiscordBot openSession() throws Exception
     {
         if (jdaSession == null) {
-            JDABuilder builder = JDABuilder.createDefault(Parameters.secretBotToken);
+            JDABuilder builder = JDABuilder.createDefault(Parameters.getInstance().token);
             jdaSession = builder.build();
             jdaSession.awaitReady();
         }
@@ -47,7 +50,7 @@ public class DiscordBot {
     {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.CYAN);
-        embedBuilder.setThumbnail(Parameters.thumbnail);
+        embedBuilder.setThumbnail(Parameters.getInstance().thumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
         embedBuilder.addField("Squad Summary","```"+report.getSquadSummary()+"```",false);
         embedBuilder.addField("Enemy Summary","```"+report.getEnemySummary()+"```",false);
@@ -56,11 +59,20 @@ public class DiscordBot {
         embedBuilder.addField("Strips","```"+report.getStrips()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")"),false);
         embedBuilder.setTimestamp(Instant.now());
 
+        File graphImage = new File(Parameters.getInstance().homeDir  + "fightreport.png");
+        EmbedBuilder embedImage = new EmbedBuilder();
+        embedImage.setColor(Color.CYAN);
+        embedImage.setImage("attachment://fightreport.png");
+        embedImage.setTimestamp(Instant.now());
+
         //TODO filter further by specific discord server
         List<TextChannel> channelList = jdaSession.getTextChannelsByName(channelName, true);
         for (TextChannel c : channelList)
         {
+            System.out.println("Posting message to #" + c.getName() + " on " + c.getGuild().getName() + ".");
             c.sendMessage(embedBuilder.build()).queue();
+            if (graphImage.exists())
+                c.sendMessage(embedImage.build()).addFile(graphImage, "fightreport.png").queue();
         }
     }
 
