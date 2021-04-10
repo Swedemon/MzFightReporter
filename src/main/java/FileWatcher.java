@@ -68,8 +68,10 @@ public class FileWatcher {
                             System.out.println(jsonFile.getName());
                             FightReport report = new ParseBot().processWvwJsonLog(jsonFile);
                             if (report.getZone()!=null) {
-                                DiscordBot bot = DiscordBot.getSingletonInstance();
-                                bot.sendMessage(Parameters.discordChannel, report);
+                                GraphBot gBot = new GraphBot();
+                                gBot.graphIt(report);
+                                DiscordBot dBot = DiscordBot.getSingletonInstance();
+                                dBot.sendMessage(Parameters.discordChannel, report);
                             }
                             try { jsonFile.delete(); } catch (Exception e) {}
                         }

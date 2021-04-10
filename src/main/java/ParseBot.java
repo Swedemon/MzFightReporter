@@ -67,6 +67,10 @@ public class ParseBot {
                         currPlayer.getString("name"),
                         currPlayer.getString("profession"),
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
+
+                JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
+                List<Object> oList = dArray.toList();
+                report.getDmgMap().put(currPlayer.getString("name"),oList);
             }
 
             //base info

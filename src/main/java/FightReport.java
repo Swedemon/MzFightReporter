@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.List;
+
 public class FightReport {
     private String zone;
     private String duration;
@@ -9,6 +12,15 @@ public class FightReport {
     private String strips;
     private String url;
     private String endTime;
+    private HashMap<String, List<Object>> dmgMap = new HashMap<>();
+
+    public HashMap<String, List<Object>> getDmgMap() {
+        return dmgMap;
+    }
+
+    public void setDmgMap(HashMap<String, List<Object>> dmgMap) {
+        this.dmgMap = dmgMap;
+    }
 
     public String getZone() {
         return zone;
