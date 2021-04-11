@@ -2,10 +2,14 @@ package org.vmy;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.List;
+import java.util.stream.Collectors
 public class FileWatcher {
     private HashMap<String,File> fileMap = new HashMap<>();
     private HashMap<String,File> changeMap = new HashMap<>();
@@ -22,11 +26,14 @@ public class FileWatcher {
             System.out.println("Failure to detect GuildWars2EliteInsights application at: " + Parameters.getInstance().Gw2EIExe);
 
         File folder = new File(Parameters.getInstance().logFolder);
+        File defaultFolder = new File(Parameters.getInstance().defaultLogFolder);
 
         //loop to await folder detection
-        System.out.println("Awaiting presence of ArcDps log folder: " + Parameters.getInstance().logFolder);
+        System.out.println("Two parent folders configured to monitor for incoming ArcDps log files:");
+        System.out.println("   > " + folder.getAbsolutePath());
+        System.out.println("   > " + defaultFolder.getAbsolutePath());
         while (true) {
-            if (folder.exists()) {
+            if (folder.exists() || defaultFolder.exists()) {
                 System.out.println("OK");
                 break;
             }
@@ -34,10 +41,10 @@ public class FileWatcher {
             System.out.print(".");
         }
 
-        File[] listOfFiles = folder.listFiles((dir, name) -> name.endsWith(".zevtc") || name.endsWith(".evtc"));
-        Arrays.stream(listOfFiles).forEach(f -> fileMap.put(f.getAbsolutePath(),f));
+        List<File> listOfFiles = listLogFiles();
+        listOfFiles.forEach(f -> fileMap.put(f.getAbsolutePath(),f));
 
-        System.out.println("Monitoring ArcDps output files.");
+        System.out.println("Monitoring ArcDps log files.");
 
         //continuous file monitor loop
         while (true) {
@@ -46,7 +53,7 @@ public class FileWatcher {
             Thread.sleep(5000L);
 
             //update map of all files
-            listOfFiles = folder.listFiles((dir, name) -> name.endsWith(".zevtc") || name.endsWith(".evtc"));
+            listOfFiles = listLogFiles();
 
             //find any new file
             File f = locateNewFile(listOfFiles);
@@ -116,7 +123,27 @@ public class FileWatcher {
         }
     }
 
-    private File locateNewFile(File[] listOfFiles) {
+    private List<File> listLogFiles() throws IOException {
+        File folder = new File(Parameters.getInstance().logFolder);
+        List<File> list = Files.find(Paths.get(folder.getAbsolutePath()),
+            Integer.MAX_VALUE,
+            (filePath, fileAttr) -> fileAttr.isRegularFile())
+                .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
+                .map(p -> p.toFile())
+                .collect(Collectors.toList());
+        //list.forEach(System.out::println);
+        File defaultFolder = new File(Parameters.getInstance().defaultLogFolder);
+        List<File> list2 = Files.find(Paths.get(defaultFolder.getAbsolutePath()),
+                Integer.MAX_VALUE,
+                (filePath, fileAttr) -> fileAttr.isRegularFile())
+                .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
+                .map(p -> p.toFile())
+                .collect(Collectors.toList());
+        list.addAll(list2);
+        return list;
+    }
+
+    private File locateNewFile(List<File> listOfFiles) {
         for (File f : listOfFiles) {
             if (!fileMap.containsKey(f.getAbsolutePath())) {
                 System.out.println("\nNew file detected: " + f.getName());
@@ -129,7 +156,7 @@ public class FileWatcher {
     public static void main(String[] args) throws Exception {
         System.out.println("\n*** MzFightReporter Version 1.0-BETA ***\n");
         System.out.println("Note:\n   You should see a dot printed below every few seconds indicating ArcDps log polling.\n"
-                +"   You can change settings in the config properties file in the same directory then restart.\n");
+                +"   You can change settings in the config properties file at " + Parameters.getInstance().homeDir + ".\n");
 
         System.out.println("homeDir="+Parameters.getInstance().homeDir);
         System.out.println("Gw2EIExe="+Parameters.getInstance().Gw2EIExe);

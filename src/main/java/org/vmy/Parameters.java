@@ -8,9 +8,9 @@ public class Parameters {
 
     public String homeDir = "C:\\Arc\\MzFightReporter\\";
     public String Gw2EIExe = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
-    public String logFolder =
-            "C:\\Arc\\arcdps.cbtlogs\\WvW\\Elite Apes\\";
-            //System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\1\\";
+    public String logFolder = "C:\\Arc\\";
+    public String defaultLogFolder =
+            System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String thumbnail = "https://i.imgur.com/KKddNgl.png";
     public String token = "ODI4ODU4MzM3NDYyMDU5MDE4.YGvsew.SPuwZeO_rlZg4jpPCUWrxxGyWh4";
     public String discordChannel = "fight-reports";
