@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ParseBot {
@@ -47,9 +48,17 @@ public class ParseBot {
                 JSONObject playerDpsAll = currPlayer.getJSONArray("dpsAll").getJSONObject(0);
                 sumPlayerDps += playerDpsAll.getBigInteger("dps").intValue();
                 sumPlayerDmg += playerDpsAll.getBigInteger("damage").intValue();
-                JSONObject playerStatsAll = currPlayer.getJSONArray("statsAll").getJSONObject(0);
-                countEnemyDowns += playerStatsAll.getBigInteger("downed").intValue();
-                countEnemyDeaths += playerStatsAll.getBigInteger("killed").intValue();
+                //JSONObject playerStatsAll = currPlayer.getJSONArray("statsAll").getJSONObject(0);
+                //countEnemyDowns += playerStatsAll.getBigInteger("downed").intValue();
+                //countEnemyDeaths += playerStatsAll.getBigInteger("killed").intValue();
+                List<Object> playerStatsTargets = currPlayer.getJSONArray("statsTargets").toList();
+                for (Object a : playerStatsTargets) {
+                    for (Object b : (List<Object>)a) {
+                        HashMap<String, Integer> map = (HashMap<String, Integer>) b;
+                        countEnemyDowns += map.get("downed");
+                        countEnemyDeaths += map.get("killed");
+                    }
+                }
                 JSONObject playerDefenses = currPlayer.getJSONArray("defenses").getJSONObject(0);
                 sumEnemyDmg += playerDefenses.getBigInteger("damageTaken").intValue();
                 JSONObject currPlayerDpsTargets = currPlayer.getJSONArray("dpsTargets").getJSONArray(0).getJSONObject(0);
