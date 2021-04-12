@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors
+import java.util.stream.Collectors;
+
 public class FileWatcher {
     private HashMap<String,File> fileMap = new HashMap<>();
     private HashMap<String,File> changeMap = new HashMap<>();
@@ -125,15 +127,16 @@ public class FileWatcher {
 
     private List<File> listLogFiles() throws IOException {
         File folder = new File(Parameters.getInstance().logFolder);
-        List<File> list = Files.find(Paths.get(folder.getAbsolutePath()),
-            Integer.MAX_VALUE,
-            (filePath, fileAttr) -> fileAttr.isRegularFile())
-                .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
-                .map(p -> p.toFile())
-                .collect(Collectors.toList());
-        //list.forEach(System.out::println);
+        List<File> list = !folder.exists() ? new ArrayList<>() :
+            Files.find(Paths.get(folder.getAbsolutePath()),
+                Integer.MAX_VALUE,
+                (filePath, fileAttr) -> fileAttr.isRegularFile())
+                    .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
+                    .map(p -> p.toFile())
+                    .collect(Collectors.toList());
         File defaultFolder = new File(Parameters.getInstance().defaultLogFolder);
-        List<File> list2 = Files.find(Paths.get(defaultFolder.getAbsolutePath()),
+        List<File> list2 = !defaultFolder.exists() ? new ArrayList<>() :
+            Files.find(Paths.get(defaultFolder.getAbsolutePath()),
                 Integer.MAX_VALUE,
                 (filePath, fileAttr) -> fileAttr.isRegularFile())
                 .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
