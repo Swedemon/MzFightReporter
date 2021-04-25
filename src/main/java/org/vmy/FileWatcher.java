@@ -72,17 +72,34 @@ public class FileWatcher {
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
                         System.out.println("Invoking GW2EI...");
-                        ProcessBuilder pb = new ProcessBuilder(Parameters.getInstance().Gw2EIExe, fullFilePath);
+                        String confFolder = Parameters.getInstance().homeDir + "GW2EI\\Settings\\";
+                        String parseConfig = confFolder + "wvwupload.conf";
+
+                        //if large file then directly upload to dps reports without wvw stats
+                        if (f.length() > Parameters.getInstance().maxWvwUpload*1024*1024) {
+                            String uploadConfig = confFolder + "uploadwithoutwvw.conf";
+                            ProcessBuilder pb = new ProcessBuilder(Parameters.getInstance().Gw2EIExe, "-c", uploadConfig, fullFilePath);
+                            pb.inheritIO();
+                            Process p = pb.start();
+                            p.waitFor();
+                            System.out.println("GW2EI Upload Status (0=success): " + p.exitValue());
+                            parseConfig = confFolder + "wvwnoupload.conf";
+                        }
+
+                        //parse json
+                        ProcessBuilder pb = new ProcessBuilder(Parameters.getInstance().Gw2EIExe, "-c", parseConfig, fullFilePath);
                         pb.inheritIO();
                         Process p = pb.start();
                         p.waitFor();
-                        System.out.println("GW2EI Status (0=success): " + p.exitValue());
+                        System.out.println("GW2EI Parse Status (0=success): " + p.exitValue());
+
+                        File logFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+".log");
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
                         if (jsonFile.exists()) {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", Parameters.getInstance().jarName, "ParseBot", jsonFile.getAbsolutePath());
+                            ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", Parameters.getInstance().jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath());
                             pb2.inheritIO();
                             pb2.directory(new File(Parameters.getInstance().homeDir));
                             Process p2 = pb2.start();
@@ -111,7 +128,7 @@ public class FileWatcher {
                                     }
                                 }
                             }
-                            try { jsonFile.delete(); } catch (Exception e) {}
+                            try { jsonFile.delete(); if (logFile.exists()) logFile.delete(); } catch (Exception e) {}
                         }
                         break; //exit loop
                     } else { //else keep looping until file is no longer being modified
@@ -167,6 +184,7 @@ public class FileWatcher {
         System.out.println("thumbnail="+Parameters.getInstance().thumbnail);
         System.out.println("discordChannel="+Parameters.getInstance().discordChannel);
         System.out.println("jarName="+Parameters.getInstance().jarName);
+        System.out.println("maxWvwUpload="+Parameters.getInstance().maxWvwUpload);
         System.out.println("graphPlayerLimit="+Parameters.getInstance().graphPlayerLimit);
         System.out.println();
 

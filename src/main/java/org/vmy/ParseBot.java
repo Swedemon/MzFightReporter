@@ -13,12 +13,31 @@ public class ParseBot {
 
     private static final String CRLF = "\n";
 
-    protected static FightReport processWvwJsonLog(File f) throws IOException {
+    protected static FightReport processWvwJsonLog(File jsonFile, File logFile) throws IOException {
         JSONObject jo = new JSONObject();
         FightReport report = new FightReport();
 
-        InputStream is = new FileInputStream(f);
+        //get upload URL from log file
+        String uploadURL = null;
+        if (logFile.exists()) {
+            InputStream is = new FileInputStream(logFile);
+
+            try {
+                String logTxt = IOUtils.toString(is, "UTF-8");
+                int index = logTxt.indexOf("https://");
+                int end = logTxt.indexOf("\r", index);
+                if (index > 0) {
+                    uploadURL = logTxt.substring(index, end);
+                    System.out.println("DPS Reports link=" + uploadURL);
+                }
+            } finally {
+                is.close();
+            }
+        }
+
+        InputStream is = new FileInputStream(jsonFile);
         try {
+
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject jsonTop = new JSONObject(jsonTxt);
 
@@ -91,6 +110,9 @@ public class ParseBot {
             JSONArray uploadLinks = jsonTop.getJSONArray("uploadLinks");
             if (jsonTop.has("uploadLinks"))
                 report.setUrl(jsonTop.getJSONArray("uploadLinks").getString(0));
+            if (report.getUrl()==null || !report.getUrl().startsWith("http"))
+                report.setUrl(uploadURL);
+            System.out.println("URL="+report.getUrl());
             if (jsonTop.has("timeEnd"))
                 report.setEndTime(jsonTop.getString("timeEnd"));
 
@@ -161,9 +183,10 @@ public class ParseBot {
     }
 
     public static void main(String[] args) throws Exception {
-        File f = new File(args[1]);
-        if (f.exists()) {
-            FightReport report = processWvwJsonLog(f);
+        File jsonFile = new File(args[1]);
+        File logFile = new File(args[2]);
+        if (jsonFile.exists()) {
+            FightReport report = processWvwJsonLog(jsonFile, logFile);
 
             FileOutputStream frf = null;
             ObjectOutputStream o = null;

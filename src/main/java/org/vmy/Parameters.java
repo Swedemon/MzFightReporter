@@ -13,8 +13,9 @@ public class Parameters {
             System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String thumbnail = "https://i.imgur.com/KKddNgl.png";
     public String token = "ODI4ODU4MzM3NDYyMDU5MDE4.YGvsew.SPuwZeO_rlZg4jpPCUWrxxGyWh4";
-    public String discordChannel = "fight-reports";
+    public String discordChannel = "fight-reports-test";
     public String jarName = "MzFightReporter-1.1-BETA.jar ";
+    public int maxWvwUpload = 6;
     public int graphPlayerLimit = 20;
 
     private static Parameters instance = null;
@@ -49,6 +50,7 @@ public class Parameters {
             token = prop.getProperty("token",token);
             discordChannel = prop.getProperty("discordChannel",discordChannel);
             jarName = prop.getProperty("jarName",jarName);
+            maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
