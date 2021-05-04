@@ -39,7 +39,7 @@ public class DiscordBot {
     private DiscordBot openSession() throws Exception
     {
         if (jdaSession == null) {
-            JDABuilder builder = JDABuilder.createDefault(Parameters.getInstance().token);
+            JDABuilder builder = JDABuilder.createDefault(Parameters.getInstance().discordBotToken);
             jdaSession = builder.build();
             jdaSession.awaitReady();
         }
@@ -50,7 +50,7 @@ public class DiscordBot {
     {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.CYAN);
-        embedBuilder.setThumbnail(Parameters.getInstance().thumbnail);
+        embedBuilder.setThumbnail(Parameters.getInstance().discordThumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
         embedBuilder.addField("Squad Summary","```"+report.getSquadSummary()+"```",false);
         embedBuilder.addField("Enemy Summary","```"+report.getEnemySummary()+"```",false);
@@ -65,7 +65,6 @@ public class DiscordBot {
         embedImage.setImage("attachment://fightreport.png");
         embedImage.setTimestamp(Instant.now());
 
-        //TODO filter further by specific discord server
         List<TextChannel> channelList = jdaSession.getTextChannelsByName(channelName, true);
         for (TextChannel c : channelList)
         {

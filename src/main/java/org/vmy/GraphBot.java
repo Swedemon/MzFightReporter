@@ -34,6 +34,8 @@ public class GraphBot extends Application {
     private static FightReport report;
 
     public static void main(String[] args) throws Exception {
+        String homeDir = args[1];
+        org.vmy.Parameters.getInstance().homeDir = homeDir;
 
         report = FightReport.readReportFile();
         launch(new String[]{});
@@ -164,7 +166,7 @@ public class GraphBot extends Application {
             stage.setScene(scene);
             lineChart.setAnimated(false);
 
-            saveAsPng(scene, org.vmy.Parameters.getInstance().homeDir + "fightreport.png");
+            saveAsPng(scene, org.vmy.Parameters.getInstance().homeDir + File.separator + "fightreport.png");
             //stage.show();
 
             //terminate

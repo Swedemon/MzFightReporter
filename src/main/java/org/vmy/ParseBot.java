@@ -185,13 +185,14 @@ public class ParseBot {
     public static void main(String[] args) throws Exception {
         File jsonFile = new File(args[1]);
         File logFile = new File(args[2]);
+        String homeDir = args[3];
         if (jsonFile.exists()) {
             FightReport report = processWvwJsonLog(jsonFile, logFile);
 
             FileOutputStream frf = null;
             ObjectOutputStream o = null;
             try {
-                frf = new FileOutputStream(new File(Parameters.getInstance().homeDir + "fightreport.bin"));
+                frf = new FileOutputStream(new File(homeDir + File.separator + "fightreport.bin"));
                 o = new ObjectOutputStream(frf);
                 // Write objects to file
                 o.writeObject(report);

@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Parameter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class FileWatcher {
@@ -17,22 +19,20 @@ public class FileWatcher {
     private HashMap<String,File> changeMap = new HashMap<>();
 
     public void run() throws Exception {
+        Parameters p = Parameters.getInstance();
 
-        if (new File(Parameters.getInstance().homeDir).exists())
-            System.out.println("Detected MzFightReporter Home.");
-        else
-            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + Parameters.getInstance().Gw2EIExe);
-        if (new File(Parameters.getInstance().Gw2EIExe).exists())
+        if (new File(p.homeDir + File.separator + p.gw2EIExe).exists())
             System.out.println("Detected GuildWars2EliteInsights Application.");
         else
-            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + Parameters.getInstance().Gw2EIExe);
+            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + p.homeDir + File.separator + p.gw2EIExe);
 
-        File folder = new File(Parameters.getInstance().logFolder);
-        File defaultFolder = new File(Parameters.getInstance().defaultLogFolder);
+        File folder = new File(p.customLogFolder);
+        File defaultFolder = new File(p.defaultLogFolder);
 
         //loop to await folder detection
-        System.out.println("Two parent folders configured to monitor for incoming ArcDps log files:");
-        System.out.println("   > " + folder.getAbsolutePath());
+        System.out.println("Parent folder(s) configured to monitor for incoming ArcDps log files:");
+        if (p.customLogFolder!=null && p.customLogFolder.length()>0)
+            System.out.println("   > " + folder.getAbsolutePath());
         System.out.println("   > " + defaultFolder.getAbsolutePath());
         while (true) {
             if (folder.exists() || defaultFolder.exists()) {
@@ -72,26 +72,28 @@ public class FileWatcher {
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
                         System.out.println("Invoking GW2EI...");
-                        String confFolder = Parameters.getInstance().homeDir + "GW2EI\\Settings\\";
+                        String confFolder = p.homeDir + "GW2EI\\Settings\\";
                         String parseConfig = confFolder + "wvwupload.conf";
 
                         //if large file then directly upload to dps reports without wvw stats
-                        if (f.length() > Parameters.getInstance().maxWvwUpload*1024*1024) {
+                        if (f.length() > p.maxWvwUpload*1024*1024) {
                             String uploadConfig = confFolder + "uploadwithoutwvw.conf";
-                            ProcessBuilder pb = new ProcessBuilder(Parameters.getInstance().Gw2EIExe, "-c", uploadConfig, fullFilePath);
+                            ProcessBuilder pb = new ProcessBuilder(p.homeDir + File.separator + p.gw2EIExe, "-c", uploadConfig, fullFilePath);
                             pb.inheritIO();
-                            Process p = pb.start();
-                            p.waitFor();
-                            System.out.println("GW2EI Upload Status (0=success): " + p.exitValue());
+                            Process p0 = pb.start();
+                            p0.waitFor(120, TimeUnit.SECONDS);
+                            p0.destroy();
+                            p0.waitFor();
+                            System.out.println("GW2EI Upload Status (0=success): " + p0.exitValue());
                             parseConfig = confFolder + "wvwnoupload.conf";
                         }
 
                         //parse json
-                        ProcessBuilder pb = new ProcessBuilder(Parameters.getInstance().Gw2EIExe, "-c", parseConfig, fullFilePath);
+                        ProcessBuilder pb = new ProcessBuilder(p.homeDir + File.separator + p.gw2EIExe, "-c", parseConfig, fullFilePath);
                         pb.inheritIO();
-                        Process p = pb.start();
-                        p.waitFor();
-                        System.out.println("GW2EI Parse Status (0=success): " + p.exitValue());
+                        Process p1 = pb.start();
+                        p1.waitFor();
+                        System.out.println("GW2EI Parse Status (0=success): " + p1.exitValue());
 
                         File logFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+".log");
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
@@ -99,20 +101,24 @@ public class FileWatcher {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", Parameters.getInstance().jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath());
+                            ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
-                            pb2.directory(new File(Parameters.getInstance().homeDir));
+                            pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
+                            p2.waitFor(120, TimeUnit.SECONDS);
+                            p2.destroy();
                             p2.waitFor();
                             System.out.println("FightReport Status (0=success): " + p2.exitValue());
 
                             //call graphbot
                             if (p2.exitValue() == 0) {
                                 System.out.println("Generating Graph...");
-                                ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", Parameters.getInstance().jarName, "GraphBot");
+                                ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", p.jarName, "GraphBot", p.homeDir);
                                 pb3.inheritIO();
-                                pb3.directory(new File(Parameters.getInstance().homeDir));
+                                pb3.directory(new File(p.homeDir));
                                 Process p3 = pb3.start();
+                                p3.waitFor(120, TimeUnit.SECONDS);
+                                p3.destroy();
                                 p3.waitFor();
                                 System.out.println("Graphing Status (0=success): " + p3.exitValue());
 
@@ -124,7 +130,7 @@ public class FileWatcher {
                                         System.out.println("ERROR: FightReport file not available.");
                                     } else {
                                         DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
-                                        dBot.sendMessage(Parameters.getInstance().discordChannel, report);
+                                        dBot.sendMessage(p.discordChannel, report);
                                     }
                                 }
                             }
@@ -143,14 +149,22 @@ public class FileWatcher {
     }
 
     private List<File> listLogFiles() throws IOException {
-        File folder = new File(Parameters.getInstance().logFolder);
-        List<File> list = !folder.exists() ? new ArrayList<>() :
-            Files.find(Paths.get(folder.getAbsolutePath()),
-                Integer.MAX_VALUE,
-                (filePath, fileAttr) -> fileAttr.isRegularFile())
-                    .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
-                    .map(p -> p.toFile())
-                    .collect(Collectors.toList());
+        List<File> list = new ArrayList<>();
+
+        //custom folder
+        String customFolder = Parameters.getInstance().customLogFolder;
+        if (customFolder!=null && customFolder.length()>0) {
+            File folder = new File(Parameters.getInstance().customLogFolder);
+            list = !folder.exists() ? new ArrayList<>() :
+                    Files.find(Paths.get(folder.getAbsolutePath()),
+                            Integer.MAX_VALUE,
+                            (filePath, fileAttr) -> fileAttr.isRegularFile())
+                            .filter(f -> f.toFile().getName().endsWith(".zevtc") || f.toFile().getName().endsWith(".evtc"))
+                            .map(p -> p.toFile())
+                            .collect(Collectors.toList());
+        }
+
+        //default folder
         File defaultFolder = new File(Parameters.getInstance().defaultLogFolder);
         List<File> list2 = !defaultFolder.exists() ? new ArrayList<>() :
             Files.find(Paths.get(defaultFolder.getAbsolutePath()),
@@ -174,19 +188,30 @@ public class FileWatcher {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("\n*** MzFightReporter Version 1.0-BETA ***\n");
-        System.out.println("Note:\n   You should see a dot printed below every few seconds indicating ArcDps log polling.\n"
-                +"   You can change settings in the config properties file at " + Parameters.getInstance().homeDir + ".\n");
+        Parameters p = Parameters.getInstance();
 
-        System.out.println("homeDir="+Parameters.getInstance().homeDir);
-        System.out.println("Gw2EIExe="+Parameters.getInstance().Gw2EIExe);
-        System.out.println("logFolder="+Parameters.getInstance().logFolder);
-        System.out.println("thumbnail="+Parameters.getInstance().thumbnail);
-        System.out.println("discordChannel="+Parameters.getInstance().discordChannel);
-        System.out.println("jarName="+Parameters.getInstance().jarName);
-        System.out.println("maxWvwUpload="+Parameters.getInstance().maxWvwUpload);
-        System.out.println("graphPlayerLimit="+Parameters.getInstance().graphPlayerLimit);
+        System.out.println("\n*** MzFightReporter ***\n");
+        System.out.println("Note:\n   You should see a dot printed below every few seconds indicating ArcDps log polling.\n"
+                +"   You can change settings in the config properties file at the install location.\n");
+
+        if (args.length>1)
+            p.homeDir = args[1];
+
+        System.out.println("homeDir="+p.homeDir);
+        System.out.println("defaultLogFolder="+p.defaultLogFolder);
+        System.out.println("customLogFolder="+p.customLogFolder);
+        System.out.println("discordThumbnail="+p.discordThumbnail);
+        System.out.println("discordBotToken=("+new String(p.discordBotToken).length()+" characters)");
+        System.out.println("discordChannel="+p.discordChannel);
+        System.out.println("jarName="+p.jarName);
+        System.out.println("maxWvwUpload="+p.maxWvwUpload);
+        System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
         System.out.println();
+
+        if (p.discordBotToken==null | p.discordBotToken.length()==0) {
+            System.out.println("ERROR: Discord bot token is missing.  Review README.txt for install instructions.");
+            System.exit(1);
+        }
 
         new FileWatcher().run();
     }

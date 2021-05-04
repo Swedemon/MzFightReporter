@@ -22,7 +22,7 @@ public class FightReport implements Serializable {
 
     protected static FightReport readReportFile() throws Exception {
         FightReport myReport = null;
-        File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + "fightreport.bin");
+        File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + File.separator + "fightreport.bin");
 
         if (!reportFile.exists())
             throw new Exception("Fight Report object file not found: " + reportFile.getAbsolutePath());
