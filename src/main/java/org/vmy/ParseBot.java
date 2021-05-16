@@ -44,8 +44,13 @@ public class ParseBot {
             //targets
             JSONArray targets = jsonTop.getJSONArray("targets");
             int countEnemyPlayers = 0;
+            int countFriendlies = 0;
             for (int i = 1; i < targets.length(); i++) {
-                countEnemyPlayers++;
+                String name = targets.getJSONObject(i).getString("name");
+                if (name.contains("-"))
+                    countEnemyPlayers++;
+                else
+                    countFriendlies++;
             }
 
             //players
@@ -134,6 +139,8 @@ public class ParseBot {
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDps, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
+
+            report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
             sumEnemyDps = (int) sumEnemyDmg / (sumPlayerDmg / sumPlayerDps);

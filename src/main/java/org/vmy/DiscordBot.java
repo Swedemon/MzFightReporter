@@ -1,5 +1,8 @@
 package org.vmy;
 
+import club.minnced.discord.webhook.WebhookClient;
+import club.minnced.discord.webhook.send.WebhookEmbed;
+import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -29,56 +32,43 @@ public class DiscordBot {
         }
     }
 
-    private JDA jdaSession = null;
+    private WebhookClient client = null;
 
     public static void main(String[] args) throws Exception {
         DiscordBot bot = new DiscordBot().openSession();
-        bot.sendMessage(Parameters.getInstance().discordChannel,new FightReport());
+        bot.sendWebhookMessage(new FightReport());
+        bot.client.close();
     }
 
     private DiscordBot openSession() throws Exception
     {
-        if (jdaSession == null) {
-            JDABuilder builder = JDABuilder.createDefault(Parameters.getInstance().discordBotToken);
-            jdaSession = builder.build();
-            jdaSession.awaitReady();
+        if (client == null) {
+            client = WebhookClient.withUrl(Parameters.getInstance().discordWebhook);
         }
         return this;
     }
 
-    protected void sendMessage(String channelName, FightReport report) throws InterruptedException
-    {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(Color.CYAN);
-        embedBuilder.setThumbnail(Parameters.getInstance().discordThumbnail);
+    protected void sendWebhookMessage(FightReport report) throws InterruptedException {
+        Parameters p = Parameters.getInstance();
+        //File graphImage = new File(p.homeDir + File.separator + "fightreport.png");
+
+        // Send and log (using embed)
+        WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
+        embedBuilder.setColor(Color.CYAN.getAlpha());
+        embedBuilder.setThumbnailUrl(p.discordThumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
-        embedBuilder.addField("Squad Summary","```"+report.getSquadSummary()+"```",false);
-        embedBuilder.addField("Enemy Summary","```"+report.getEnemySummary()+"```",false);
-        embedBuilder.addField("Damage","```"+report.getDamage()+"```",false);
-        embedBuilder.addField("Cleanses","```"+report.getCleanses()+"```",false);
-        embedBuilder.addField("Strips","```"+report.getStrips()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")"),false);
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```")); // _* " + report.getFriendliesSummary() + "_"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")")));
+        //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
-
-        File graphImage = new File(Parameters.getInstance().homeDir  + "fightreport.png");
-        EmbedBuilder embedImage = new EmbedBuilder();
-        embedImage.setColor(Color.CYAN);
-        embedImage.setImage("attachment://fightreport.png");
-        embedImage.setTimestamp(Instant.now());
-
-        List<TextChannel> channelList = jdaSession.getTextChannelsByName(channelName, true);
-        for (TextChannel c : channelList)
-        {
-            System.out.println("Posting message to #" + c.getName() + " on " + c.getGuild().getName() + ".");
-            c.sendMessage(embedBuilder.build()).queue();
-            if (graphImage.exists())
-                c.sendMessage(embedImage.build()).addFile(graphImage, "fightreport.png").queue();
-        }
+        WebhookEmbed embed = embedBuilder.build();
+        client.send(embed);
     }
 
-    public void finalize() {
-        if (jdaSession != null)
-            jdaSession.shutdownNow();
-    }
+    public void finalize() { if (client!=null) client.close(); }
 
     //hide needless errors via class block
     {

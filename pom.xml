@@ -6,7 +6,7 @@
 
     <groupId>org.vmy</groupId>
     <artifactId>MzFightReporter</artifactId>
-    <version>1.2-BETA</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -45,6 +45,11 @@
             <artifactId>httpmime</artifactId>
             <version>4.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>club.minnced</groupId>
+            <artifactId>discord-webhooks</artifactId>
+            <version>LATEST</version>
+        </dependency>
 
     </dependencies>
 
@@ -81,6 +86,11 @@
             <id>dv8tion</id>
             <name>m2-dv8tion</name>
             <url>https://m2.dv8tion.net/releases</url>
+        </repository>
+        <repository>
+            <name>jcenter</name>
+            <id>bintray-jcenter</id>
+            <url>https://jcenter.bintray.com</url>
         </repository>
     </repositories>
 </project>

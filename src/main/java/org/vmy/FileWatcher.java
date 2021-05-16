@@ -30,7 +30,7 @@ public class FileWatcher {
         File defaultFolder = new File(p.defaultLogFolder);
 
         //loop to await folder detection
-        System.out.println("Parent folder(s) configured to monitor for incoming ArcDps log files:");
+        System.out.println("Parent folder(s) configured to monitor ArcDps log files:");
         if (p.customLogFolder!=null && p.customLogFolder.length()>0)
             System.out.println("   > " + folder.getAbsolutePath());
         System.out.println("   > " + defaultFolder.getAbsolutePath());
@@ -72,7 +72,7 @@ public class FileWatcher {
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
                         System.out.println("Invoking GW2EI...");
-                        String confFolder = p.homeDir + "GW2EI\\Settings\\";
+                        String confFolder = p.homeDir + "\\GW2EI\\Settings\\";
                         String parseConfig = confFolder + "wvwupload.conf";
 
                         //if large file then directly upload to dps reports without wvw stats
@@ -110,8 +110,10 @@ public class FileWatcher {
                             p2.waitFor();
                             System.out.println("FightReport Status (0=success): " + p2.exitValue());
 
-                            //call graphbot
                             if (p2.exitValue() == 0) {
+
+                                /*
+                                //call graphbot
                                 System.out.println("Generating Graph...");
                                 ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", p.jarName, "GraphBot", p.homeDir);
                                 pb3.inheritIO();
@@ -122,17 +124,18 @@ public class FileWatcher {
                                 p3.waitFor();
                                 System.out.println("Graphing Status (0=success): " + p3.exitValue());
 
-                                //call discordbot
                                 if (p3.exitValue() == 0) {
+                                */
 
+                                    //call discordbot
                                     FightReport report = FightReport.readReportFile();
                                     if (report==null) {
                                         System.out.println("ERROR: FightReport file not available.");
                                     } else {
                                         DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
-                                        dBot.sendMessage(p.discordChannel, report);
+                                        dBot.sendWebhookMessage(report);
                                     }
-                                }
+                                /*}*/
                             }
                             try { jsonFile.delete(); if (logFile.exists()) logFile.delete(); } catch (Exception e) {}
                         }
@@ -201,15 +204,14 @@ public class FileWatcher {
         System.out.println("defaultLogFolder="+p.defaultLogFolder);
         System.out.println("customLogFolder="+p.customLogFolder);
         System.out.println("discordThumbnail="+p.discordThumbnail);
-        System.out.println("discordBotToken=("+new String(p.discordBotToken).length()+" characters)");
-        System.out.println("discordChannel="+p.discordChannel);
+        System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
         System.out.println("jarName="+p.jarName);
         System.out.println("maxWvwUpload="+p.maxWvwUpload);
         System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
         System.out.println();
 
-        if (p.discordBotToken==null | p.discordBotToken.length()==0) {
-            System.out.println("ERROR: Discord bot token is missing.  Review README.txt for install instructions.");
+        if (p.discordWebhook==null | p.discordWebhook.length()==0) {
+            System.out.println("ERROR: Discord webhook is missing.  Review README.txt for install instructions.");
             System.exit(1);
         }
 

@@ -12,8 +12,7 @@ public class Parameters {
             System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
     public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
-    public String discordBotToken = "";
-    public String discordChannel = "";
+    public String discordWebhook = "";
     public String jarName = "";
     public int maxWvwUpload = 6;
     public int graphPlayerLimit = 20;
@@ -39,15 +38,9 @@ public class Parameters {
             //set properties
             gw2EIExe = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
             String lg = prop.getProperty("customLogFolder");
-            customLogFolder =
-                    lg==null || lg.length()==0
-                    ? customLogFolder
-                    : lg.indexOf(':') > 0
-                        ? lg
-                        : System.getenv("USERPROFILE") + lg;
+            customLogFolder = prop.getProperty("customLogFolder");
             discordThumbnail = prop.getProperty("discordThumbnail",discordThumbnail);
-            discordBotToken = prop.getProperty("discordBotToken",discordBotToken);
-            discordChannel = prop.getProperty("discordChannel",discordChannel);
+            discordWebhook = prop.getProperty("discordWebhook",discordWebhook);
             jarName = prop.getProperty("jarName",jarName);
             maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
