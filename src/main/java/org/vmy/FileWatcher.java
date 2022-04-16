@@ -15,7 +15,7 @@ public class FileWatcher {
         if (new File(Parameters.getInstance().homeDir).exists())
             System.out.println("Detected MzFightReporter Home.");
         else
-            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + Parameters.getInstance().Gw2EIExe);
+            System.out.println("Failure to detect MzFightReporter Home at: " + Parameters.getInstance().homeDir);
         if (new File(Parameters.getInstance().Gw2EIExe).exists())
             System.out.println("Detected GuildWars2EliteInsights Application.");
         else
