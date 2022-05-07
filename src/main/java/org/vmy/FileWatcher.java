@@ -112,30 +112,27 @@ public class FileWatcher {
 
                             if (p2.exitValue() == 0) {
 
-                                /*
                                 //call graphbot
-                                System.out.println("Generating Graph...");
-                                ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", p.jarName, "GraphBot", p.homeDir);
-                                pb3.inheritIO();
-                                pb3.directory(new File(p.homeDir));
-                                Process p3 = pb3.start();
-                                p3.waitFor(120, TimeUnit.SECONDS);
-                                p3.destroy();
-                                p3.waitFor();
-                                System.out.println("Graphing Status (0=success): " + p3.exitValue());
+                                if (p.graphPlayerLimit > 0) {
+                                    System.out.println("Generating Graph...");
+                                    ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", p.jarName, "GraphBot", p.homeDir);
+                                    pb3.inheritIO();
+                                    pb3.directory(new File(p.homeDir));
+                                    Process p3 = pb3.start();
+                                    p3.waitFor(120, TimeUnit.SECONDS);
+                                    p3.destroy();
+                                    p3.waitFor();
+                                    System.out.println("Graphing Status (0=success): " + p3.exitValue());
+                                }
 
-                                if (p3.exitValue() == 0) {
-                                */
-
-                                    //call discordbot
-                                    FightReport report = FightReport.readReportFile();
-                                    if (report==null) {
-                                        System.out.println("ERROR: FightReport file not available.");
-                                    } else {
-                                        DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
-                                        dBot.sendWebhookMessage(report);
-                                    }
-                                /*}*/
+                                //call discordbot
+                                FightReport report = FightReport.readReportFile();
+                                if (report==null) {
+                                    System.out.println("ERROR: FightReport file not available.");
+                                } else {
+                                    DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
+                                    dBot.sendWebhookMessage(report);
+                                }
                             }
                             try { jsonFile.delete(); if (logFile.exists()) logFile.delete(); } catch (Exception e) {}
                         }

@@ -18,6 +18,8 @@ public class FightReport implements Serializable {
     private String damage;
     private String cleanses;
     private String strips;
+
+    private String dbooners;
     private String url;
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
@@ -117,9 +119,11 @@ public class FightReport implements Serializable {
         return strips;
     }
 
-    public void setStrips(String strips) {
-        this.strips = strips;
-    }
+    public void setStrips(String strips) { this.strips = strips; }
+
+    public String getDbooners() { return dbooners; }
+
+    public void setDbooners(String dbooners) { this.dbooners = dbooners; }
 
     public String getUrl() {
         return url;

@@ -1,10 +1,12 @@
 package org.vmy;
 
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,12 +60,14 @@ public class ParseBot {
             List<DPSer> dpsers = new ArrayList<DPSer>();
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
+            List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
             int sumPlayerDps = 0;
             int sumPlayerDmg = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
             int sumEnemyDps = 0;
             int sumEnemyDmg = 0;
+            DefensiveBooner sumBoons = new DefensiveBooner("Total", "Total");
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
@@ -104,7 +108,22 @@ public class ParseBot {
                 JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
                 List<Object> oList = dArray.toList();
                 report.getDmgMap().put(currPlayer.getString("name"),oList);
+
+                DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"));
+                if (!currPlayer.isNull("groupBuffsActive")) {
+                    JSONArray bArray = currPlayer.getJSONArray("groupBuffsActive");
+                    populateDefensiveBoons(dBooner, bArray);
+                }
+                if (!currPlayer.isNull("offGroupBuffsActive")) {
+                    JSONArray bArray = currPlayer.getJSONArray("offGroupBuffsActive");
+                    populateDefensiveBoons(dBooner, bArray);
+                }
+                dBooner.computeRating();
+                dbooners.add(dBooner);
+                addBoons(sumBoons, dBooner);
             }
+
+            calculateWeightedBoons(sumBoons, dbooners);
 
             //base info
             String zone = jsonTop.getString("fightName");
@@ -132,6 +151,7 @@ public class ParseBot {
                     totalPlayersDowned = mechanics.getJSONObject(1).getJSONArray("mechanicsData").length();
             }
 
+            //write to buffer
             StringBuffer buffer = new StringBuffer();
             buffer.append(" Players   Damage    DPS    Downs    Deaths" + CRLF);
             buffer.append("--------- --------  -----  -------  --------" + CRLF);
@@ -140,7 +160,10 @@ public class ParseBot {
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
 
-            report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
+            if (countFriendlies == 1)
+                report.setFriendliesSummary("plus " + countFriendlies + " friendly (total = " + (countFriendlies+players.length()) + " players)");
+            else if (++countFriendlies > 1)
+                report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
             sumEnemyDps = (int) sumEnemyDmg / (sumPlayerDmg / sumPlayerDps);
@@ -182,11 +205,81 @@ public class ParseBot {
             for (Stripper x : strippers.subList(0, count))
                 buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setStrips(buffer.toString());
+
+            buffer = new StringBuffer();
+            buffer.append(" #  Player                      Rating" + CRLF);
+            buffer.append("--- -------------------------  --------" + CRLF);
+            dbooners.sort((d1, d2) -> d1.compareTo(d2));
+            index = 1;
+            count = dbooners.size() > 10 ? 10 : cleansers.size();
+            for (DefensiveBooner x : dbooners.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+            //buffer.append("=> stab*3+aegis*2+prot+resist*.5+resolv+alac*.5" + CRLF);
+            report.setDbooners(buffer.toString());
         } finally {
             is.close();
         }
 
         return report;
+    }
+
+    private static void calculateWeightedBoons(DefensiveBooner sumBoons, List<DefensiveBooner> dbooners) {
+        for (DefensiveBooner db : dbooners) {
+            int stab = sumBoons.getStability();
+            db.setStability(stab > 0 ? 100 * db.getStability() / stab : db.getStability());
+            int aegis = sumBoons.getAegis();
+            db.setAegis(aegis > 0 ? 100 * db.getAegis() / aegis : db.getAegis());
+            int prot = sumBoons.getProtection();
+            db.setProtection(prot > 0 ? 100 * db.getProtection() / prot : db.getProtection());
+            int resist = sumBoons.getResistance();
+            db.setResistance(resist > 0 ? 100 * db.getResistance() / resist : db.getResistance());
+            int resolu = sumBoons.getResolution();
+            db.setResolution(resolu > 0 ? 100 * db.getResolution() / resolu : db.getResolution());
+            int alac = sumBoons.getAlacrity();
+            db.setAlacrity(alac > 0 ? 100 * db.getAlacrity() / alac : db.getAlacrity());
+            db.computeRating();
+        }
+    }
+
+    private static void populateDefensiveBoons(DefensiveBooner dBooner, JSONArray bArray) {
+        //currPlayerSupport.getBigInteger("condiCleanse").intValue()
+        for (Object obj : bArray.toList()) {
+            int sfesef = 0;
+            HashMap m = (HashMap)obj;
+            int id = (int) (Integer) m.get("id");
+            switch (id) { //1122/743/717/26980/873/30328
+                case 1122 : dBooner.setStability(dBooner.getStability() + getBuffGeneration(m)); break;
+                case 743 : dBooner.setAegis(dBooner.getAegis() + getBuffGeneration(m)); break;
+                case 717 : dBooner.setProtection(dBooner.getProtection() + getBuffGeneration(m)); break;
+                case 26980 : dBooner.setResistance(dBooner.getResistance() + getBuffGeneration(m)); break;
+                case 873 : dBooner.setResolution(dBooner.getResolution() + getBuffGeneration(m)); break;
+                case 30328 : dBooner.setAlacrity(dBooner.getAlacrity() + getBuffGeneration(m)); break;
+            }
+        }
+        int debug = 0;
+    }
+
+    private static int getBuffGeneration(HashMap m) {
+        if (m.containsKey("buffData")) {
+            List buffData = (List) m.get("buffData");
+            if (buffData!=null && buffData.size()>0) {
+                HashMap bdMap = (HashMap) buffData.get(0);
+                if (bdMap.containsKey("generation")) {
+                    BigDecimal gen = (BigDecimal) bdMap.get("generation");
+                    return (int) gen.multiply(new BigDecimal(1000)).intValue();
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static void addBoons(DefensiveBooner sumBoons, DefensiveBooner player) {
+        sumBoons.setStability(sumBoons.getStability() + player.getStability());
+        sumBoons.setAegis(sumBoons.getAegis() + player.getAegis());
+        sumBoons.setProtection(sumBoons.getProtection() + player.getProtection());
+        sumBoons.setResistance(sumBoons.getResistance() + player.getResistance());
+        sumBoons.setResolution(sumBoons.getResolution() + player.getResolution());
+        sumBoons.setAlacrity(sumBoons.getAlacrity() + player.getAlacrity());
     }
 
     public static void main(String[] args) throws Exception {
