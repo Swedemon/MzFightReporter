@@ -29,7 +29,7 @@ public class DefensiveBooner {
     }
 
     public void computeRating() {
-        defensiveRating = 3*stability*3 + 2*aegis + protection + (int)(0.5*resistance) + resolution + (int)(0.5*alacrity);
+        defensiveRating = 3*stability + 2*aegis + protection + (int)(0.5*resistance) + resolution + (int)(0.5*alacrity);
     }
 
     public int compareTo(DefensiveBooner d) {
@@ -44,9 +44,8 @@ public class DefensiveBooner {
     public String toString() {
         return String.format("%-25s",
                 String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%8s",defensiveRating);
-                // + " =>" + 3*stability + "+" +2*aegis + "+" +protection + "+"
-                // +(int)(0.5*resistance) + "+" +resolution + "+" +(int)(0.5*alacrity);
+                + String.format("%7s",defensiveRating);
+                //+ " =>" + 3*stability + "+" +2*aegis + "+" +protection + "+" +(int)(0.5*resistance) + "+" +resolution + "+" +(int)(0.5*alacrity);
     }
 
     public String getName() {

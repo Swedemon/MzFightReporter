@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ParseBot {
 
@@ -45,14 +46,20 @@ public class ParseBot {
 
             //targets
             JSONArray targets = jsonTop.getJSONArray("targets");
+            HashMap<String, Condier> condiers = new HashMap<String, Condier>();
             int countEnemyPlayers = 0;
             int countFriendlies = 0;
             for (int i = 1; i < targets.length(); i++) {
-                String name = targets.getJSONObject(i).getString("name");
+                JSONObject currTarget = targets.getJSONObject(i);
+                String name = currTarget.getString("name");
                 if (name.contains("-"))
                     countEnemyPlayers++;
                 else
                     countFriendlies++;
+                if (!currTarget.isNull("buffs")) {
+                    JSONArray bArray = currTarget.getJSONArray("buffs");
+                    populateCondierBuffs(condiers, bArray);
+                }
             }
 
             //players
@@ -71,14 +78,13 @@ public class ParseBot {
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
+                String name = currPlayer.getString("name");
+                String profession = currPlayer.getString("profession");
                 if (currPlayer.getBoolean("hasCommanderTag"))
                     commander = commander==null ? currPlayer.getString("name") : "n/a";
                 JSONObject playerDpsAll = currPlayer.getJSONArray("dpsAll").getJSONObject(0);
                 sumPlayerDps += playerDpsAll.getBigInteger("dps").intValue();
                 sumPlayerDmg += playerDpsAll.getBigInteger("damage").intValue();
-                //JSONObject playerStatsAll = currPlayer.getJSONArray("statsAll").getJSONObject(0);
-                //countEnemyDowns += playerStatsAll.getBigInteger("downed").intValue();
-                //countEnemyDeaths += playerStatsAll.getBigInteger("killed").intValue();
                 List<Object> playerStatsTargets = currPlayer.getJSONArray("statsTargets").toList();
                 for (Object a : playerStatsTargets) {
                     for (Object b : (List<Object>)a) {
@@ -90,20 +96,16 @@ public class ParseBot {
                 JSONObject playerDefenses = currPlayer.getJSONArray("defenses").getJSONObject(0);
                 sumEnemyDmg += playerDefenses.getBigInteger("damageTaken").intValue();
                 JSONObject currPlayerDpsTargets = currPlayer.getJSONArray("dpsTargets").getJSONArray(0).getJSONObject(0);
-                dpsers.add(new DPSer(
-                        currPlayer.getString("name"),
-                        currPlayer.getString("profession"),
+                dpsers.add(new DPSer(name, profession,
                         playerDpsAll.getBigInteger("damage").intValue(),
                         playerDpsAll.getBigInteger("dps").intValue()));
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
-                cleansers.add(new Cleanser(
-                        currPlayer.getString("name"),
-                        currPlayer.getString("profession"),
+                cleansers.add(new Cleanser(name, profession,
                         currPlayerSupport.getBigInteger("condiCleanse").intValue()));
-                strippers.add(new Stripper(
-                        currPlayer.getString("name"),
-                        currPlayer.getString("profession"),
+                strippers.add(new Stripper(name, profession,
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
+                if (condiers.containsKey(name))
+                    condiers.get(currPlayer.getString("name")).setProfession(profession);
 
                 JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
                 List<Object> oList = dArray.toList();
@@ -122,7 +124,6 @@ public class ParseBot {
                 dbooners.add(dBooner);
                 addBoons(sumBoons, dBooner);
             }
-
             calculateWeightedBoons(sumBoons, dbooners);
 
             //base info
@@ -214,13 +215,65 @@ public class ParseBot {
             count = dbooners.size() > 10 ? 10 : cleansers.size();
             for (DefensiveBooner x : dbooners.subList(0, count))
                 buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            //buffer.append("=> stab*3+aegis*2+prot+resist*.5+resolv+alac*.5" + CRLF);
             report.setDbooners(buffer.toString());
+
+            buffer = new StringBuffer();
+            buffer.append(" #  Player                          CCs" + CRLF);
+            buffer.append("--- ------------------------  --------------" + CRLF);
+            List<Condier> clist = new ArrayList<Condier>(condiers.values());
+            clist.sort((d1, d2) -> d1.compareTo(d2));
+            index = 1;
+            count = clist.size() > 10 ? 10 : clist.size();
+            for (Condier x : clist.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+            report.setCcs(buffer.toString());
         } finally {
             is.close();
         }
 
         return report;
+    }
+
+    private static void populateCondierBuffs(HashMap<String, Condier> condiers, JSONArray bArray) {
+        for (Object obj : bArray.toList()) {
+            HashMap m = (HashMap)obj;
+            ArrayList buffData = (ArrayList) m.get("buffData");
+            HashMap bm = (HashMap)buffData.get(0);
+            HashMap generated = (HashMap) bm.get("generated");
+            int id = (int) (Integer) m.get("id");
+            for (Object e : generated.entrySet())
+                addToCondiers(condiers, (Map.Entry<String, BigDecimal>) e, id);
+        }
+    }
+
+    private static void addToCondiers(HashMap<String, Condier> condiers, Map.Entry<String, BigDecimal> me, int id) {
+        String name = me.getKey();
+        Condier c = condiers.get(name);
+        if (c==null)
+            c = new Condier(name, "    ");
+        switch(id) { //stun=872 chilled=722 crippled=721 immob=727 slow=26766
+            case 872:
+                c.setStunCount(c.getStunCount() + 1);
+                c.setStunDur(c.getStunDur().add(me.getValue()));
+                break;
+            case 722:
+                c.setChilledCount(c.getChilledCount() + 1);
+                c.setChilledDur(c.getChilledDur().add(me.getValue()));
+                break;
+            case 721:
+                c.setCrippledCount(c.getCrippledCount() + 1);
+                c.setCrippledDur(c.getCrippledDur().add(me.getValue()));
+                break;
+            case 727:
+                c.setImmobCount(c.getImmobCount() + 1);
+                c.setImmobDur(c.getImmobDur().add(me.getValue()));
+                break;
+            case 26766:
+                c.setSlowCount(c.getSlowCount() + 1);
+                c.setSlowDur(c.getSlowDur().add(me.getValue()));
+                break;
+        }
+        condiers.put(name, c);
     }
 
     private static void calculateWeightedBoons(DefensiveBooner sumBoons, List<DefensiveBooner> dbooners) {
@@ -242,9 +295,7 @@ public class ParseBot {
     }
 
     private static void populateDefensiveBoons(DefensiveBooner dBooner, JSONArray bArray) {
-        //currPlayerSupport.getBigInteger("condiCleanse").intValue()
         for (Object obj : bArray.toList()) {
-            int sfesef = 0;
             HashMap m = (HashMap)obj;
             int id = (int) (Integer) m.get("id");
             switch (id) { //1122/743/717/26980/873/30328

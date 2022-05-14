@@ -18,6 +18,7 @@ public class FightReport implements Serializable {
     private String damage;
     private String cleanses;
     private String strips;
+    private String ccs;
 
     private String dbooners;
     private String url;
@@ -140,4 +141,13 @@ public class FightReport implements Serializable {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
+    public String getCcs() {
+        return ccs;
+    }
+
+    public void setCcs(String ccs) {
+        this.ccs = ccs;
+    }
+
 }

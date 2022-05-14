@@ -6,7 +6,7 @@
 
     <groupId>org.vmy</groupId>
     <artifactId>MzFightReporter</artifactId>
-    <version>1.4</version>
+    <version>1.4c</version>
     <packaging>jar</packaging>
 
     <properties>

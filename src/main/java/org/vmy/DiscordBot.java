@@ -66,7 +66,8 @@ public class DiscordBot {
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Rating","```"+report.getDbooners()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")")));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boons","```"+report.getDbooners()+"```"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")")));
         //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
