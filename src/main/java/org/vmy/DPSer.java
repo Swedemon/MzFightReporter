@@ -24,7 +24,7 @@ public class DPSer implements Comparable<DPSer> {
 
     public String toString() {
         return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,3) + ")")
+                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
                 + String.format("%9s",withSuffix(damage,damage < 1000000 ? 1 : 2)) + " "
                 + String.format("%8s",withSuffix(dps,1));
     }

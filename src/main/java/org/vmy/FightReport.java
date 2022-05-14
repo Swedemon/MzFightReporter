@@ -12,17 +12,22 @@ public class FightReport implements Serializable {
     private String duration;
     private String commander;
     private String squadSummary;
+    private String friendliesSummary;
+
     private String enemySummary;
     private String damage;
     private String cleanses;
     private String strips;
+    private String ccs;
+
+    private String dbooners;
     private String url;
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
 
     protected static FightReport readReportFile() throws Exception {
         FightReport myReport = null;
-        File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + "fightreport.bin");
+        File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + File.separator + "fightreport.bin");
 
         if (!reportFile.exists())
             throw new Exception("Fight Report object file not found: " + reportFile.getAbsolutePath());
@@ -83,6 +88,10 @@ public class FightReport implements Serializable {
         this.squadSummary = squadSummary;
     }
 
+    public String getFriendliesSummary() { return friendliesSummary; }
+
+    public void setFriendliesSummary(String friendliesSummary) { this.friendliesSummary = friendliesSummary; }
+
     public String getEnemySummary() {
         return enemySummary;
     }
@@ -111,9 +120,11 @@ public class FightReport implements Serializable {
         return strips;
     }
 
-    public void setStrips(String strips) {
-        this.strips = strips;
-    }
+    public void setStrips(String strips) { this.strips = strips; }
+
+    public String getDbooners() { return dbooners; }
+
+    public void setDbooners(String dbooners) { this.dbooners = dbooners; }
 
     public String getUrl() {
         return url;
@@ -130,4 +141,13 @@ public class FightReport implements Serializable {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
+    public String getCcs() {
+        return ccs;
+    }
+
+    public void setCcs(String ccs) {
+        this.ccs = ccs;
+    }
+
 }

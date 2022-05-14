@@ -6,15 +6,15 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public String homeDir = "C:\\Arc\\MzFightReporter\\";
-    public String Gw2EIExe = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
-    public String logFolder =
-            "C:\\Arc\\arcdps.cbtlogs\\WvW\\Elite Apes\\";
-            //System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\1\\";
-    public String thumbnail = "https://i.imgur.com/KKddNgl.png";
-    public String token = "ODI4ODU4MzM3NDYyMDU5MDE4.YGvsew.SPuwZeO_rlZg4jpPCUWrxxGyWh4";
-    public String discordChannel = "fight-reports";
-    public String jarName = "MzFightReporter-1.1-BETA.jar ";
+    public String homeDir = "";
+    public String gw2EIExe = "\\GW2EI\\GuildWars2EliteInsights.exe";
+    public String defaultLogFolder =
+            System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
+    public String customLogFolder = "";
+    public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
+    public String discordWebhook = "";
+    public String jarName = "";
+    public int maxWvwUpload = 6;
     public int graphPlayerLimit = 20;
 
     private static Parameters instance = null;
@@ -36,19 +36,13 @@ public class Parameters {
             prop.load(file);
 
             //set properties
-            homeDir = prop.getProperty("homeDir",homeDir);
-            Gw2EIExe = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
-            String lg = prop.getProperty("logFolder");
-            logFolder =
-                    lg==null || lg.length()==0
-                    ? logFolder
-                    : lg.indexOf(':') > 0
-                        ? lg
-                        : System.getenv("USERPROFILE") + lg;
-            thumbnail = prop.getProperty("thumbnail",thumbnail);
-            token = prop.getProperty("token",token);
-            discordChannel = prop.getProperty("discordChannel",discordChannel);
+            gw2EIExe = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
+            String lg = prop.getProperty("customLogFolder");
+            customLogFolder = prop.getProperty("customLogFolder");
+            discordThumbnail = prop.getProperty("discordThumbnail",discordThumbnail);
+            discordWebhook = prop.getProperty("discordWebhook",discordWebhook);
             jarName = prop.getProperty("jarName",jarName);
+            maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
