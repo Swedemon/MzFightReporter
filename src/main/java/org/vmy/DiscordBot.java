@@ -3,17 +3,12 @@ package org.vmy;
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
-import club.minnced.discord.webhook.send.WebhookMessage;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
+import org.vmy.util.FightReport;
 
 import java.awt.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.time.Instant;
-import java.util.List;
 
 public class DiscordBot {
 

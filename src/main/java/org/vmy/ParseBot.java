@@ -1,9 +1,10 @@
 package org.vmy;
 
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.vmy.util.*;
+import sun.util.calendar.Gregorian;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -68,50 +69,73 @@ public class ParseBot {
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
             List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
+            HashMap<String, Player> playerMap = new HashMap<String, Player>();
+            HashMap<String, Group> groups = new HashMap<String, Group>();
             int sumPlayerDps = 0;
             int sumPlayerDmg = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
             int sumEnemyDps = 0;
             int sumEnemyDmg = 0;
-            DefensiveBooner sumBoons = new DefensiveBooner("Total", "Total");
+            DefensiveBooner sumBoons = new DefensiveBooner("Total", "Total", "0");
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
                 String name = currPlayer.getString("name");
                 String profession = currPlayer.getString("profession");
+                String group = ""+currPlayer.getInt("group");
                 if (currPlayer.getBoolean("hasCommanderTag"))
                     commander = commander==null ? currPlayer.getString("name") : "n/a";
+                if (condiers.containsKey(name))
+                    condiers.get(currPlayer.getString("name")).setProfession(profession);
+
+                //dpsAll
                 JSONObject playerDpsAll = currPlayer.getJSONArray("dpsAll").getJSONObject(0);
                 sumPlayerDps += playerDpsAll.getBigInteger("dps").intValue();
                 sumPlayerDmg += playerDpsAll.getBigInteger("damage").intValue();
+
+                //statsTargets
                 List<Object> playerStatsTargets = currPlayer.getJSONArray("statsTargets").toList();
                 for (Object a : playerStatsTargets) {
                     for (Object b : (List<Object>)a) {
                         HashMap<String, Integer> map = (HashMap<String, Integer>) b;
                         countEnemyDowns += map.get("downed");
                         countEnemyDeaths += map.get("killed");
+                        if (playerMap.containsKey(name)) {
+                            Player p = playerMap.get(name);
+                            p.setKills(p.getKills()+map.get("killed"));
+                        } else {
+                            Player p = new Player(name, profession, group);
+                            p.setKills(map.get("killed"));
+                            playerMap.put(name, p);
+                        }
                     }
                 }
+
+                //defenses
                 JSONObject playerDefenses = currPlayer.getJSONArray("defenses").getJSONObject(0);
                 sumEnemyDmg += playerDefenses.getBigInteger("damageTaken").intValue();
+
+                //dpsTargets
                 JSONObject currPlayerDpsTargets = currPlayer.getJSONArray("dpsTargets").getJSONArray(0).getJSONObject(0);
                 dpsers.add(new DPSer(name, profession,
                         playerDpsAll.getBigInteger("damage").intValue(),
                         playerDpsAll.getBigInteger("dps").intValue()));
+
+                //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
                 cleansers.add(new Cleanser(name, profession,
                         currPlayerSupport.getBigInteger("condiCleanse").intValue()));
                 strippers.add(new Stripper(name, profession,
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
-                if (condiers.containsKey(name))
-                    condiers.get(currPlayer.getString("name")).setProfession(profession);
 
+                //damage1S
                 JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
                 List<Object> oList = dArray.toList();
                 report.getDmgMap().put(currPlayer.getString("name"),oList);
 
-                DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"));
+                //active buffs
+                DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
                 if (!currPlayer.isNull("groupBuffsActive")) {
                     JSONArray bArray = currPlayer.getJSONArray("groupBuffsActive");
                     populateDefensiveBoons(dBooner, bArray);
@@ -126,7 +150,7 @@ public class ParseBot {
             }
             calculateWeightedBoons(sumBoons, dbooners);
 
-            //base info
+            //basic info
             String zone = jsonTop.getString("fightName");
             zone = zone.indexOf(" - ") > 0 ? zone.substring(zone.indexOf(" - ") + 3) : zone;
             report.setZone(zone);
@@ -146,10 +170,30 @@ public class ParseBot {
             int totalPlayersDowned = 0;
             if (jsonTop.has("mechanics")) {
                 JSONArray mechanics = jsonTop.getJSONArray("mechanics");
+                List<Object> mdList = mechanics.getJSONObject(0).getJSONArray("mechanicsData").toList();
+                for (Object mdo : mdList) {
+                    HashMap<String, Object> mdMap = (HashMap<String, Object>) mdo;
+                    String actor = (String) mdMap.get("actor");
+                    Player p = playerMap.get(actor);
+                    p.setDeaths(p.getDeaths()+1);
+                }
                 if (mechanics.length()>0)
                     totalPlayersDead = mechanics.getJSONObject(0).getJSONArray("mechanicsData").length();
                 if (mechanics.length()>1)
                     totalPlayersDowned = mechanics.getJSONObject(1).getJSONArray("mechanicsData").length();
+            }
+
+            //compile group data
+            for (Player plyr :playerMap.values()) {
+                String grp = plyr.getGroup();
+                Group g = groups.get(grp);
+                g = g==null ? new Group(grp, grp) : g;
+                if ("Firebrand".equals(plyr.getProfession()))
+                    g.setName(plyr.getName());
+                groups.put(grp, g);
+                g.setKills(g.getKills()+plyr.getKills());
+                g.setDeaths(g.getDeaths()+plyr.getDeaths());
+                int debug12312 = 0;
             }
 
             //write to buffer
@@ -184,7 +228,8 @@ public class ParseBot {
             int index = 1;
             int count = dpsers.size() > 10 ? 10 : dpsers.size();
             for (DPSer x : dpsers.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                if (x.getDamage()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setDamage(buffer.toString());
 
             buffer = new StringBuffer();
@@ -194,7 +239,8 @@ public class ParseBot {
             index = 1;
             count = cleansers.size() > 10 ? 10 : cleansers.size();
             for (Cleanser x : cleansers.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                if (x.getCleanses()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setCleanses(buffer.toString());
 
             buffer = new StringBuffer();
@@ -204,17 +250,22 @@ public class ParseBot {
             index = 1;
             count = strippers.size() > 10 ? 10 : strippers.size();
             for (Stripper x : strippers.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                if (x.getStrips()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setStrips(buffer.toString());
 
             buffer = new StringBuffer();
-            buffer.append(" #  Player                      Rating" + CRLF);
-            buffer.append("--- -------------------------  --------" + CRLF);
+            buffer.append("                                      Group" + CRLF);
+            buffer.append(" #  Player                     Rating  KDR" + CRLF);
+            buffer.append("--- -------------------------  ------ -----" + CRLF);
             dbooners.sort((d1, d2) -> d1.compareTo(d2));
             index = 1;
             count = dbooners.size() > 10 ? 10 : cleansers.size();
             for (DefensiveBooner x : dbooners.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                if (x.getDefensiveRating()>0) {
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + " "
+                        + String.format("%5s",groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths()) + CRLF);
+                }
             report.setDbooners(buffer.toString());
 
             buffer = new StringBuffer();
@@ -225,7 +276,8 @@ public class ParseBot {
             index = 1;
             count = clist.size() > 10 ? 10 : clist.size();
             for (Condier x : clist.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                if (x.getChilledCount()>0 || x.getCrippledCount()>0 || x.getImmobCount()>0 || x.getStunCount()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setCcs(buffer.toString());
         } finally {
             is.close();

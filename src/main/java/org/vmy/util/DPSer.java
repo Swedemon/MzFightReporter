@@ -1,4 +1,4 @@
-package org.vmy;
+package org.vmy.util;
 
 public class DPSer implements Comparable<DPSer> {
     private String name;

@@ -1,8 +1,9 @@
-package org.vmy;
+package org.vmy.util;
 
 public class DefensiveBooner {
     private String name;
     private String profession;
+    private String group;
     private int stability=0;
     private int aegis=0;
     private int protection=0;
@@ -11,14 +12,16 @@ public class DefensiveBooner {
     private int alacrity=0;
     private int defensiveRating=0;
 
-    public DefensiveBooner(String name, String profession) {
+    public DefensiveBooner(String name, String profession, String group) {
         this.name = name;
         this.profession = profession;
+        this.group = group;
     }
 
-    public DefensiveBooner(String name, String profession, int stability, int aegis, int protection, int resistance, int resolution, int alacrity) {
+    public DefensiveBooner(String name, String profession, String group, int stability, int aegis, int protection, int resistance, int resolution, int alacrity) {
         this.name = name;
         this.profession = profession;
+        this.group = group;
         this.stability = stability;
         this.aegis = aegis;
         this.protection = protection;
@@ -119,4 +122,13 @@ public class DefensiveBooner {
     public void setAlacrity(int alacrity) {
         this.alacrity = alacrity;
     }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
 }
