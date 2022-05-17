@@ -1,4 +1,4 @@
-package org.vmy;
+package org.vmy.util;
 
 import java.math.BigDecimal;
 

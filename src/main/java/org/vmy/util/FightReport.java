@@ -1,4 +1,4 @@
-package org.vmy;
+package org.vmy.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ public class FightReport implements Serializable {
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
 
-    protected static FightReport readReportFile() throws Exception {
+    public static FightReport readReportFile() throws Exception {
         FightReport myReport = null;
         File reportFile = new File(org.vmy.Parameters.getInstance().homeDir + File.separator + "fightreport.bin");
 
