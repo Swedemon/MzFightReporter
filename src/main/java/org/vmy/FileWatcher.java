@@ -198,6 +198,13 @@ public class FileWatcher {
         System.out.println("homeDir="+p.homeDir);
         System.out.println("defaultLogFolder="+p.defaultLogFolder);
         System.out.println("customLogFolder="+p.customLogFolder);
+        System.out.println("showDamageGraph="+p.showDamageGraph);
+        System.out.println("showDamage="+p.showDamage);
+        System.out.println("showCleanses="+p.showCleanses);
+        System.out.println("showStrips="+p.showStrips);
+        System.out.println("showDefensiveBoons="+p.showDefensiveBoons);
+        System.out.println("showCCs="+p.showCCs);
+        System.out.println("showCopyPasta="+p.showCopyPasta);
         System.out.println("discordThumbnail="+p.discordThumbnail);
         System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
         System.out.println("jarName="+p.jarName);

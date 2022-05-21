@@ -58,17 +58,26 @@ public class DiscordBot {
             squadSummary += " _* " + report.getFriendliesSummary() + "_";
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary",squadSummary));
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boons","```"+report.getDbooners()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```\n"+(report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")")));
+        if (p.showDamage)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
+        if (p.showCleanses)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
+        if (p.showStrips)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
+        if (p.showDefensiveBoons)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boons","```"+report.getDbooners()+"```"));
+        if (p.showCCs)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
+        if (p.showCopyPasta)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Copy Pasta","```"+report.getOverview()+"```"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")"));
+
         //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
         client.send(embed);
 
-        if (graphImage.exists() && p.graphPlayerLimit > 0)
+        if (graphImage.exists() && p.graphPlayerLimit > 0 && p.showDamageGraph)
             client.send(graphImage);
     }
 

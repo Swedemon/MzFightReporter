@@ -207,7 +207,7 @@ public class ParseBot {
 
             if (countFriendlies == 1)
                 report.setFriendliesSummary("plus " + countFriendlies + " friendly (total = " + (countFriendlies+players.length()) + " players)");
-            else if (++countFriendlies > 1)
+            else if (countFriendlies > 1)
                 report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
@@ -255,15 +255,14 @@ public class ParseBot {
             report.setStrips(buffer.toString());
 
             buffer = new StringBuffer();
-            buffer.append("                                      Group" + CRLF);
-            buffer.append(" #  Player                     Rating  KDR" + CRLF);
-            buffer.append("--- -------------------------  ------ -----" + CRLF);
+            buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
+            buffer.append("--- -------------------------  ------    -----" + CRLF);
             dbooners.sort((d1, d2) -> d1.compareTo(d2));
             index = 1;
             count = dbooners.size() > 10 ? 10 : cleansers.size();
             for (DefensiveBooner x : dbooners.subList(0, count))
                 if (x.getDefensiveRating()>0) {
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + " "
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + "    "
                         + String.format("%5s",groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths()) + CRLF);
                 }
             report.setDbooners(buffer.toString());
@@ -279,6 +278,12 @@ public class ParseBot {
                 if (x.getChilledCount()>0 || x.getCrippledCount()>0 || x.getImmobCount()>0 || x.getStunCount()>0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setCcs(buffer.toString());
+
+            buffer = new StringBuffer();
+            buffer.append(String.format("[Report] Squad Players: %d (Deaths: %d), Damage: %s | Enemy Players: %d (Killed: %d), Damage: %s",
+                    players.length(), totalPlayersDead, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2),
+                    countEnemyPlayers, countEnemyDeaths, DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2)));
+            report.setOverview(buffer.toString());
         } finally {
             is.close();
         }
