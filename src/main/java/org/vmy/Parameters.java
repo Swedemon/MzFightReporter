@@ -22,7 +22,7 @@ public class Parameters {
     public boolean showStrips = true;
     public boolean showDefensiveBoons = true;
     public boolean showCCs = true;
-    public boolean showCopyPasta = true;
+    public boolean showQuickReport = true;
 
     private static Parameters instance = null;
     public static Parameters getInstance() {
@@ -57,7 +57,7 @@ public class Parameters {
             showStrips = Boolean.valueOf(prop.getProperty("showStrips", "true"));
             showDefensiveBoons = Boolean.valueOf(prop.getProperty("showDefensiveBoons", "true"));
             showCCs = Boolean.valueOf(prop.getProperty("showCCs", "true"));
-            showCopyPasta = Boolean.valueOf(prop.getProperty("showCopyPasta", "true"));
+            showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
         } finally { if (file != null) { try { file.close(); } catch (IOException e) {}}}

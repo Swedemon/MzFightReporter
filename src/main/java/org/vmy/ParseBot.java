@@ -281,8 +281,8 @@ public class ParseBot {
 
             buffer = new StringBuffer();
             buffer.append(String.format("[Report] Squad Players: %d (Deaths: %d) | Enemy Players: %d (Deaths: %d)",
-                    players.length(), totalPlayersDead, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2),
-                    countEnemyPlayers, countEnemyDeaths, DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2)));
+                    players.length(), totalPlayersDead,
+                    countEnemyPlayers, countEnemyDeaths));
             report.setOverview(buffer.toString());
         } finally {
             is.close();

@@ -68,7 +68,7 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boons","```"+report.getDbooners()+"```"));
         if (p.showCCs)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
-        if (p.showCopyPasta)
+        if (p.showQuickReport)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
         embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")"));
 
