@@ -19,6 +19,7 @@ public class FightReport implements Serializable {
     private String cleanses;
     private String strips;
     private String ccs;
+    private String overview;
 
     private String dbooners;
     private String url;
@@ -148,6 +149,14 @@ public class FightReport implements Serializable {
 
     public void setCcs(String ccs) {
         this.ccs = ccs;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
 }

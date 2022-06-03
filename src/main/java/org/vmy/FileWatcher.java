@@ -99,7 +99,7 @@ public class FileWatcher {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
+                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1G", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
@@ -198,6 +198,13 @@ public class FileWatcher {
         System.out.println("homeDir="+p.homeDir);
         System.out.println("defaultLogFolder="+p.defaultLogFolder);
         System.out.println("customLogFolder="+p.customLogFolder);
+        System.out.println("showDamageGraph="+p.showDamageGraph);
+        System.out.println("showDamage="+p.showDamage);
+        System.out.println("showCleanses="+p.showCleanses);
+        System.out.println("showStrips="+p.showStrips);
+        System.out.println("showDefensiveBoons="+p.showDefensiveBoons);
+        System.out.println("showCCs="+p.showCCs);
+        System.out.println("showQuickReport="+p.showQuickReport);
         System.out.println("discordThumbnail="+p.discordThumbnail);
         System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
         System.out.println("jarName="+p.jarName);
