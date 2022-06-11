@@ -88,8 +88,9 @@ public class GraphBot extends Application {
                 series.setName((String) m.getKey());
                 Object[] ao = report.getDmgMap().get(name).toArray();
                 int lastValue = 0;
-                int interval = (int)Math.round(ao.length * 0.025);
-                interval = interval == 0 ? 1 : interval;
+                //int interval = (int)Math.round(ao.length * 0.025);
+                //interval = interval == 0 ? 1 : interval;
+                int interval = 1;
                 for (int j = 0; j < ao.length; j = j+interval) {
                     int nextValue = (Integer) ao[j];
                     int diff = nextValue - lastValue;
