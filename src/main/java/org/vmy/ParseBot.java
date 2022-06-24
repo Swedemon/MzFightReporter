@@ -129,10 +129,24 @@ public class ParseBot {
                 strippers.add(new Stripper(name, profession,
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
 
-                //damage1S
-                JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
-                List<Object> oList = dArray.toList();
-                report.getDmgMap().put(currPlayer.getString("name"),oList);
+                //targetDamage1S
+                List<Object> tdmgList = currPlayer.getJSONArray("targetDamage1S").toList();
+                List<Object> fdmgList = null;
+                for (Object a : tdmgList) {
+                    List<Object> aobj = (List<Object>) a;
+                    for (Object b : aobj) {
+                        List<Object> bobj = (List<Object>) b;
+                        if (fdmgList==null)
+                            fdmgList = bobj;
+                        else
+                            for (int q=0; q < fdmgList.size(); q++) {
+                                Integer bdmg = (Integer) bobj.get(q);
+                                Integer fdmg = (Integer) fdmgList.get(q);
+                                fdmgList.set(q, bdmg + fdmg);
+                            }
+                    }
+                }
+                report.getDmgMap().put(currPlayer.getString("name"),fdmgList);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
@@ -284,6 +298,8 @@ public class ParseBot {
                     players.length(), totalPlayersDead,
                     countEnemyPlayers, countEnemyDeaths));
             report.setOverview(buffer.toString());
+            System.out.println(buffer.toString());
+
         } finally {
             is.close();
         }
