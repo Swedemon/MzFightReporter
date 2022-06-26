@@ -20,6 +20,7 @@ public class Parameters {
     public boolean showDamage = true;
     public boolean showCleanses = true;
     public boolean showStrips = true;
+    public boolean showSpikeDmg = true;
     public boolean showDefensiveBoons = true;
     public boolean showCCs = true;
     public boolean showQuickReport = true;
@@ -55,6 +56,7 @@ public class Parameters {
             showDamage = Boolean.valueOf(prop.getProperty("showDamage", "true"));
             showCleanses = Boolean.valueOf(prop.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(prop.getProperty("showStrips", "true"));
+            showSpikeDmg = Boolean.valueOf(prop.getProperty("showSpikeDmg", "true"));
             showDefensiveBoons = Boolean.valueOf(prop.getProperty("showDefensiveBoons", "true"));
             showCCs = Boolean.valueOf(prop.getProperty("showCCs", "true"));
             showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));

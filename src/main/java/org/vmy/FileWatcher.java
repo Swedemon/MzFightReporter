@@ -99,7 +99,7 @@ public class FileWatcher {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1536M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
+                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1024M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
@@ -202,6 +202,7 @@ public class FileWatcher {
         System.out.println("showDamage="+p.showDamage);
         System.out.println("showCleanses="+p.showCleanses);
         System.out.println("showStrips="+p.showStrips);
+        System.out.println("showSpikeDmg="+p.showSpikeDmg);
         System.out.println("showDefensiveBoons="+p.showDefensiveBoons);
         System.out.println("showCCs="+p.showCCs);
         System.out.println("showQuickReport="+p.showQuickReport);

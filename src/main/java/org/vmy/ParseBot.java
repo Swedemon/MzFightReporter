@@ -69,6 +69,7 @@ public class ParseBot {
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
             List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
+            List<Spiker> spikers = new ArrayList<Spiker>();
             HashMap<String, Player> playerMap = new HashMap<String, Player>();
             HashMap<String, Group> groups = new HashMap<String, Group>();
             int sumPlayerDps = 0;
@@ -147,6 +148,9 @@ public class ParseBot {
                     }
                 }
                 report.getDmgMap().put(currPlayer.getString("name"),fdmgList);
+
+                Spiker spiker = new Spiker(name, profession, fdmgList);
+                spikers.add(spiker);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
@@ -269,11 +273,22 @@ public class ParseBot {
             report.setStrips(buffer.toString());
 
             buffer = new StringBuffer();
+            buffer.append(" #  Player                       2 sec    4 sec" + CRLF);
+            buffer.append("--- -------------------------    -----    -----" + CRLF);
+            spikers.sort((d1, d2) -> d1.compareTo(d2));
+            index = 1;
+            count = spikers.size() > 10 ? 10 : spikers.size();
+            for (Spiker x : spikers.subList(0, count))
+                if (x.getSpike2s()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+            report.setSpikers(buffer.toString());
+
+            buffer = new StringBuffer();
             buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
             buffer.append("--- -------------------------  ------    -----" + CRLF);
             dbooners.sort((d1, d2) -> d1.compareTo(d2));
             index = 1;
-            count = dbooners.size() > 10 ? 10 : cleansers.size();
+            count = dbooners.size() > 10 ? 10 : dbooners.size();
             for (DefensiveBooner x : dbooners.subList(0, count))
                 if (x.getDefensiveRating()>0) {
                     buffer.append(String.format("%2s", (index++)) + "  " + x + "    "
