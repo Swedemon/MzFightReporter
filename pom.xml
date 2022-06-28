@@ -6,7 +6,7 @@
 
     <groupId>org.vmy</groupId>
     <artifactId>MzFightReporter</artifactId>
-    <version>1.5d</version>
+    <version>1.6a</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -45,10 +45,22 @@
             <artifactId>httpmime</artifactId>
             <version>4.3.1</version>
         </dependency>
+        <!-- https://github.com/MinnDevelopment/discord-webhooks -->
         <dependency>
             <groupId>club.minnced</groupId>
             <artifactId>discord-webhooks</artifactId>
             <version>LATEST</version>
+        </dependency>
+        <!-- https://twitch4j.github.io/docs/getting-started/installation/ -->
+        <dependency>
+            <groupId>com.github.twitch4j</groupId>
+            <artifactId>twitch4j</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.10</version>
         </dependency>
 
     </dependencies>

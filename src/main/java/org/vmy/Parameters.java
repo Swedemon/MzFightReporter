@@ -13,6 +13,8 @@ public class Parameters {
     public String customLogFolder = "";
     public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
     public String discordWebhook = "";
+    public String twitchChannelName = "";
+    public String twitchBotToken = "";
     public String jarName = "";
     public int maxWvwUpload = 6;
     public int graphPlayerLimit = 20;
@@ -49,6 +51,8 @@ public class Parameters {
             customLogFolder = prop.getProperty("customLogFolder");
             discordThumbnail = prop.getProperty("discordThumbnail",discordThumbnail);
             discordWebhook = prop.getProperty("discordWebhook",discordWebhook);
+            twitchChannelName = prop.getProperty("twitchChannelName",twitchChannelName);
+            twitchBotToken = prop.getProperty("twitchBotToken",twitchBotToken);
             jarName = prop.getProperty("jarName",jarName);
             maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
