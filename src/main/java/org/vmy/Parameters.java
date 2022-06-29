@@ -13,6 +13,8 @@ public class Parameters {
     public String customLogFolder = "";
     public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
     public String discordWebhook = "";
+    public String twitchChannelName = "";
+    public String twitchBotToken = "";
     public String jarName = "";
     public int maxWvwUpload = 6;
     public int graphPlayerLimit = 20;
@@ -20,6 +22,7 @@ public class Parameters {
     public boolean showDamage = true;
     public boolean showCleanses = true;
     public boolean showStrips = true;
+    public boolean showSpikeDmg = true;
     public boolean showDefensiveBoons = true;
     public boolean showCCs = true;
     public boolean showQuickReport = true;
@@ -48,6 +51,8 @@ public class Parameters {
             customLogFolder = prop.getProperty("customLogFolder");
             discordThumbnail = prop.getProperty("discordThumbnail",discordThumbnail);
             discordWebhook = prop.getProperty("discordWebhook",discordWebhook);
+            twitchChannelName = prop.getProperty("twitchChannelName",twitchChannelName);
+            twitchBotToken = prop.getProperty("twitchBotToken",twitchBotToken);
             jarName = prop.getProperty("jarName",jarName);
             maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
@@ -55,6 +60,7 @@ public class Parameters {
             showDamage = Boolean.valueOf(prop.getProperty("showDamage", "true"));
             showCleanses = Boolean.valueOf(prop.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(prop.getProperty("showStrips", "true"));
+            showSpikeDmg = Boolean.valueOf(prop.getProperty("showSpikeDmg", "true"));
             showDefensiveBoons = Boolean.valueOf(prop.getProperty("showDefensiveBoons", "true"));
             showCCs = Boolean.valueOf(prop.getProperty("showCCs", "true"));
             showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));

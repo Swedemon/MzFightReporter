@@ -13,15 +13,14 @@ public class FightReport implements Serializable {
     private String commander;
     private String squadSummary;
     private String friendliesSummary;
-
     private String enemySummary;
     private String damage;
     private String cleanses;
     private String strips;
     private String ccs;
     private String overview;
-
     private String dbooners;
+    private String spikers;
     private String url;
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
@@ -157,6 +156,14 @@ public class FightReport implements Serializable {
 
     public void setOverview(String overview) {
         this.overview = overview;
+    }
+
+    public String getSpikers() {
+        return spikers;
+    }
+
+    public void setSpikers(String spikers) {
+        this.spikers = spikers;
     }
 
 }

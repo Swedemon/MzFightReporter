@@ -4,9 +4,13 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.vmy.util.*;
-import sun.util.calendar.Gregorian;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +73,7 @@ public class ParseBot {
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
             List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
+            List<Spiker> spikers = new ArrayList<Spiker>();
             HashMap<String, Player> playerMap = new HashMap<String, Player>();
             HashMap<String, Group> groups = new HashMap<String, Group>();
             int sumPlayerDps = 0;
@@ -129,10 +134,27 @@ public class ParseBot {
                 strippers.add(new Stripper(name, profession,
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
 
-                //damage1S
-                JSONArray dArray = currPlayer.getJSONArray("damage1S").getJSONArray(0);
-                List<Object> oList = dArray.toList();
-                report.getDmgMap().put(currPlayer.getString("name"),oList);
+                //targetDamage1S
+                List<Object> tdmgList = currPlayer.getJSONArray("targetDamage1S").toList();
+                List<Object> fdmgList = null;
+                for (Object a : tdmgList) {
+                    List<Object> aobj = (List<Object>) a;
+                    for (Object b : aobj) {
+                        List<Object> bobj = (List<Object>) b;
+                        if (fdmgList==null)
+                            fdmgList = bobj;
+                        else
+                            for (int q=0; q < fdmgList.size(); q++) {
+                                Integer bdmg = (Integer) bobj.get(q);
+                                Integer fdmg = (Integer) fdmgList.get(q);
+                                fdmgList.set(q, bdmg + fdmg);
+                            }
+                    }
+                }
+                report.getDmgMap().put(currPlayer.getString("name"),fdmgList);
+
+                Spiker spiker = new Spiker(name, profession, fdmgList);
+                spikers.add(spiker);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
@@ -255,11 +277,22 @@ public class ParseBot {
             report.setStrips(buffer.toString());
 
             buffer = new StringBuffer();
+            buffer.append(" #  Player                       2 sec    4 sec" + CRLF);
+            buffer.append("--- -------------------------    -----    -----" + CRLF);
+            spikers.sort((d1, d2) -> d1.compareTo(d2));
+            index = 1;
+            count = spikers.size() > 10 ? 10 : spikers.size();
+            for (Spiker x : spikers.subList(0, count))
+                if (x.getSpike2s()>0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+            report.setSpikers(buffer.toString());
+
+            buffer = new StringBuffer();
             buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
             buffer.append("--- -------------------------  ------    -----" + CRLF);
             dbooners.sort((d1, d2) -> d1.compareTo(d2));
             index = 1;
-            count = dbooners.size() > 10 ? 10 : cleansers.size();
+            count = dbooners.size() > 10 ? 10 : dbooners.size();
             for (DefensiveBooner x : dbooners.subList(0, count))
                 if (x.getDefensiveRating()>0) {
                     buffer.append(String.format("%2s", (index++)) + "  " + x + "    "
@@ -284,6 +317,8 @@ public class ParseBot {
                     players.length(), totalPlayersDead,
                     countEnemyPlayers, countEnemyDeaths));
             report.setOverview(buffer.toString());
+            System.out.println(buffer.toString());
+
         } finally {
             is.close();
         }

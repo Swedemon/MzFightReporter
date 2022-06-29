@@ -5,7 +5,7 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import org.vmy.util.FightReport;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.PrintStream;
 import java.time.Instant;
@@ -60,6 +60,8 @@ public class DiscordBot {
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
+        if (p.showSpikeDmg)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
         if (p.showCleanses)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         if (p.showStrips)
@@ -76,6 +78,7 @@ public class DiscordBot {
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
         client.send(embed);
+        System.out.println("Discord msg sent via webhook.");
 
         if (graphImage.exists() && p.graphPlayerLimit > 0 && p.showDamageGraph)
             client.send(graphImage);

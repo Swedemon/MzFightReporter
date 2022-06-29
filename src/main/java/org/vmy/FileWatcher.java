@@ -99,7 +99,7 @@ public class FileWatcher {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1G", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
+                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1024M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
@@ -123,13 +123,15 @@ public class FileWatcher {
                                     System.out.println("Graphing Status (0=success): " + p3.exitValue());
                                 }
 
-                                //call discordbot
+                                //call discordbot and twitchbot
                                 FightReport report = FightReport.readReportFile();
                                 if (report==null) {
                                     System.out.println("ERROR: FightReport file not available.");
                                 } else {
                                     DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
                                     dBot.sendWebhookMessage(report);
+                                    TwitchBot tBot = org.vmy.TwitchBot.getSingletonInstance();
+                                    tBot.sendMessage(report.getOverview());
                                 }
                             }
                             try { jsonFile.delete(); if (logFile.exists()) logFile.delete(); } catch (Exception e) {}
@@ -198,21 +200,24 @@ public class FileWatcher {
         System.out.println("homeDir="+p.homeDir);
         System.out.println("defaultLogFolder="+p.defaultLogFolder);
         System.out.println("customLogFolder="+p.customLogFolder);
-        System.out.println("showDamageGraph="+p.showDamageGraph);
-        System.out.println("showDamage="+p.showDamage);
-        System.out.println("showCleanses="+p.showCleanses);
-        System.out.println("showStrips="+p.showStrips);
-        System.out.println("showDefensiveBoons="+p.showDefensiveBoons);
-        System.out.println("showCCs="+p.showCCs);
-        System.out.println("showQuickReport="+p.showQuickReport);
+        System.out.print("showDamageGraph="+p.showDamageGraph);
+        System.out.print(" showDamage="+p.showDamage);
+        System.out.print(" showCleanses="+p.showCleanses);
+        System.out.print(" showStrips="+p.showStrips);
+        System.out.print(" showSpikeDmg="+p.showSpikeDmg);
+        System.out.print(" showDefensiveBoons="+p.showDefensiveBoons);
+        System.out.print(" showCCs="+p.showCCs);
+        System.out.println(" showQuickReport="+p.showQuickReport);
         System.out.println("discordThumbnail="+p.discordThumbnail);
         System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
+        System.out.println("twitchChannelName="+p.twitchChannelName);
+        System.out.println("twitchBotToken=("+new String(p.twitchBotToken).length()+" characters)");
         System.out.println("jarName="+p.jarName);
         System.out.println("maxWvwUpload="+p.maxWvwUpload);
         System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
         System.out.println();
 
-        if (p.discordWebhook==null | p.discordWebhook.length()==0) {
+        if (p.discordWebhook==null || p.discordWebhook.length()==0) {
             System.out.println("ERROR: Discord webhook is missing.  Review README.txt for install instructions.");
             System.exit(1);
         }
