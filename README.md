@@ -18,6 +18,7 @@
 	- Under Logging choose: save after squad combat
 	  - Note: Observe the other wvw squad settings such as 'min enemy participants'.
 - Note: Be careful not to share your webhook URL with other people.  If necessary you can remove it and create a new one.
+- Note: If you use the Healing addon to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
 ***************************************************************************************
 **Run the app:**
 - Go to the install location and double click the 'MzFightReporter' Windows Batch file.
