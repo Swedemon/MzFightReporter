@@ -12,14 +12,14 @@
 3.  Create a webhook in your Discord server and copy the provided URL.
 	- Quick guide: http://help.dashe.io/en/articles/2521940-how-to-create-a-discord-webhook-url
 4.  Edit the file 'config.properties' located at your unzip location:
-	- Set the value of "discordWebhook" to your new webhook URL.
+	- Set the value of **discordWebhook** to your new webhook URL.
 	  - Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
-	- (If necessary) Set the value of "customLogFolder" to the path ArcDps saves logs including double slashes ```\\``` as shown.
+	- *Only required if you altered the default arcdps log folder:* Set the value of **customLogFolder** to the path ArcDps saves logs including double slashes ```\\``` as shown.
 	  - Example: ```customLogFolder=C:\\Your\\Path\\With\\Double\\Slashes```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	- Under Logging choose: save after squad combat
-	  - Note: Observe the other wvw squad settings such as 'min enemy participants'.
-- Note: Be careful not to share your webhook URL with other people.  If necessary you can remove it and create a new one.
+	- Recommended: Observe the other wvw squad settings such as 'min enemy participants' which we recommend set to 10.
+- Note: Be careful not to share your webhook URL with other people.  If necessary you can delete it in Discord and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
 ***************************************************************************************
 **Run the app:**
