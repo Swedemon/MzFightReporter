@@ -13,10 +13,10 @@
 	1. In your discord create a new channel.  Right click on it and choose 'Edit Channel'.
 	2. On the left choose 'Integrations'.  Next click on 'Webhooks'.
 	3. Click on 'New Webhook' and lastly click on 'Copy Webhook URL'.
-4.  Edit the file 'config.properties' located at your unzip location:
-	1. Set the value of **discordWebhook** to your new webhook URL.
+4.  Edit the file **config.properties** located at your unzip location:
+	1. Set the value of 'discordWebhook' to your new webhook URL.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
-	2. *Only required if you altered the default arcdps log folder:* Set the value of **customLogFolder** to the path ArcDps saves logs including double slashes ```\\``` as shown.
+	2. *Only required if you altered the default arcdps log folder.* Set the value of **customLogFolder** to the path ArcDps saves logs with double slashes ```\\``` as shown.
 		- Example: ```customLogFolder=C:\\Your\\Path\\With\\Double\\Slashes```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
@@ -35,9 +35,9 @@
 		- Note: You can manage these connections at https://www.twitch.tv/settings/connections
 3.  Copy the provided 'ACCESS TOKEN'.
 4.  Edit the file **config.properties** located at your unzip location.
-	1. Set the value of "twitchChannelName" to your main channel name. 
+	1. Set the value of 'twitchChannelName' to your main channel name. 
 		- Example: ```twitchChannelName=amouranth```
-	2. Set the value of "twitchBotToken" to the copied ACCESS TOKEN.
+	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Be careful not to share your access token with other people.  If necessary you can disconnect it and create a new one.
