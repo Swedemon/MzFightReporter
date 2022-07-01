@@ -4,7 +4,7 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
 ***************************************************************************************
-**Instructions:** (~5-10 minutes)
+**Setup Instructions:** (~5-10 minutes)
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
 	- Available at:  https://github.com/Swedemon/MzFightReporter/releases
 2.  Install Java for Windows.
