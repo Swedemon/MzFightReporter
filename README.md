@@ -10,7 +10,7 @@
 2.  Install Java for Windows.
 	- Available at:  https://www.java.com/en/download/
 3.  Create a webhook in your Discord server and copy the provided URL.
-	- Quick guide: http://help.dashe.io/en/articles/2521940-how-to-create-a-discord-webhook-url
+	- https://www.google.com/search?q=create+a+discord+webhook
 4.  Edit the file 'config.properties' located at your unzip location:
 	- Set the value of **discordWebhook** to your new webhook URL.
 	  - Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
