@@ -40,5 +40,5 @@
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
-- Note: Do not to share your access token with other people.  If necessary you can disconnect it and create a new one.
+- Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
 ***************************************************************************************
