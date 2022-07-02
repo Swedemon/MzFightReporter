@@ -21,7 +21,7 @@
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
 	2. Recommended: Observe the other wvw squad settings such as 'min enemy participants' set to 10.
-- Note: Be careful not to share your webhook URL.  If necessary you can remove it and create a new one.
+- Note: Do not to share your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
 ***************************************************************************************
 **Run the app:**
@@ -40,5 +40,5 @@
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
-- Note: Be careful not to share your access token with other people.  If necessary you can disconnect it and create a new one.
+- Note: Do not to share your access token with other people.  If necessary you can disconnect it and create a new one.
 ***************************************************************************************
