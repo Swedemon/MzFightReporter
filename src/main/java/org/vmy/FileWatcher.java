@@ -76,18 +76,20 @@ public class FileWatcher {
                         //if large file then directly upload to dps reports without wvw stats
                         if (f.length() > p.maxWvwUpload*1024*1024) {
                             String uploadConfig = confFolder + "uploadwithoutwvw.conf";
-                            ProcessBuilder pb = new ProcessBuilder(p.homeDir + File.separator + p.gw2EIExe, "-c", uploadConfig, fullFilePath);
+                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + p.gw2EIExe, "-c", uploadConfig, fullFilePath);
+                            pb.directory(new File(p.homeDir));
                             pb.inheritIO();
                             Process p0 = pb.start();
                             p0.waitFor(120, TimeUnit.SECONDS);
                             p0.destroy();
                             p0.waitFor();
                             System.out.println("GW2EI Upload Status (0=success): " + p0.exitValue());
-                            parseConfig = confFolder + "wvwnoupload.conf";
+                            parseConfig = confFolder + "wvwnoupload.conf"; //skip upload in upcoming call
                         }
 
                         //parse json
-                        ProcessBuilder pb = new ProcessBuilder(p.homeDir + File.separator + p.gw2EIExe, "-c", parseConfig, fullFilePath);
+                        ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
+                        pb.directory(new File(p.homeDir));
                         pb.inheritIO();
                         Process p1 = pb.start();
                         p1.waitFor();
@@ -99,7 +101,7 @@ public class FileWatcher {
 
                             //call parsebot
                             System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("java", "-Xmx1024M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
+                            ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "java", "-Xmx1024M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(), logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
@@ -113,7 +115,7 @@ public class FileWatcher {
                                 //call graphbot
                                 if (p.graphPlayerLimit > 0) {
                                     System.out.println("Generating Graph...");
-                                    ProcessBuilder pb3 = new ProcessBuilder("java", "-jar", p.jarName, "GraphBot", p.homeDir);
+                                    ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
                                     pb3.inheritIO();
                                     pb3.directory(new File(p.homeDir));
                                     Process p3 = pb3.start();
