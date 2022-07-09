@@ -6,7 +6,7 @@
 ***************************************************************************************
 **Setup Instructions:** (~5-10 minutes)
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
-	- Available at under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases
+	- Available under 'Assets' section at:  https://github.com/Swedemon/MzFightReporter/releases
 2.  Install Java for Windows.
 	- Available at:  https://www.java.com/en/download/
 3.  Create a webhook in your Discord server:
