@@ -13,7 +13,7 @@
 	1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
 	2. On the left choose 'Integrations'.  Next click on 'Webhooks'.
 	3. Click on 'New Webhook'.  Click on 'Copy Webhook URL'.
-4.  Edit the file **config.properties** located at your unzip location:
+4.  Edit the file **config.properties** located at your unzip location (you can use Notepad):
 	1. Set the value of 'discordWebhook' to your new webhook URL.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 	2. *Only required if you changed the default arcdps log folder.* Set the value of 'customLogFolder' to the path ArcDps saves logs with double slashes ```\\``` as shown.
@@ -34,7 +34,7 @@
 	2. Authorize.
 		- Note: You can manage these connections at https://www.twitch.tv/settings/connections
 3.  Copy the provided 'ACCESS TOKEN'.
-4.  Edit the file **config.properties** located at your unzip location.
+4.  Edit the file **config.properties** located at your unzip location (you can use Notepad).
 	1. Set the value of 'twitchChannelName' to your main channel name.
 		- Example: ```twitchChannelName=amouranth```
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
