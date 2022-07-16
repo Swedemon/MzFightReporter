@@ -4,7 +4,7 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
 ***************************************************************************************
-**Setup Instructions:** (~5-10 minutes)
+**Setup Instructions:** (~10 minutes)
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
 	- Available under 'Assets' section at:  https://github.com/Swedemon/MzFightReporter/releases
 2.  Install Java for Windows.
@@ -16,11 +16,15 @@
 4.  Edit the file **config.properties** located at your unzip location (you can use Notepad):
 	1. Set the value of 'discordWebhook' to your new webhook URL.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
-	2. Set the value of 'customLogFolder' to the path ArcDps saves logs with double slashes ```\\``` as shown.
-		- Example: ```customLogFolder=C:\\Your\\Path\\With\\Double\\Slashes```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
-	2. Recommended: Observe the other wvw squad settings such as 'min enemy participants' set to 10.
+	2. For this step _choose one option_:
+		1. (Simple) Under 'Logging' beside the 'Open' button enter: ```c:\arc```
+		2. (Complex) You can adjust the **config.properties** 'customLogFolder' to the path arcdps is saving logs. 
+			- Example:  ```customLogFolder=C:\\custom\\path``` (with the double slashes)
+		3. (Lucky) This app inherently uses the below path.  If the app doesn't just work then opt for another option.
+			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
+	4. Recommended: Observe the other wvw squad settings such as 'min enemy participants' set to 10.
 - Note: Do not to share your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
 ***************************************************************************************
