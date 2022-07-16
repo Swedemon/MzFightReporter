@@ -72,8 +72,7 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
         if (p.showQuickReport)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null?"":"[Full Report]("+report.getUrl()+")"));
-
+        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null?"[DPSReports using EI: Upload process failed]":"[Full Report]("+report.getUrl()+")"));
         //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
