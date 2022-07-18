@@ -1,13 +1,13 @@
 ***************************************************************************************
 **MzFightReporter** 
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send WvW fight reports to a Discord channel and optionally a Twitch channel.
-- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.
+- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Also, a lot of credit goes to the Elite Insights and ArcDps devs.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
 ***************************************************************************************
 **Setup Instructions:** (~10 minutes)
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
 	- Available under 'Assets' section at:  https://github.com/Swedemon/MzFightReporter/releases
-2.  Install Java for Windows.
+2.  Install Java for Windows.  (This ensures Java is in your system path)
 	- Available at:  https://www.java.com/en/download/
 3.  Create a webhook in your Discord server:
 	1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
@@ -18,18 +18,17 @@
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
-	2. For this step _choose one option_:
+	2. Observe the other WvW squad settings such as 'min enemy participants'.  You can set this to 10.
+	3. For this step _choose one option_:
 		1. (Simple) Under 'Logging' beside the 'Open' button enter: ```c:\arc```
 		2. (Complex) You can adjust the **config.properties** 'customLogFolder' to the path arcdps is saving logs. 
 			- Example:  ```customLogFolder=C:\\custom\\path``` (with the double slashes)
 		3. (Lucky) This app inherently uses the below path.  If the app doesn't just work then opt for another option.
 			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
-	4. Recommended: Observe the other wvw squad settings such as 'min enemy participants' set to 10.
+6.  Setup complete.  Run the background program and start gaming:
+	- Go to the install location and double click the 'MzFightReporter' Windows Batch file
 - Note: Do not to share your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
-***************************************************************************************
-**Run the app:**
-- Go to the install location and double click the 'MzFightReporter' Windows Batch file.
 ***************************************************************************************
 **(Optional) Twitch Bot Instructions:** (~5 minutes)
 1.  Create and login to a new account on twitch.tv to represent your bot.  Optionally, you can use your existing account.
