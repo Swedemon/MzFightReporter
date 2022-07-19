@@ -26,7 +26,7 @@
 		3. (Lucky) This app inherently uses the below path.  If the app doesn't just work then opt for another option.
 			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
 6.  Setup complete.  Run the background program and start gaming:
-	- Go to the install location and double click the 'MzFightReporter' Windows Batch file
+	- Go to the install location and double click the 'MzFightReporter' Windows Batch file.
 - Note: Do not to share your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.
 ***************************************************************************************
