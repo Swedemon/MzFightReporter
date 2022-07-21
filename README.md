@@ -23,7 +23,7 @@
 		1. (Simple) Under 'Logging' beside the 'Open' button enter: ```c:\arc```
 		2. (Complex) You can adjust the **config.properties** 'customLogFolder' to the path arcdps is saving logs. 
 			- Example:  ```customLogFolder=C:\\custom\\path``` (with the double slashes)
-		3. (Lucky) This app inherently uses the below path.  If the app doesn't just work then opt for another option.
+		3. (Lucky) This app inherently uses the below path.  No change required.
 			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to the install location and double click the 'MzFightReporter' Windows Batch file.
