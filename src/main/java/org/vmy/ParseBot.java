@@ -73,7 +73,7 @@ public class ParseBot {
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
             List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
-            List<Spiker> spikers = new ArrayList<Spiker>();
+            List<Spiker> top10Spiker = new ArrayList<Spiker>();
             HashMap<String, Player> playerMap = new HashMap<String, Player>();
             HashMap<String, Group> groups = new HashMap<String, Group>();
             int sumPlayerDps = 0;
@@ -141,20 +141,23 @@ public class ParseBot {
                     List<Object> aobj = (List<Object>) a;
                     for (Object b : aobj) {
                         List<Object> bobj = (List<Object>) b;
-                        if (fdmgList==null)
+                        if (fdmgList==null) {
                             fdmgList = bobj;
-                        else
-                            for (int q=0; q < fdmgList.size(); q++) {
+                        } else {
+                            Integer previous = 0;
+                            for (int q = 0; q < fdmgList.size(); q++) {
                                 Integer bdmg = (Integer) bobj.get(q);
                                 Integer fdmg = (Integer) fdmgList.get(q);
-                                fdmgList.set(q, bdmg + fdmg);
+                                Integer current = bdmg + fdmg;
+                                fdmgList.set(q, current);
+                                previous = current;
                             }
+                        }
                     }
                 }
                 report.getDmgMap().put(currPlayer.getString("name"),fdmgList);
 
-                Spiker spiker = new Spiker(name, profession, fdmgList);
-                spikers.add(spiker);
+                Spiker.computeTop10(name, profession, top10Spiker, fdmgList);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
@@ -215,7 +218,6 @@ public class ParseBot {
                 groups.put(grp, g);
                 g.setKills(g.getKills()+plyr.getKills());
                 g.setDeaths(g.getDeaths()+plyr.getDeaths());
-                int debug12312 = 0;
             }
 
             //write to buffer
@@ -255,6 +257,16 @@ public class ParseBot {
             report.setDamage(buffer.toString());
 
             buffer = new StringBuffer();
+            buffer.append(" #  Player                   2 sec  4 sec  Time" + CRLF);
+            buffer.append("--- -----------------------  -----  -----  ----" + CRLF);
+            top10Spiker.sort((d1, d2) -> d1.compareTo(d2));
+            index = 1;
+            count = top10Spiker.size() > 10 ? 10 : top10Spiker.size();
+            for (Spiker x : top10Spiker.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+            report.setSpikers(buffer.toString());
+
+            buffer = new StringBuffer();
             buffer.append(" #  Player                     Cleanses" + CRLF);
             buffer.append("--- -------------------------  --------" + CRLF);
             cleansers.sort((d1, d2) -> d1.compareTo(d2));
@@ -275,17 +287,6 @@ public class ParseBot {
                 if (x.getStrips()>0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
             report.setStrips(buffer.toString());
-
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                       2 sec    4 sec" + CRLF);
-            buffer.append("--- -------------------------    -----    -----" + CRLF);
-            spikers.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = spikers.size() > 10 ? 10 : spikers.size();
-            for (Spiker x : spikers.subList(0, count))
-                if (x.getSpike2s()>0)
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setSpikers(buffer.toString());
 
             buffer = new StringBuffer();
             buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
@@ -399,7 +400,6 @@ public class ParseBot {
                 case 30328 : dBooner.setAlacrity(dBooner.getAlacrity() + getBuffGeneration(m)); break;
             }
         }
-        int debug = 0;
     }
 
     private static int getBuffGeneration(HashMap m) {
