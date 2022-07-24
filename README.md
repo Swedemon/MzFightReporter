@@ -27,7 +27,7 @@
 			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to the install location and double click the 'MzFightReporter' Windows Batch file.
-- Note: Do not to share your webhook URL.  If necessary you can remove it and create a new one.
+- Note: Take care sharing your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.  However, if enabled the Full Report will include healing data.  The issue is 15+ minute fights may not upload due to the excessive size.
 ***************************************************************************************
 **(Optional) Twitch Bot Instructions:** (~5 minutes)
