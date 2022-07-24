@@ -39,7 +39,7 @@
 3.  Copy the provided 'ACCESS TOKEN'.
 4.  Edit the file **config.properties** located at your unzip location (you can use Notepad).
 	1. Set the value of 'twitchChannelName' to your main channel name.
-		- Example: ```twitchChannelName=amouranth```
+		- Example: ```twitchChannelName=fruitsaladyummy```
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
