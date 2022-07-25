@@ -76,8 +76,8 @@ public class ParseBot {
             List<Spiker> top10Spiker = new ArrayList<Spiker>();
             HashMap<String, Player> playerMap = new HashMap<String, Player>();
             HashMap<String, Group> groups = new HashMap<String, Group>();
-            int sumPlayerDps = 0;
             int sumPlayerDmg = 0;
+            int battleLength = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
             int sumEnemyDps = 0;
@@ -93,11 +93,6 @@ public class ParseBot {
                     commander = commander==null ? currPlayer.getString("name") : "n/a";
                 if (condiers.containsKey(name))
                     condiers.get(currPlayer.getString("name")).setProfession(profession);
-
-                //dpsAll
-                JSONObject playerDpsAll = currPlayer.getJSONArray("dpsAll").getJSONObject(0);
-                sumPlayerDps += playerDpsAll.getBigInteger("dps").intValue();
-                sumPlayerDmg += playerDpsAll.getBigInteger("damage").intValue();
 
                 //statsTargets
                 List<Object> playerStatsTargets = currPlayer.getJSONArray("statsTargets").toList();
@@ -121,12 +116,6 @@ public class ParseBot {
                 JSONObject playerDefenses = currPlayer.getJSONArray("defenses").getJSONObject(0);
                 sumEnemyDmg += playerDefenses.getBigInteger("damageTaken").intValue();
 
-                //dpsTargets
-                JSONObject currPlayerDpsTargets = currPlayer.getJSONArray("dpsTargets").getJSONArray(0).getJSONObject(0);
-                dpsers.add(new DPSer(name, profession,
-                        playerDpsAll.getBigInteger("damage").intValue(),
-                        playerDpsAll.getBigInteger("dps").intValue()));
-
                 //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
                 cleansers.add(new Cleanser(name, profession,
@@ -135,32 +124,39 @@ public class ParseBot {
                         currPlayerSupport.getBigInteger("boonStrips").intValue()));
 
                 //targetDamage1S
-                List<Object> tdmgList = currPlayer.getJSONArray("targetDamage1S").toList();
-                List<Object> fdmgList = null;
-                for (Object a : tdmgList) {
+                List<Object> targetDmgList = currPlayer.getJSONArray("targetDamage1S").toList();
+                List<Object> netTargetDmgList = null;
+                for (Object a : targetDmgList) {
                     List<Object> aobj = (List<Object>) a;
                     for (Object b : aobj) {
                         List<Object> bobj = (List<Object>) b;
-                        if (fdmgList==null) {
-                            fdmgList = bobj;
+                        if (netTargetDmgList==null) {
+                            netTargetDmgList = bobj; //initialize using first instance
                         } else {
-                            Integer previous = 0;
-                            for (int q = 0; q < fdmgList.size(); q++) {
+                            for (int q = 0; q < netTargetDmgList.size(); q++) {
                                 Integer bdmg = (Integer) bobj.get(q);
-                                Integer fdmg = (Integer) fdmgList.get(q);
+                                Integer fdmg = (Integer) netTargetDmgList.get(q);
                                 Integer current = bdmg + fdmg;
-                                fdmgList.set(q, current);
-                                previous = current;
+                                netTargetDmgList.set(q, current);
                             }
                         }
                     }
                 }
-                report.getDmgMap().put(currPlayer.getString("name"),fdmgList);
 
-                Spiker.computeTop10(name, profession, top10Spiker, fdmgList);
+                //set report dmg map
+                report.getDmgMap().put(name,netTargetDmgList);
+
+                //set player damage
+                DPSer dpser = new DPSer(name, profession, netTargetDmgList);
+                dpsers.add(dpser);
+                sumPlayerDmg += dpser.getDamage();
+                battleLength = netTargetDmgList.size();
+
+                //update top 10 spikes
+                Spiker.computeTop10(name, profession, top10Spiker, netTargetDmgList);
 
                 //active buffs
-                DefensiveBooner dBooner = new DefensiveBooner(currPlayer.getString("name"),currPlayer.getString("profession"), group);
+                DefensiveBooner dBooner = new DefensiveBooner(name, profession, group);
                 if (!currPlayer.isNull("groupBuffsActive")) {
                     JSONArray bArray = currPlayer.getJSONArray("groupBuffsActive");
                     populateDefensiveBoons(dBooner, bArray);
@@ -225,7 +221,7 @@ public class ParseBot {
             buffer.append(" Players   Damage    DPS    Downs    Deaths" + CRLF);
             buffer.append("--------- --------  -----  -------  --------" + CRLF);
             buffer.append(String.format("%6d %10s %7s %6d %8d", players.length(),
-                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDps, 1),
+                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
 
@@ -235,7 +231,7 @@ public class ParseBot {
                 report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
-            sumEnemyDps = (int) sumEnemyDmg / (sumPlayerDmg / sumPlayerDps);
+            sumEnemyDps = (int) sumEnemyDmg / battleLength;
 
             buffer = new StringBuffer();
             buffer.append(" Enemies   Damage    DPS    Downs    Deaths" + CRLF);
