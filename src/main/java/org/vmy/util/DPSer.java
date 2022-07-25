@@ -1,16 +1,34 @@
 package org.vmy.util;
 
+import java.util.List;
+
 public class DPSer implements Comparable<DPSer> {
     private String name;
     private String profession;
     private int damage;
     private int dps;
 
-    public DPSer(String name, String profession, int damage, int dps) {
+    public DPSer(String name, String profession, List<Object> dmgList) {
         this.name = name;
         this.profession = profession;
-        this.damage = damage;
-        this.dps = dps;
+        int size = dmgList.size();
+        damage = (int) dmgList.get(size - 1);
+        int firstDmg = 0;
+        int lastDmg = 0;
+        int prevDmg = 0;
+        for (int i=0; i < size; i++) {
+            int currDmg = (int) dmgList.get(i);
+            if (currDmg > 0) {
+                if (currDmg > prevDmg)
+                    lastDmg = i;
+                if (firstDmg == 0)
+                    firstDmg = i;
+            }
+            prevDmg = currDmg;
+        }
+        int dmgLength = lastDmg - firstDmg + 1;
+        dmgLength = dmgLength==0 ? 1 : dmgLength;
+        dps = (int) damage / dmgLength;
     }
 
     public int compareTo(DPSer d) {
