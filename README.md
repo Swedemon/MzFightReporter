@@ -18,7 +18,7 @@
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
-	2. Observe the other WvW squad settings such as 'min enemy participants'.  Set this to 10 or adjust as you want.
+	2. Observe the other WvW squad settings such as 'min enemy participants'.  Set this to 10 if you want.
 	3. Under 'Logging' beside the 'Open' button enter: ```c:\arc```
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
