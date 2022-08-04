@@ -18,15 +18,11 @@
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
 	1. Under 'Logging' choose: save after squad combat
-	2. Observe the other WvW squad settings such as 'min enemy participants'.  You can set this to 10.
-	3. For this step _choose one option_:
-		1. (Simple) Under 'Logging' beside the 'Open' button enter: ```c:\arc```
-		2. (Complex) You can adjust the **config.properties** 'customLogFolder' to the path arcdps is saving logs. 
-			- Example:  ```customLogFolder=C:\\custom\\path``` (with the double slashes)
-		3. (Lucky) This app inherently uses the below path.  No change required.
-			- ```C:\Users\[YourUser]\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs```
+	2. Observe the other WvW squad settings such as 'min enemy participants'.  You can set this to 10 or adjust as you go.
+	3. Under 'Logging' beside the 'Open' button enter: ```c:\arc```
+		- Note: Alternatively, edit the **config.properties** with a custom folder: ```customLogFolder=C:\\my\\path``` (with double slashes)
 6.  Setup complete.  Run the background program and start gaming:
-	- Go to the install location and double click the 'MzFightReporter' Windows Batch file.
+	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
 - Note: Take care sharing your webhook URL.  If necessary you can remove it and create a new one.
 - Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.  However, if enabled the Full Report will include healing data.  The issue is 15+ minute fights may not upload due to the excessive size.
 ***************************************************************************************
