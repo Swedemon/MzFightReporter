@@ -53,7 +53,6 @@ public class ParseBot {
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<String, Condier>();
             int countEnemyPlayers = 0;
-            int countFriendlies = 0;
             for (int i = 1; i < targets.length(); i++) {
                 JSONObject currTarget = targets.getJSONObject(i);
                 String name = currTarget.getString("name");
@@ -154,12 +153,16 @@ public class ParseBot {
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(name, profession, group);
-                if (!currPlayer.isNull("groupBuffsActive")) {
+                /*if (!currPlayer.isNull("squadBuffsActive")) {
                     JSONArray bArray = currPlayer.getJSONArray("groupBuffsActive");
                     populateDefensiveBoons(dBooner, bArray);
                 }
                 if (!currPlayer.isNull("offGroupBuffsActive")) {
                     JSONArray bArray = currPlayer.getJSONArray("offGroupBuffsActive");
+                    populateDefensiveBoons(dBooner, bArray);
+                }*/
+                if (!currPlayer.isNull("squadBuffs")) {
+                    JSONArray bArray = currPlayer.getJSONArray("squadBuffs");
                     populateDefensiveBoons(dBooner, bArray);
                 }
                 dBooner.computeRating();
@@ -221,11 +224,6 @@ public class ParseBot {
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
-
-            if (countFriendlies == 1)
-                report.setFriendliesSummary("plus " + countFriendlies + " friendly (total = " + (countFriendlies+players.length()) + " players)");
-            else if (countFriendlies > 1)
-                report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
             sumEnemyDps = (int) sumEnemyDmg / battleLength;
@@ -402,6 +400,13 @@ public class ParseBot {
                 HashMap bdMap = (HashMap) buffData.get(0);
                 if (bdMap.containsKey("generation")) {
                     BigDecimal gen = (BigDecimal) bdMap.get("generation");
+                    return (int) gen.multiply(new BigDecimal(1000)).intValue();
+                } else if (bdMap.containsKey("generated")) {
+                    HashMap genMap = (HashMap) bdMap.get("generated");
+                    BigDecimal gen = new BigDecimal("0");
+                    for (Object val : genMap.values()){
+                        gen = gen.add((BigDecimal)val);
+                    }
                     return (int) gen.multiply(new BigDecimal(1000)).intValue();
                 }
             }

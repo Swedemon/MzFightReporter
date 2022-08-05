@@ -12,7 +12,6 @@ public class FightReport implements Serializable {
     private String duration;
     private String commander;
     private String squadSummary;
-    private String friendliesSummary;
     private String enemySummary;
     private String damage;
     private String cleanses;
@@ -87,10 +86,6 @@ public class FightReport implements Serializable {
     public void setSquadSummary(String squadSummary) {
         this.squadSummary = squadSummary;
     }
-
-    public String getFriendliesSummary() { return friendliesSummary; }
-
-    public void setFriendliesSummary(String friendliesSummary) { this.friendliesSummary = friendliesSummary; }
 
     public String getEnemySummary() {
         return enemySummary;

@@ -54,8 +54,6 @@ public class DiscordBot {
         embedBuilder.setThumbnailUrl(p.discordThumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
         String squadSummary = "```"+report.getSquadSummary()+"```";
-        if (report.getFriendliesSummary() != null)
-            squadSummary += " _* " + report.getFriendliesSummary() + "_";
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary",squadSummary));
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage)
