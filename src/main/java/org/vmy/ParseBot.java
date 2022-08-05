@@ -57,10 +57,7 @@ public class ParseBot {
             for (int i = 1; i < targets.length(); i++) {
                 JSONObject currTarget = targets.getJSONObject(i);
                 String name = currTarget.getString("name");
-                if (name.contains("-"))
-                    countEnemyPlayers++;
-                else
-                    countFriendlies++;
+                countEnemyPlayers++;
                 if (!currTarget.isNull("buffs")) {
                     JSONArray bArray = currTarget.getJSONArray("buffs");
                     populateCondierBuffs(condiers, bArray);
