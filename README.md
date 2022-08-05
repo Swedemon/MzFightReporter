@@ -22,8 +22,7 @@
 		- Observe the other WvW squad settings such as 'min enemy participants'.  Set this to 10 if you want.
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
-- Note: Take care sharing your webhook URL.  If necessary you can remove it and create a new one.
-- Note: If you use the Healing addon in order to save resources it is recommended to uncheck the option 'log healing' under the ArcDps options healing section.  However, if enabled the Full Report will include healing data.  The issue is 15+ minute fights may not upload due to the excessive size.
+- Note: If you use the Healing addon in order to save resources consider unchecking the option 'log healing' under the ArcDps options healing section.  However, if enabled the Full Report will include healing data.  The issue is longer fights may not upload due to the excessive size.
 ***************************************************************************************
 **(Optional) Twitch Bot Instructions:** (~5 minutes)
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing account.
