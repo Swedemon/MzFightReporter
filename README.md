@@ -41,5 +41,5 @@
 - Note: Continuing from the last step, to view healing in-game choose 'Peers Outgoing' and 'Enable live sharing'.
 ## How to upgrade from a prior version (~1 minute)
 1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
-2. Open your old config.properties file and copy your discord (and twitch) properties.
-3. Open the new config.properties file and overwrite the same properties.
+2. Open your old config.properties file and copy your discord (and any other modified) properties.
+3. Open the new config.properties file and set the same properties.
