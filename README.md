@@ -1,4 +1,4 @@
-# MzFightReporter (A Guild Wars 2 WvW Fight Reporter)
+# MzFightReporter (Guild Wars 2 WvW Fight Reporter)
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send WvW fight reports to a Discord channel and optionally a Twitch channel.
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Also, credit to the Elite Insights and ArcDps devs.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
