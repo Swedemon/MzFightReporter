@@ -35,11 +35,11 @@
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
-## Enable Healing Stats
+## Enable Healing Stats (~5 minutes)
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 2. In the ArcDps options under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: Continuing from the last step, to view healing in-game choose 'Peers Outgoing' and 'Enable live sharing'.
-## How to upgrade from a prior version (~1 minute)
+## How to upgrade from a prior version (~2 minutes)
 1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old config.properties file and copy your discord (and any other modified) properties.
 3. Open the new config.properties file and set the same properties.
