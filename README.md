@@ -35,6 +35,11 @@
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
 
+## (Optional) Enable Healing Stats
+1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
+2. In the ArcDps options under 'Extensions'.  Choose 'healing_stats' and check the 'log healing' setting.
+- Note: From the prior step you may also want to check 'Peers Outgoing' and 'Enable live sharing'.
+
 ## How to upgrade from a prior version (~1 minute)
 1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old config.properties file and copy your discord (and twitch) properties.
