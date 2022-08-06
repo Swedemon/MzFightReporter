@@ -1,10 +1,9 @@
-***************************************************************************************
-**MzFightReporter** 
+# MzFightReporter
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send WvW fight reports to a Discord channel and optionally a Twitch channel.
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Also, credit to the Elite Insights and ArcDps devs.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
 ***************************************************************************************
-**Setup Instructions:** (~10 minutes)
+# Setup Instructions (~10 minutes)
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
 	- Available under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases
 2.  Install Java for Windows.  (This ensures Java is in your system path)
@@ -23,7 +22,7 @@
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
 ***************************************************************************************
-**(Optional) Twitch Bot Instructions:** (~5 minutes)
+# (Optional) Twitch Bot Instructions (~5 minutes)
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing account.
 2.  Go to https://twitchtokengenerator.com/
 	1. Choose the option: Bot Chat Token
