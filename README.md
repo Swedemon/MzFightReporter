@@ -34,3 +34,8 @@
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
+
+## How to upgrade from a prior version (~1 minute)
+1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
+2. Open your old config.properties file and copy your discord (and twitch) properties.
+3. Open the new config.properties file and overwrite the same properties.
