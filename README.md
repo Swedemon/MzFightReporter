@@ -2,7 +2,7 @@
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send WvW fight reports to a Discord channel and optionally a Twitch channel.
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Also, credit to the Elite Insights and ArcDps devs.
 - **App Home:** https://github.com/Swedemon/MzFightReporter
-## Setup Instructions (~10 minutes)
+## Setup Instructions
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory. [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
 	- Available under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases
 2.  Install Java for Windows.  (This ensures Java is in your system path)
@@ -21,7 +21,7 @@
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
 - Note: To enable healing stats [click here](#enable-healing-stats).
-## (Optional) Twitch Bot Instructions (~5 minutes)
+## (Optional) Twitch Bot Instructions
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing account.
 2.  Go to https://twitchtokengenerator.com/
 	1. Choose the option: Bot Chat Token
@@ -35,11 +35,11 @@
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
-## Enable Healing Stats (~5 minutes)
+## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 2. In the ArcDps options under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: Continuing from the last step, to view healing in-game choose 'Peers Outgoing' and 'Enable live sharing'.
-## How to upgrade from a prior version (~2 minutes)
+## How to upgrade from a prior version
 1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old config.properties file and copy your discord (and any other modified) properties.
 3. Open the new config.properties file and set the same properties.
