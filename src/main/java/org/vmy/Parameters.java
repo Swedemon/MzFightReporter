@@ -27,6 +27,7 @@ public class Parameters {
     public boolean showDefensiveBoons = true;
     public boolean showCCs = true;
     public boolean showQuickReport = true;
+    public boolean showHeals = true;
 
     private static Parameters instance = null;
     public static Parameters getInstance() {
@@ -66,6 +67,7 @@ public class Parameters {
             showDefensiveBoons = Boolean.valueOf(prop.getProperty("showDefensiveBoons", "true"));
             showCCs = Boolean.valueOf(prop.getProperty("showCCs", "true"));
             showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));
+            showHeals = Boolean.valueOf(prop.getProperty("showHeals", "true"));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
         } finally { if (file != null) { try { file.close(); } catch (IOException e) {}}}
