@@ -20,7 +20,7 @@
 		- Observe the other WvW squad settings such as 'min enemy participants'.  Set this to 10 if you want.
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
-- Note: To enable healing stats [click here](#optional-enable-healing-stats).
+- Note: To enable healing stats [click here](#enable-healing-stats).
 ## (Optional) Twitch Bot Instructions (~5 minutes)
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing account.
 2.  Go to https://twitchtokengenerator.com/
@@ -35,7 +35,7 @@
 		- Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
-## (Optional) Enable Healing Stats
+## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 2. In the ArcDps options under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: Continuing from the last step, to view healing in-game choose 'Peers Outgoing' and 'Enable live sharing'.
