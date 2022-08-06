@@ -42,6 +42,7 @@
 1. Download and unzip the [latest zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old config.properties file and copy your discord (and any other modified) properties.
 3. Open the new config.properties file and set the same properties.
+## Samples
 <p align="center"><img src="https://i.imgur.com/yVJ7CST.png"/></p>
 <p align="center"><img src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img src="https://i.imgur.com/EIWFXAD.png"/></p>
