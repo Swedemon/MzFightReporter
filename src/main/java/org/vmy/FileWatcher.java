@@ -1,3 +1,4 @@
+
 package org.vmy;
 
 import org.vmy.util.FightReport;
@@ -19,10 +20,10 @@ public class FileWatcher {
     public void run() throws Exception {
         Parameters p = Parameters.getInstance();
 
-        if (new File(p.homeDir + File.separator + p.gw2EIExe).exists())
+        if (new File(p.homeDir + File.separator + p.gw2EIExe_New).exists())
             System.out.println("Detected GuildWars2EliteInsights Application.");
         else
-            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + p.homeDir + File.separator + p.gw2EIExe);
+            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + p.homeDir + File.separator + p.gw2EIExe_New);
 
         File folder = new File(p.customLogFolder);
         File defaultFolder = new File(p.defaultLogFolder);
@@ -49,8 +50,8 @@ public class FileWatcher {
         //continuous file monitor loop
         while (true) {
 
-           //short pause
-            Thread.sleep(5000L);
+            //short pause
+            Thread.sleep(2000L);
 
             //update map of all files
             listOfFiles = listLogFiles();
@@ -64,7 +65,7 @@ public class FileWatcher {
                 fileMap.put(fullFilePath,f);
                 long lastModified = f.lastModified();
                 for (int i=0;i<200;i++) { //max retries
-                    Thread.sleep(5000L);
+                    Thread.sleep(500L);
                     if (!f.exists()) {
                         System.out.println("File was removed.");
                         break; //exit loop
@@ -73,10 +74,12 @@ public class FileWatcher {
                         String confFolder = p.homeDir + "\\GW2EI\\Settings\\";
                         String parseConfig = confFolder + "wvwupload.conf";
 
+                        boolean itIsBig = f.length() > p.maxWvwUpload*1024*1024;
+
                         //if large file then directly upload to dps reports without wvw stats
-                        if (f.length() > p.maxWvwUpload*1024*1024) {
+                        if (itIsBig) {
                             String uploadConfig = confFolder + "uploadwithoutwvw.conf";
-                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + p.gw2EIExe, "-c", uploadConfig, fullFilePath);
+                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + p.gw2EIExe_New, "-c", uploadConfig, fullFilePath);
                             pb.directory(new File(p.homeDir));
                             pb.inheritIO();
                             Process p0 = pb.start();
@@ -88,7 +91,7 @@ public class FileWatcher {
                         }
 
                         //parse json
-                        ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
+                        ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal", "/wait", "." + (itIsBig?p.gw2EIExe_Old:p.gw2EIExe_New), "-c", parseConfig, fullFilePath);
                         pb.directory(new File(p.homeDir));
                         pb.inheritIO();
                         Process p1 = pb.start();

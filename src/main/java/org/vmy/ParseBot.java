@@ -53,14 +53,10 @@ public class ParseBot {
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<String, Condier>();
             int countEnemyPlayers = 0;
-            int countFriendlies = 0;
             for (int i = 1; i < targets.length(); i++) {
                 JSONObject currTarget = targets.getJSONObject(i);
                 String name = currTarget.getString("name");
-                if (name.contains("-"))
-                    countEnemyPlayers++;
-                else
-                    countFriendlies++;
+                countEnemyPlayers++;
                 if (!currTarget.isNull("buffs")) {
                     JSONArray bArray = currTarget.getJSONArray("buffs");
                     populateCondierBuffs(condiers, bArray);
@@ -73,7 +69,8 @@ public class ParseBot {
             List<Cleanser> cleansers = new ArrayList<Cleanser>();
             List<Stripper> strippers = new ArrayList<Stripper>();
             List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
-            List<Spiker> top10Spiker = new ArrayList<Spiker>();
+            List<Spiker> spikers = new ArrayList<Spiker>();
+            List<Healer> healers = new ArrayList<Healer>();
             HashMap<String, Player> playerMap = new HashMap<String, Player>();
             HashMap<String, Group> groups = new HashMap<String, Group>();
             int sumPlayerDmg = 0;
@@ -118,10 +115,12 @@ public class ParseBot {
 
                 //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
-                cleansers.add(new Cleanser(name, profession,
-                        currPlayerSupport.getBigInteger("condiCleanse").intValue()));
-                strippers.add(new Stripper(name, profession,
-                        currPlayerSupport.getBigInteger("boonStrips").intValue()));
+                int cleanses = currPlayerSupport.getBigInteger("condiCleanse").intValue();
+                if (cleanses > 0)
+                    cleansers.add(new Cleanser(name, profession, cleanses));
+                int strips = currPlayerSupport.getBigInteger("boonStrips").intValue();
+                if (strips > 0)
+                    strippers.add(new Stripper(name, profession, strips));
 
                 //targetDamage1S
                 List<Object> targetDmgList = currPlayer.getJSONArray("targetDamage1S").toList();
@@ -153,21 +152,40 @@ public class ParseBot {
                 battleLength = netTargetDmgList.size();
 
                 //update top 10 spikes
-                Spiker.computeTop10(name, profession, top10Spiker, netTargetDmgList);
+                Spiker.computeTop10(name, profession, spikers, netTargetDmgList);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(name, profession, group);
-                if (!currPlayer.isNull("groupBuffsActive")) {
-                    JSONArray bArray = currPlayer.getJSONArray("groupBuffsActive");
-                    populateDefensiveBoons(dBooner, bArray);
-                }
-                if (!currPlayer.isNull("offGroupBuffsActive")) {
-                    JSONArray bArray = currPlayer.getJSONArray("offGroupBuffsActive");
+                if (!currPlayer.isNull("squadBuffs")) {
+                    JSONArray bArray = currPlayer.getJSONArray("squadBuffs");
                     populateDefensiveBoons(dBooner, bArray);
                 }
                 dBooner.computeRating();
                 dbooners.add(dBooner);
                 addBoons(sumBoons, dBooner);
+
+                //healing
+                int healing = 0;
+                if (!currPlayer.isNull("extHealingStats")) {
+                    JSONObject ehObject = currPlayer.getJSONObject("extHealingStats");
+                    if(!ehObject.isNull("outgoingHealing")) {
+                        JSONArray ohArray = ehObject.getJSONArray("outgoingHealing");
+                        JSONObject ohObj = (JSONObject) ohArray.get(0);
+                        healing = ohObj.getInt("healing");
+                    }
+                }
+                int barrier = 0;
+                if (!currPlayer.isNull("extBarrierStats")) {
+                    JSONObject ehObject = currPlayer.getJSONObject("extBarrierStats");
+                    if(!ehObject.isNull("outgoingBarrier")) {
+                        JSONArray ohArray = ehObject.getJSONArray("outgoingBarrier");
+                        JSONObject ohObj = (JSONObject) ohArray.get(0);
+                        barrier = ohObj.getInt("barrier");
+                    }
+                }
+                Healer healer = new Healer(name, profession, healing, barrier);
+                if (healer.getTotal() > 0)
+                    healers.add(healer);
             }
             calculateWeightedBoons(sumBoons, dbooners);
 
@@ -216,6 +234,7 @@ public class ParseBot {
                 g.setDeaths(g.getDeaths()+plyr.getDeaths());
             }
 
+
             //write to buffer
             StringBuffer buffer = new StringBuffer();
             buffer.append(" Players   Damage    DPS    Downs    Deaths" + CRLF);
@@ -224,11 +243,6 @@ public class ParseBot {
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
-
-            if (countFriendlies == 1)
-                report.setFriendliesSummary("plus " + countFriendlies + " friendly (total = " + (countFriendlies+players.length()) + " players)");
-            else if (countFriendlies > 1)
-                report.setFriendliesSummary("plus " + countFriendlies + " friendlies (total = " + (countFriendlies+players.length()) + " players)");
 
             //approximate enemyDps
             sumEnemyDps = (int) sumEnemyDmg / battleLength;
@@ -241,73 +255,97 @@ public class ParseBot {
                     countEnemyDowns, countEnemyDeaths));
             report.setEnemySummary(buffer.toString());
 
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                      Damage     DPS" + CRLF);
-            buffer.append("--- -------------------------  --------  -------" + CRLF);
-            dpsers.sort((d1, d2) -> d1.compareTo(d2));
-            int index = 1;
-            int count = dpsers.size() > 10 ? 10 : dpsers.size();
-            for (DPSer x : dpsers.subList(0, count))
-                if (x.getDamage()>0)
+            if (dpsers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                      Damage     DPS" + CRLF);
+                buffer.append("--- -------------------------  --------  -------" + CRLF);
+                dpsers.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = dpsers.size() > 10 ? 10 : dpsers.size();
+                for (DPSer x : dpsers.subList(0, count))
+                    if (x.getDamage() > 0)
+                        buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                report.setDamage(buffer.toString());
+            }
+
+            if (spikers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                   2 sec  4 sec  Time" + CRLF);
+                buffer.append("--- -----------------------  -----  -----  ----" + CRLF);
+                spikers.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = spikers.size() > 10 ? 10 : spikers.size();
+                for (Spiker x : spikers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setDamage(buffer.toString());
+                report.setSpikers(buffer.toString());
+            }
 
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                   2 sec  4 sec  Time" + CRLF);
-            buffer.append("--- -----------------------  -----  -----  ----" + CRLF);
-            top10Spiker.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = top10Spiker.size() > 10 ? 10 : top10Spiker.size();
-            for (Spiker x : top10Spiker.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setSpikers(buffer.toString());
-
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                     Cleanses" + CRLF);
-            buffer.append("--- -------------------------  --------" + CRLF);
-            cleansers.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = cleansers.size() > 10 ? 10 : cleansers.size();
-            for (Cleanser x : cleansers.subList(0, count))
-                if (x.getCleanses()>0)
+            if (cleansers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                     Cleanses" + CRLF);
+                buffer.append("--- -------------------------  --------" + CRLF);
+                cleansers.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = cleansers.size() > 10 ? 10 : cleansers.size();
+                for (Cleanser x : cleansers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setCleanses(buffer.toString());
+                report.setCleanses(buffer.toString());
+            }
 
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                      Strips" + CRLF);
-            buffer.append("--- -------------------------  --------" + CRLF);
-            strippers.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = strippers.size() > 10 ? 10 : strippers.size();
-            for (Stripper x : strippers.subList(0, count))
-                if (x.getStrips()>0)
+            if (strippers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                      Strips" + CRLF);
+                buffer.append("--- -------------------------  --------" + CRLF);
+                strippers.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = strippers.size() > 10 ? 10 : strippers.size();
+                for (Stripper x : strippers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setStrips(buffer.toString());
+                report.setStrips(buffer.toString());
+            }
 
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
-            buffer.append("--- -------------------------  ------    -----" + CRLF);
-            dbooners.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = dbooners.size() > 10 ? 10 : dbooners.size();
-            for (DefensiveBooner x : dbooners.subList(0, count))
-                if (x.getDefensiveRating()>0) {
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + "    "
-                        + String.format("%5s",groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths()) + CRLF);
+            if (dbooners.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
+                buffer.append("--- -------------------------  ------    -----" + CRLF);
+                dbooners.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = dbooners.size() > 10 ? 10 : dbooners.size();
+                for (DefensiveBooner x : dbooners.subList(0, count)) {
+                    if (x.getDefensiveRating() > 0) {
+                        buffer.append(String.format("%2s", (index++)) + "  " + x + "    "
+                                + String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths()) + CRLF);
+                    }
                 }
-            report.setDbooners(buffer.toString());
+                report.setDbooners(buffer.toString());
+            }
 
-            buffer = new StringBuffer();
-            buffer.append(" #  Player                          CCs" + CRLF);
-            buffer.append("--- ------------------------  --------------" + CRLF);
-            List<Condier> clist = new ArrayList<Condier>(condiers.values());
-            clist.sort((d1, d2) -> d1.compareTo(d2));
-            index = 1;
-            count = clist.size() > 10 ? 10 : clist.size();
-            for (Condier x : clist.subList(0, count))
-                if (x.getChilledCount()>0 || x.getCrippledCount()>0 || x.getImmobCount()>0 || x.getStunCount()>0)
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-            report.setCcs(buffer.toString());
+            if (healers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                  Total  Heals Barrier" + CRLF);
+                buffer.append("--- ----------------------- ------ ------ ------" + CRLF);
+                healers.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = healers.size() > 10 ? 10 : healers.size();
+                for (Healer x : healers.subList(0, count))
+                    if (x.getTotal() > 0)
+                        buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                report.setHealers(buffer.toString());
+            }
+
+            if (condiers.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                          CCs" + CRLF);
+                buffer.append("--- ------------------------  --------------" + CRLF);
+                List<Condier> clist = new ArrayList<Condier>(condiers.values());
+                clist.sort((d1, d2) -> d1.compareTo(d2));
+                int index = 1;
+                int count = clist.size() > 10 ? 10 : clist.size();
+                for (Condier x : clist.subList(0, count))
+                    if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
+                        buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                report.setCcs(buffer.toString());
+            }
 
             buffer = new StringBuffer();
             buffer.append(String.format("[Report] Squad Players: %d (Deaths: %d) | Enemy Players: %d (Deaths: %d)",
@@ -405,6 +443,13 @@ public class ParseBot {
                 HashMap bdMap = (HashMap) buffData.get(0);
                 if (bdMap.containsKey("generation")) {
                     BigDecimal gen = (BigDecimal) bdMap.get("generation");
+                    return (int) gen.multiply(new BigDecimal(1000)).intValue();
+                } else if (bdMap.containsKey("generated")) {
+                    HashMap genMap = (HashMap) bdMap.get("generated");
+                    BigDecimal gen = new BigDecimal("0");
+                    for (Object val : genMap.values()){
+                        gen = gen.add((BigDecimal)val);
+                    }
                     return (int) gen.multiply(new BigDecimal(1000)).intValue();
                 }
             }

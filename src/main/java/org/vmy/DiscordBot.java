@@ -54,33 +54,32 @@ public class DiscordBot {
         embedBuilder.setThumbnailUrl(p.discordThumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
         String squadSummary = "```"+report.getSquadSummary()+"```";
-        if (report.getFriendliesSummary() != null)
-            squadSummary += " _* " + report.getFriendliesSummary() + "_";
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary",squadSummary));
         embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
-        if (p.showDamage)
+        if (p.showDamage && report.getDamage()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
-        if (p.showSpikeDmg)
+        if (p.showSpikeDmg && report.getSpikers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
-        if (p.showCleanses)
+        if (p.showCleanses && report.getCleanses()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
-        if (p.showStrips)
+        if (p.showStrips && report.getStrips()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
-        if (p.showDefensiveBoons)
+        if (p.showDefensiveBoons && report.getDbooners()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boons","```"+report.getDbooners()+"```"));
-        if (p.showCCs)
+        if (p.showHeals && report.getHealers()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Healing","```"+report.getHealers()+"```"));
+        if (p.showCCs && report.getCcs()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
-        if (p.showQuickReport)
+        if (p.showQuickReport && report.getOverview()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
         embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null?"[DPSReports using EI: Upload process failed]":"[Full Report]("+report.getUrl()+")"));
         //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
         client.send(embed);
-        System.out.println("Discord msg sent via webhook.");
-
         if (graphImage.exists() && p.graphPlayerLimit > 0 && p.showDamageGraph)
             client.send(graphImage);
+        System.out.println("Discord msg sent via webhook.");
     }
 
     public void finalize() { if (client!=null) client.close(); }

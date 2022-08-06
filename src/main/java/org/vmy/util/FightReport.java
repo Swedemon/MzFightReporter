@@ -12,7 +12,6 @@ public class FightReport implements Serializable {
     private String duration;
     private String commander;
     private String squadSummary;
-    private String friendliesSummary;
     private String enemySummary;
     private String damage;
     private String cleanses;
@@ -21,6 +20,7 @@ public class FightReport implements Serializable {
     private String overview;
     private String dbooners;
     private String spikers;
+    private String healers;
     private String url;
     private String endTime;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
@@ -87,10 +87,6 @@ public class FightReport implements Serializable {
     public void setSquadSummary(String squadSummary) {
         this.squadSummary = squadSummary;
     }
-
-    public String getFriendliesSummary() { return friendliesSummary; }
-
-    public void setFriendliesSummary(String friendliesSummary) { this.friendliesSummary = friendliesSummary; }
 
     public String getEnemySummary() {
         return enemySummary;
@@ -166,4 +162,11 @@ public class FightReport implements Serializable {
         this.spikers = spikers;
     }
 
+    public String getHealers() {
+        return healers;
+    }
+
+    public void setHealers(String healers) {
+        this.healers = healers;
+    }
 }
