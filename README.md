@@ -20,7 +20,7 @@
 		- Observe the other WvW squad settings such as 'min enemy participants'.  Set this to 10 if you want.
 6.  Setup complete.  Run the background program and start gaming:
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
-- Note: To enable healing stats [click here](https://github.com/Swedemon/MzFightReporter/blob/master/README.md#optional-enable-healing-stats).
+- Note: To enable healing stats [click here](https://github.com/Swedemon/MzFightReporter#optional-enable-healing-stats).
 ## (Optional) Twitch Bot Instructions (~5 minutes)
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing account.
 2.  Go to https://twitchtokengenerator.com/
