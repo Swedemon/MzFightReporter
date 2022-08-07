@@ -41,7 +41,7 @@
 ## How to upgrade from a prior version
 1. Download and unzip the [latest MzFightReporter_X.zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old **config.properties** file and copy your discord (and any other modified) properties.
-3. Open the new **config.properties** file and set the same properties.
+3. Open the new **config.properties** file and overwrite the same properties.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
 <p align="center"><img height="130" src="https://i.imgur.com/EIWFXAD.png"/></p>
