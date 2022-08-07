@@ -44,6 +44,6 @@
 3. Open the new config.properties file and set the same properties.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
-<p align="center"><img src="https://i.imgur.com/EIWFXAD.png"/></p>
+<p align="center"><img height="130" src="https://i.imgur.com/EIWFXAD.png"/></p>
 <p align="center"><img height="350" src="https://i.imgur.com/RK4l7P9.png"/></p>
 <p align="center"><img src="https://i.imgur.com/LzLxS2C.png"/></p>
