@@ -39,7 +39,7 @@
 2. In the ArcDps options under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: To view healing in-game check options 'Peers Outgoing' and 'Enable live sharing'.
 ## How to upgrade from a prior version
-1. Download and unzip the [latest MzFightReporter_XX.zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
+1. Download and unzip the [latest MzFightReporter_X.zip](https://github.com/Swedemon/MzFightReporter/releases) (it will unzip to a new sub-folder).
 2. Open your old config.properties file and copy your discord (and any other modified) properties.
 3. Open the new config.properties file and set the same properties.
 ## Sneak Peek
