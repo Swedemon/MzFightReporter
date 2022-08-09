@@ -36,7 +36,7 @@
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
 ## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
-2. In the ArcDps options under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
+2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: To view healing in-game check options 'Peers Outgoing' and 'Enable live sharing'.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
