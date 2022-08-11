@@ -306,7 +306,7 @@ public class ParseBot {
 
             if (dbooners.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                     Rating  Group KDR" + CRLF);
+                buffer.append(" #  Player                     Rating  GroupKDR" + CRLF);
                 buffer.append("--- -------------------------  ------    -----" + CRLF);
                 dbooners.sort((d1, d2) -> d1.compareTo(d2));
                 int index = 1;
@@ -322,8 +322,8 @@ public class ParseBot {
 
             if (healers.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                  Total  Heals Barrier" + CRLF);
-                buffer.append("--- ----------------------- ------ ------ ------" + CRLF);
+                buffer.append(" #  Player                 Total  Heals Barrier" + CRLF);
+                buffer.append("--- ---------------------- ------ ------ ------" + CRLF);
                 healers.sort((d1, d2) -> d1.compareTo(d2));
                 int index = 1;
                 int count = healers.size() > 10 ? 10 : healers.size();
