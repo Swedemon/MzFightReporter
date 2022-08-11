@@ -258,7 +258,7 @@ public class ParseBot {
             if (dpsers.size()>0) {
                 buffer = new StringBuffer();
                 buffer.append(" #  Player                      Damage     DPS" + CRLF);
-                buffer.append("--- -------------------------  --------  -------" + CRLF);
+                buffer.append("--- -------------------------  --------   -----" + CRLF);
                 dpsers.sort((d1, d2) -> d1.compareTo(d2));
                 int index = 1;
                 int count = dpsers.size() > 10 ? 10 : dpsers.size();
