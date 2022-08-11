@@ -25,8 +25,8 @@ public class Healer implements Comparable<Healer> {
     }
 
     public String toString() {
-        return String.format("%-23s",
-                String.format("%.16s", name).trim() + " (" + profession.substring(0,4) + ")")
+        return String.format("%-22s",
+                String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
                 + String.format("%7s",withSuffix(total,1))
                 + String.format("%7s",withSuffix(healing,1))
                 + String.format("%7s",withSuffix(barrier,1));
