@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.vmy</groupId>
-    <artifactId>MzFightReporter</artifactId>
-    <version>2.0b</version>
+    <artifactId>MzApp</artifactId>
+    <version>Latest</version>
     <packaging>jar</packaging>
 
     <properties>

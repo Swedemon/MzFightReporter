@@ -6,9 +6,11 @@ import java.util.Properties;
 
 public class Parameters {
 
+    public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String gw2EIExe_Old = "\\GW2EI-4-4-21\\GuildWars2EliteInsights.exe";
-    public String gw2EIExe_New = "\\GW2EI\\GuildWars2EliteInsights.exe";
+    public String gw2EIExe_New = "\\GW2EI-7-7-22\\GuildWars2EliteInsights.exe";
+    public String gw2EISettings = "\\GW2EI-7-7-22\\Settings\\";
     public String defaultLogFolder =
             System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
@@ -48,7 +50,7 @@ public class Parameters {
             prop.load(file);
 
             //set properties
-            gw2EIExe_New = homeDir + "\\GW2EI\\GuildWars2EliteInsights.exe";
+            gw2EIExe_New = homeDir + "\\GW2EI-7-7-22\\GuildWars2EliteInsights.exe";
             gw2EIExe_Old = homeDir + "\\GW2EI-4-4-21\\GuildWars2EliteInsights.exe";
             String lg = prop.getProperty("customLogFolder");
             customLogFolder = prop.getProperty("customLogFolder");
