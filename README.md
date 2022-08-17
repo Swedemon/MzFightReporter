@@ -37,7 +37,7 @@
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
 ## Enable Healing Stats
-1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme) -OR- install the [GW2 Addon Manager](https://github.com/gw2-addon-loader/GW2-Addon-Manager) and enable the heal addon (easy way to keep everything up-to-date).
+1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme) -OR- install the [GW2 Addon Manager](https://github.com/gw2-addon-loader/GW2-Addon-Manager) and enable the heal addon.
 2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
 - Note: To view healing in-game check options 'Peers Outgoing' and 'Enable live sharing'.
 ## Sneak Peek
