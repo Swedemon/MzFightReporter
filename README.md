@@ -47,3 +47,16 @@
 <p align="center"><img height="360" src="https://i.imgur.com/aERE0sC.png"/></p>
 <p align="center"><img src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/4pWH2xH.png"/></p>
+
+## About the Data
+### Limitations
+Some data points are not provided due to a limitation in either the game, arcdps or EI.
+- **Commander**: At times the data is ambiguous on who the commander is in which case the commander is not shown.
+- **Outgoing CC's**: there is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. :(
+- **Friendly players**: Data on players contributing but not in squad at this time is not possible.  If a fight shows 20v50 then take this with a large grain of salt.
+- **Defensive Boons**:  Does not consider whether boons such as stab were wasted so a higher rating is not always better.  However, this rating does show someone was at least actively "pressing their buttons", the buttons that matter.
+- **Healing**:  Only players using the Heal Addon with Live Sharing enabled will be accurately represented.
+### Defensive Boons
+- EI provides a data point called squadBuffs as the source of this data.  The value is a percentage on a given boon during the fight.
+- Rating Formula = Stability(x3) + Aegis(x2) + Protection + Resistance + Resolution(x0.5) + Alacrity(x0.5)
+- The maximum possible rating is 800 (%) which is normalized upon the entire squad.
