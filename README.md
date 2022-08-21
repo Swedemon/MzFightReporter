@@ -53,7 +53,7 @@
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Long Fights**: Fights exceeding 15 minutes run the risk of not reporting.  Healing data will not be included when the arcdps logs exceed 10MB.
 - **Commander**: At times the data is ambiguous on who the commander is in which case it is hidden.
-- **Friendly players**: Data on players contributing but not in squad at this time is not possible.  If a fight shows 20v50 then take this with a large grain of salt.
+- **Friendly players**: Data on players contributing but not in squad at this time is not possible.  If a fight shows 20v50 then take this with a grain of salt.
 - **Defensive Boons**:  Does not consider whether boons such as stab were wasted so a higher rating is not always better.  However, this rating does show someone was at least actively pressing the buttons that matter.
 - **Healing**:  Only players using the Heal Addon with Live Sharing enabled will be (we hope) accurately represented.
 - **Outgoing CC's**: There is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. Also, outgoing CC durations are not considered.
