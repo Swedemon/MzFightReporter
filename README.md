@@ -39,7 +39,7 @@
 ## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme) -OR- install the [GW2 Addon Manager](https://github.com/gw2-addon-loader/GW2-Addon-Manager) and enable the heal addon.
 2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check the 'log healing' setting.
-- Note: To view in-game heals check options 'Peers Outgoing' and 'Enable live sharing'.
+- Note: To view and share in-game heals check options 'Peers Outgoing' and 'Enable live sharing'.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
 <p align="center"><img height="230" src="https://i.imgur.com/4CZEPBm.png"/></p>
