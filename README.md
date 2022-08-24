@@ -2,8 +2,8 @@
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send WvW fight reports to a Discord channel and optionally a Twitch channel.
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 ## Setup Instructions
-1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory. [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
-	- Available under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases
+1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
+	- Available under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
 2.  Install Java for Windows.  (this ensures Java is in your system path)
 	- Available at:  https://www.java.com/en/download/
 3.  Create a webhook in your Discord server:
