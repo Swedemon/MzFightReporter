@@ -8,7 +8,6 @@ public class Parameters {
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
-    public String gw2EIExe_Old = "\\GW2EI-4-4-21\\GuildWars2EliteInsights.exe";
     public String gw2EIExe_New = "\\GW2EI-7-7-22\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = "\\GW2EI-7-7-22\\Settings\\";
     public String defaultLogFolder =
@@ -20,6 +19,7 @@ public class Parameters {
     public String twitchBotToken = "";
     public String jarName = "";
     public int maxWvwUpload = 10;
+    public int maxParseMemory = 4048;
     public int graphPlayerLimit = 20;
     public boolean showDamageGraph = true;
     public boolean showDamage = true;
@@ -51,7 +51,6 @@ public class Parameters {
 
             //set properties
             gw2EIExe_New = homeDir + "\\GW2EI-7-7-22\\GuildWars2EliteInsights.exe";
-            gw2EIExe_Old = homeDir + "\\GW2EI-4-4-21\\GuildWars2EliteInsights.exe";
             String lg = prop.getProperty("customLogFolder");
             customLogFolder = prop.getProperty("customLogFolder");
             discordThumbnail = prop.getProperty("discordThumbnail",discordThumbnail);
@@ -60,6 +59,7 @@ public class Parameters {
             twitchBotToken = prop.getProperty("twitchBotToken",twitchBotToken);
             jarName = prop.getProperty("jarName",jarName);
             maxWvwUpload = Integer.parseInt(prop.getProperty("maxWvwUpload", maxWvwUpload+""));
+            maxParseMemory = Integer.parseInt(prop.getProperty("maxParseMemory", maxParseMemory+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
             showDamageGraph = Boolean.valueOf(prop.getProperty("showDamageGraph", "true"));
             showDamage = Boolean.valueOf(prop.getProperty("showDamage", "true"));
