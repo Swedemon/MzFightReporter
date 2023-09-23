@@ -70,7 +70,6 @@ public class FileWatcher {
                         System.out.println("File was removed.");
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
-                        System.out.println("Invoking GW2EI...");
                         String confFolder = p.homeDir + p.gw2EISettings;
                         String parseConfig = confFolder + "wvwupload.conf";
 
@@ -78,22 +77,24 @@ public class FileWatcher {
 
                         //if large file then directly upload to dps reports without wvw stats
                         if (itIsBig) {
-                            String uploadConfig = confFolder + "uploadwithoutwvw.conf";
-                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                    "/wait", "." + p.gw2EIExe_New, "-c", uploadConfig, fullFilePath);
-                            pb.directory(new File(p.homeDir));
-                            pb.inheritIO();
-                            Process p0 = pb.start();
-                            p0.waitFor(120, TimeUnit.SECONDS);
-                            p0.destroy();
-                            p0.waitFor();
-                            System.out.println("GW2EI Upload Status (0=success): " + p0.exitValue());
+//                            String uploadConfig = confFolder + "uploadwithoutwvw.conf";
+//                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+//                                    "/wait", "." + p.gw2EIExe_New, "-c", uploadConfig, fullFilePath);
+//                            pb.directory(new File(p.homeDir));
+//                            pb.inheritIO();
+//                            Process p0 = pb.start();
+//                            p0.waitFor(120, TimeUnit.SECONDS);
+//                            p0.destroy();
+//                            p0.waitFor();
+//                            System.out.println("GW2EI Upload Status (0=success): " + p0.exitValue());
+                            System.out.println("File exceeds max size for DPS Reports upload ("+p.maxWvwUpload+"MB). You can increase maxWvWUpload setting however it will likely fail anyways and take longer time.");
                             parseConfig = confFolder + "wvwnoupload.conf"; //skip upload in upcoming call
                         }
 
                         //parse json
+                        System.out.println("Invoking GW2EI...");
                         ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                "/wait", "." + (itIsBig?p.gw2EIExe_Old:p.gw2EIExe_New), "-c", parseConfig, fullFilePath);
+                                "/wait", "." + p.gw2EIExe_New, "-c", parseConfig, fullFilePath);
                         pb.directory(new File(p.homeDir));
                         pb.inheritIO();
                         Process p1 = pb.start();
@@ -107,7 +108,7 @@ public class FileWatcher {
                             //call parsebot
                             System.out.println("Generating FightReport...");
                             ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                    "/wait", "java", "-Xmx1024M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(),
+                                    "/wait", "java", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(),
                                     logFile.getAbsolutePath(), p.homeDir);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
@@ -224,6 +225,7 @@ public class FileWatcher {
         System.out.println("twitchBotToken=("+new String(p.twitchBotToken).length()+" characters)");
         System.out.println("jarName="+p.jarName);
         System.out.println("maxWvwUpload="+p.maxWvwUpload);
+        System.out.println("maxParseMemory="+p.maxParseMemory);
         System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
         System.out.println();
 
