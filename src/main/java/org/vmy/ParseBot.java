@@ -209,17 +209,24 @@ public class ParseBot {
             int totalPlayersDowned = 0;
             if (jsonTop.has("mechanics")) {
                 JSONArray mechanics = jsonTop.getJSONArray("mechanics");
-                List<Object> mdList = mechanics.getJSONObject(0).getJSONArray("mechanicsData").toList();
-                for (Object mdo : mdList) {
-                    HashMap<String, Object> mdMap = (HashMap<String, Object>) mdo;
-                    String actor = (String) mdMap.get("actor");
-                    Player p = playerMap.get(actor);
-                    p.setDeaths(p.getDeaths()+1);
+                for (int i=0; i<mechanics.length(); i++) {
+                    JSONObject mechObj = mechanics.getJSONObject(i);
+                    String mechName = mechObj.getString("name");
+                    if ("Dead".equals(mechName)) {
+                        List<Object> mdList = mechObj.getJSONArray("mechanicsData").toList();
+                        for (Object mdo : mdList) {
+                            HashMap<String, Object> mdMap = (HashMap<String, Object>) mdo;
+                            String actor = (String) mdMap.get("actor");
+                            Player p = playerMap.get(actor);
+                            p.setDeaths(p.getDeaths() + 1);
+                        }
+                        if (mechanics.length() > 0)
+                            totalPlayersDead = mechObj.getJSONArray("mechanicsData").length();
+                    } else if ("Downed".equals(mechName)) {
+                        if (mechanics.length() > 1)
+                            totalPlayersDowned = mechObj.getJSONArray("mechanicsData").length();
+                    }
                 }
-                if (mechanics.length()>0)
-                    totalPlayersDead = mechanics.getJSONObject(0).getJSONArray("mechanicsData").length();
-                if (mechanics.length()>1)
-                    totalPlayersDowned = mechanics.getJSONObject(1).getJSONArray("mechanicsData").length();
             }
 
             //compile group data
