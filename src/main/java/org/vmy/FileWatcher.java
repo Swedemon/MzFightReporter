@@ -1,10 +1,10 @@
 
 package org.vmy;
 
+import org.apache.commons.io.FileUtils;
 import org.vmy.util.FightReport;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,10 +20,29 @@ public class FileWatcher {
     public void run() throws Exception {
         Parameters p = Parameters.getInstance();
 
-        if (new File(p.homeDir + File.separator + p.gw2EIExe_New).exists())
-            System.out.println("Detected GuildWars2EliteInsights Application.");
-        else
-            System.out.println("Failure to detect GuildWars2EliteInsights application at: " + p.homeDir + File.separator + p.gw2EIExe_New);
+        if (new File(p.homeDir + File.separator + p.gw2EIExe).exists()) {
+            System.out.println("Detected GuildWars2EliteInsights application.");
+        } else {
+            updateZPackage(p);
+            if (new File(p.homeDir + File.separator + p.gw2EIExe).exists()) {
+                System.out.println("Detected GuildWars2EliteInsights application.");
+            } else {
+                System.out.println("!!! Failure to detect GuildWars2EliteInsights application at: " + p.homeDir + File.separator + p.gw2EIExe);
+                return;
+            }
+        }
+
+        if (new File(p.homeDir + File.separator + p.curlExe).exists()) {
+            System.out.println("Detected cURL executable.");
+        } else {
+            updateZPackage(p);
+            if (new File(p.homeDir + File.separator + p.curlExe).exists()) {
+                System.out.println("Detected cURL executable.");
+            } else {
+                System.out.println("!!! Failure to detect cURL executable  at: " + p.homeDir + File.separator + p.curlExe);
+                return;
+            }
+        }
 
         File folder = new File(p.customLogFolder);
         File defaultFolder = new File(p.defaultLogFolder);
@@ -71,67 +90,109 @@ public class FileWatcher {
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
                         String confFolder = p.homeDir + p.gw2EISettings;
-                        String parseConfig = confFolder + "wvwupload.conf";
+                        String parseConfig = confFolder + "wvwnoupload.conf";
 
-                        boolean itIsBig = f.length() > p.maxWvwUpload*1024*1024;
-
-                        //if large file then directly upload to dps reports without wvw stats
-                        if (itIsBig) {
-//                            String uploadConfig = confFolder + "uploadwithoutwvw.conf";
-//                            ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-//                                    "/wait", "." + p.gw2EIExe_New, "-c", uploadConfig, fullFilePath);
-//                            pb.directory(new File(p.homeDir));
-//                            pb.inheritIO();
-//                            Process p0 = pb.start();
-//                            p0.waitFor(120, TimeUnit.SECONDS);
-//                            p0.destroy();
-//                            p0.waitFor();
-//                            System.out.println("GW2EI Upload Status (0=success): " + p0.exitValue());
-                            System.out.println("File exceeds max size for DPS Reports upload ("+p.maxWvwUpload+"MB). You can increase maxWvWUpload setting however it will likely fail anyways and take longer time.");
-                            parseConfig = confFolder + "wvwnoupload.conf"; //skip upload in upcoming call
-                        }
+                        int sizeFactor = 1 + ((int) f.length() / 5000000);
+                        int eiWaitTime = sizeFactor * 60 + 60;
+                        int uploadWaitTime = sizeFactor * 60 + 60;
+                        int parseWaitTime = sizeFactor * 60 + 60;
+                        //System.out.println(sizeFactor +","+ eiWaitTime +","+uploadWaitTime +","+parseWaitTime);
 
                         //parse json
+                        long startTime = System.currentTimeMillis();
                         System.out.println("Invoking GW2EI...");
-                        ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                "/wait", "." + p.gw2EIExe_New, "-c", parseConfig, fullFilePath);
-                        pb.directory(new File(p.homeDir));
-                        pb.inheritIO();
-                        Process p1 = pb.start();
-                        p1.waitFor();
-                        System.out.println("GW2EI Parse Status (0=success): " + p1.exitValue());
+                        ProcessBuilder pb1 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+                                "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
+                        pb1.directory(new File(p.homeDir));
+                        pb1.inheritIO();
+                        Process p1 = pb1.start();
+                        boolean finished = p1.waitFor(eiWaitTime, TimeUnit.SECONDS);
+                        if (finished) {
+                            System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p1.exitValue());
+                        } else {
+                            System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
+                        }
 
                         File logFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+".log");
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
                         if (jsonFile.exists()) {
 
+                            //upload
+                            String uploadUrl = "";
+                            for (int k=0; k<5; k++) {
+                                String uploadPostUrl = "https://dps.report/uploadContent";
+                                startTime = System.currentTimeMillis();
+                                String uploadRespText = new String();
+                                try {
+                                    System.out.println("Invoking Upload...");
+                                    ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+                                            ".\\curl\\bin\\curl.exe", "--max-time", uploadWaitTime + "", "--request", "POST", uploadPostUrl,
+                                            "-H", "\"Transfer-Encoding: chunked\"",
+                                            "-H", "\"Connection: keep-alive\"",
+                                            "-H", "\"Accept-Encoding: identity\"",
+                                            "-H", "\"Cookie: userToken=0dhhn6op61qb6m7ete5tr2aus0mho374\"",
+                                            //"-H", "\"Content-Length: " + f.length()+"\"",
+                                            //"--limit-rate", "5M",
+                                            "--form", "json=1", "--form", "detailedwvw=true",
+                                            "--form", "\"file=@" + fullFilePath + "\"" )
+                                            .redirectError(new File("uploadStats.txt"));
+                                    //System.out.println(String.join(" ", pb0.command()));
+                                    pb0.directory(new File(p.homeDir));
+                                    Process p0 = pb0.start();
+                                    try (BufferedReader reader =
+                                                 new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
+                                        StringBuilder builder = new StringBuilder();
+                                        String line = null;
+                                        while ((line = reader.readLine()) != null) {
+                                            builder.append(line);
+                                            builder.append("\r\n");
+                                        }
+                                        uploadRespText = builder.toString();
+                                    }
+                                    int baseIndex = uploadRespText.indexOf("permalink");
+                                    if (baseIndex < 0) {
+                                        FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
+                                        System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
+                                    } else {
+                                        int startIndex = uploadRespText.indexOf("http", baseIndex);
+                                        int endIndex = uploadRespText.indexOf("\"", startIndex);
+                                        uploadUrl = uploadRespText.substring(startIndex, endIndex).replace("\\", "");
+                                        System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p0.exitValue());
+                                        System.out.println("URL = " + uploadUrl);
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Upload failed: " + e.getMessage());
+                                    FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
+                                }
+                                if (uploadUrl.length() > 0)
+                                    break;
+                            }
+
                             //call parsebot
+                            startTime = System.currentTimeMillis();
                             System.out.println("Generating FightReport...");
                             ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
                                     "/wait", "java", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(),
-                                    logFile.getAbsolutePath(), p.homeDir);
+                                    logFile.getAbsolutePath(), p.homeDir, uploadUrl);
                             pb2.inheritIO();
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
-                            p2.waitFor(120, TimeUnit.SECONDS);
-                            p2.destroy();
-                            p2.waitFor();
-                            System.out.println("FightReport Status (0=success): " + p2.exitValue());
+                            p2.waitFor(parseWaitTime, TimeUnit.SECONDS);
+                            System.out.println("FightReport Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p2.exitValue());
 
                             if (p2.exitValue() == 0) {
 
                                 //call graphbot
                                 if (p.graphPlayerLimit > 0) {
+                                    startTime = System.currentTimeMillis();
                                     System.out.println("Generating Graph...");
                                     ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b",
                                             "/belownormal", "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
                                     pb3.inheritIO();
                                     pb3.directory(new File(p.homeDir));
                                     Process p3 = pb3.start();
-                                    p3.waitFor(120, TimeUnit.SECONDS);
-                                    p3.destroy();
-                                    p3.waitFor();
-                                    System.out.println("Graphing Status (0=success): " + p3.exitValue());
+                                    p3.waitFor(parseWaitTime, TimeUnit.SECONDS);
+                                    System.out.println("Graphing Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p3.exitValue());
                                 }
 
                                 //call discordbot and twitchbot
@@ -139,9 +200,9 @@ public class FileWatcher {
                                 if (report==null) {
                                     System.out.println("ERROR: FightReport file not available.");
                                 } else {
-                                    DiscordBot dBot = org.vmy.DiscordBot.getSingletonInstance();
+                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
                                     dBot.sendWebhookMessage(report);
-                                    TwitchBot tBot = org.vmy.TwitchBot.getSingletonInstance();
+                                    TwitchBot tBot = TwitchBot.getSingletonInstance();
                                     tBot.sendMessage(report.getOverview());
                                 }
                             }
@@ -156,6 +217,25 @@ public class FileWatcher {
             }
 
             System.out.print(".");
+        }
+    }
+
+    private void updateZPackage(Parameters p) {
+        System.out.println("Installing latest packages...");
+
+        String jsonTxt = CheckUpdater.getGithubReleaseJson(p);
+        if (jsonTxt == null) return;
+
+        String zpackUrl = CheckUpdater.getGithubZPackUrl(jsonTxt);
+        if (zpackUrl == null) return;
+
+        if (!CheckUpdater.downloadZPackZip(zpackUrl))
+            return;
+
+        try {
+            CheckUpdater.unzipFolder(Paths.get("zpack.zip"), Paths.get(p.homeDir));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -224,7 +304,6 @@ public class FileWatcher {
         System.out.println("twitchChannelName="+p.twitchChannelName);
         System.out.println("twitchBotToken=("+new String(p.twitchBotToken).length()+" characters)");
         System.out.println("jarName="+p.jarName);
-        System.out.println("maxWvwUpload="+p.maxWvwUpload);
         System.out.println("maxParseMemory="+p.maxParseMemory);
         System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
         System.out.println();

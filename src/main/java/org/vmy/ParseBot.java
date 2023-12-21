@@ -21,27 +21,9 @@ public class ParseBot {
 
     private static final String CRLF = "\n";
 
-    protected static FightReport processWvwJsonLog(File jsonFile, File logFile) throws IOException {
+    protected static FightReport processWvwJsonLog(File jsonFile, File logFile, String uploadUrl) throws IOException {
         JSONObject jo = new JSONObject();
         FightReport report = new FightReport();
-
-        //get upload URL from log file
-        String uploadURL = null;
-        if (logFile.exists()) {
-            InputStream is = new FileInputStream(logFile);
-
-            try {
-                String logTxt = IOUtils.toString(is, "UTF-8");
-                int index = logTxt.indexOf("https://");
-                int end = logTxt.indexOf("\r", index);
-                if (index > 0) {
-                    uploadURL = logTxt.substring(index, end);
-                    System.out.println("DPS Reports link=" + uploadURL);
-                }
-            } finally {
-                is.close();
-            }
-        }
 
         InputStream is = new FileInputStream(jsonFile);
         try {
@@ -199,8 +181,8 @@ public class ParseBot {
             if (jsonTop.has("uploadLinks"))
                 report.setUrl(jsonTop.getJSONArray("uploadLinks").getString(0));
             if (report.getUrl()==null || !report.getUrl().startsWith("http"))
-                report.setUrl(uploadURL);
-            System.out.println("URL="+report.getUrl());
+                report.setUrl(uploadUrl);
+            //System.out.println("URL="+report.getUrl());
             if (jsonTop.has("timeEnd"))
                 report.setEndTime(jsonTop.getString("timeEnd"));
 
@@ -477,8 +459,9 @@ public class ParseBot {
         File jsonFile = new File(args[1]);
         File logFile = new File(args[2]);
         String homeDir = args[3];
+        String uploadUrl = args[4];
         if (jsonFile.exists()) {
-            FightReport report = processWvwJsonLog(jsonFile, logFile);
+            FightReport report = processWvwJsonLog(jsonFile, logFile, uploadUrl);
 
             FileOutputStream frf = null;
             ObjectOutputStream o = null;
