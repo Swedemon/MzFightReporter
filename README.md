@@ -4,17 +4,17 @@
 - **Author:** Swedemon.4670
 ## Setup Instructions
 1.  Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
-	- Available under 'Assets':  https://github.com/Swedemon/MzFightReporter/releases [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
+	- https://github.com/Swedemon/MzFightReporter/releases [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
 2.  Install Java for Windows.
-	- Available at:  https://www.java.com/en/download/
+	- https://www.java.com/en/download/
 3.  Create a webhook in your Discord server:
 	1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
 	2. On the left choose 'Integrations'.  Next click on 'Webhooks'.
 	3. Click on 'New Webhook'.  Finally click on 'Copy Webhook URL'.
-4.  Edit the file **config.properties** located at your unzip location (you can use Notepad):
+4.  Using Notepad edit the file **config.properties** located at your unzip location:
 	1. Set the value of 'discordWebhook' to your new webhook URL.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
-5.  Open Guild Wars 2 and enter the game.  Type Alt-Shift-T to open ArcDps options.
+5.  Open Guild Wars 2 and enter the game.  Open ArcDps options by pressing Alt-Shift-T.
 	1. Under 'Logging' choose: save after squad combat
 	2. And beside the 'Open' button enter: ```c:\arc```
 		- Observe the other WvW squad settings such as 'min enemy participants'.  Recommended value is 10.
@@ -30,7 +30,7 @@
 	2. Authorize.
 		- Note: You can manage these connections at https://www.twitch.tv/settings/connections
 3.  Copy the provided 'ACCESS TOKEN'.
-4.  Edit the file **config.properties** located at your unzip location (you can use Notepad).
+4.  Using Notepad edit the file **config.properties** located at your unzip location.
 	1. Set the value of 'twitchChannelName' to your main channel name.
 		- Example: ```twitchChannelName=drdisrespect```
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
@@ -40,7 +40,7 @@
 ## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check 'log healing' and 'Enable live sharing'.
-	- Note: To view in-game heals check 'Peers Outgoing'.
+	- Note: To view the in-game heal window you can check 'Peers Outgoing'.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
 <p align="center"><img height="230" src="https://i.imgur.com/4CZEPBm.png"/></p>
