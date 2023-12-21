@@ -22,7 +22,7 @@
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
 - Note: To enable healing stats [click here](#enable-healing-stats).
 ## How to Upgrade from a Previous Version?
-- Go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for upgrade instructions.  Releases since 2.1a automatically upgrade.
+- Go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for upgrade instructions.  All releases since version 2.1a will automatically upgrade.
 ## (Optional) Twitch Bot Instructions
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
 2.  Go to https://twitchtokengenerator.com/
