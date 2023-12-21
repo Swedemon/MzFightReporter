@@ -12,7 +12,7 @@
 	2. On the left choose 'Integrations'.  Next click on 'Webhooks'.
 	3. Click on 'New Webhook'.  Finally click on 'Copy Webhook URL'.
 4.  Using Notepad edit the file **config.properties** located at your unzip location:
-	1. Set the value of 'discordWebhook' to your new webhook URL.
+	1. Set the value of 'discordWebhook' to your new webhook URL.  Save your file.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 5.  Open Guild Wars 2 and enter the game.  Open ArcDps options by pressing Alt-Shift-T.
 	1. Under 'Logging' choose: save after squad combat
@@ -22,7 +22,7 @@
 	- Go to your unzip location and double click the 'MzFightReporter' Windows Batch file.
 - Note: To enable healing stats [click here](#enable-healing-stats).
 ## How to Upgrade from a Previous Version?
-- Go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for upgrade instructions.  All releases since version 2.1a will automatically upgrade.
+- All releases since version 2.1a automatically upgrade.  Otherwise go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.  
 ## (Optional) Twitch Bot Instructions
 1.  Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
 2.  Go to https://twitchtokengenerator.com/
@@ -30,7 +30,7 @@
 	2. Authorize.
 		- Note: You can manage these connections at https://www.twitch.tv/settings/connections
 3.  Copy the provided 'ACCESS TOKEN'.
-4.  Using Notepad edit the file **config.properties** located at your unzip location.
+4.  Using Notepad edit the file **config.properties** located at your unzip location.  Save your file.
 	1. Set the value of 'twitchChannelName' to your main channel name.
 		- Example: ```twitchChannelName=drdisrespect```
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
@@ -38,15 +38,15 @@
 - Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
 - Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
 ## Enable Healing Stats
-1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
-2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check 'log healing' and 'Enable live sharing'.
+1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme) as instructed.
+2. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check both 'log healing' and 'Enable live sharing'.
 	- Note: To view the in-game heal window you can check 'Peers Outgoing'.
 ## Sneak Peek
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
 <p align="center"><img height="230" src="https://i.imgur.com/4CZEPBm.png"/></p>
 <p align="center"><img height="230" src="https://i.imgur.com/GBULKZa.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/aERE0sC.png"/></p>
-<p align="center"><img src="https://i.imgur.com/LzLxS2C.png"/></p>
+<p align="center"><img height="40" src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/4pWH2xH.png"/></p>
 
 ## About the Data
