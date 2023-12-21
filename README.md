@@ -46,7 +46,7 @@
 <p align="center"><img height="230" src="https://i.imgur.com/4CZEPBm.png"/></p>
 <p align="center"><img height="230" src="https://i.imgur.com/GBULKZa.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/aERE0sC.png"/></p>
-<p align="center"><img height="40" src="https://i.imgur.com/LzLxS2C.png"/></p>
+<p align="center"><img height="80" src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/4pWH2xH.png"/></p>
 
 ## About the Data
