@@ -17,6 +17,7 @@ public class FightReport implements Serializable {
     private String cleanses;
     private String strips;
     private String ccs;
+    private String enemyBreakdown;
     private String overview;
     private String dbooners;
     private String spikers;
@@ -144,6 +145,14 @@ public class FightReport implements Serializable {
 
     public void setCcs(String ccs) {
         this.ccs = ccs;
+    }
+
+    public String getEnemyBreakdown() {
+        return enemyBreakdown;
+    }
+
+    public void setEnemyBreakdown(String enemyBreakdown) {
+        this.enemyBreakdown = enemyBreakdown;
     }
 
     public String getOverview() {

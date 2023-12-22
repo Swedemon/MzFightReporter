@@ -2,7 +2,7 @@ package org.vmy.util;
 
 import java.math.BigDecimal;
 
-public class Condier {
+public class Condier implements Comparable<Condier> {
     private String name;
     private String profession;
     private int stunCount=0;

@@ -7,6 +7,7 @@ import org.vmy.util.FightReport;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,7 @@ public class FileWatcher {
 
                             //upload
                             String uploadUrl = "";
-                            for (int k=0; k<5; k++) {
+                            for (int k=0; k<8; k++) {
                                 String uploadPostUrl = "https://dps.report/uploadContent";
                                 startTime = System.currentTimeMillis();
                                 String uploadRespText = new String();
@@ -183,7 +184,7 @@ public class FileWatcher {
                             if (p2.exitValue() == 0) {
 
                                 //call graphbot
-                                if (p.graphPlayerLimit > 0) {
+                                if (p.graphPlayerLimit > 0 && p.showDamageGraph) {
                                     startTime = System.currentTimeMillis();
                                     System.out.println("Generating Graph...");
                                     ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b",
@@ -271,7 +272,7 @@ public class FileWatcher {
     private File locateNewFile(List<File> listOfFiles) {
         for (File f : listOfFiles) {
             if (!fileMap.containsKey(f.getAbsolutePath())) {
-                System.out.println("\nNew file detected: " + f.getName());
+                System.out.println("\nNew file detected: " + f.getName() + " " + new DecimalFormat("#,###").format(f.length()) + " bytes");
                 return f;
             }
         }
@@ -291,14 +292,19 @@ public class FileWatcher {
         System.out.println("homeDir="+p.homeDir);
         System.out.println("defaultLogFolder="+p.defaultLogFolder);
         System.out.println("customLogFolder="+p.customLogFolder);
-        System.out.print("showDamageGraph="+p.showDamageGraph);
+        System.out.print("showSquadSummary="+p.showSquadSummary);
+        System.out.print(" showEnemySummary="+p.showEnemySummary);
         System.out.print(" showDamage="+p.showDamage);
+        System.out.print(" showSpikeDmg="+p.showSpikeDmg);
         System.out.print(" showCleanses="+p.showCleanses);
         System.out.print(" showStrips="+p.showStrips);
-        System.out.print(" showSpikeDmg="+p.showSpikeDmg);
         System.out.print(" showDefensiveBoons="+p.showDefensiveBoons);
         System.out.print(" showCCs="+p.showCCs);
-        System.out.println(" showQuickReport="+p.showQuickReport);
+        System.out.print(" showHeals="+p.showHeals);
+        System.out.print(" showEnemyBreakdown="+p.showEnemyBreakdown);
+        System.out.print(" showQuickReport="+p.showQuickReport);
+        System.out.print(" showDamageGraph="+p.showDamageGraph);
+        System.out.println();
         System.out.println("discordThumbnail="+p.discordThumbnail);
         System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
         System.out.println("twitchChannelName="+p.twitchChannelName);

@@ -1,6 +1,6 @@
 package org.vmy.util;
 
-public class DefensiveBooner {
+public class DefensiveBooner implements Comparable<DefensiveBooner> {
     private String name;
     private String profession;
     private String group;

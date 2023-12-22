@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -81,7 +82,7 @@ public class CheckUpdater {
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
-            System.out.println("Latest JAR downloaded: " + tempJarFile.getName() + " " + tempJarFile.length() + " bytes");
+            System.out.println("Latest JAR downloaded: " + tempJarFile.getName() + " " + new DecimalFormat("#,###").format(tempJarFile.length()) + " bytes");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -100,7 +101,7 @@ public class CheckUpdater {
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
-            System.out.println("Latest ZPACK downloaded: " + zpackFile.getName() + " " + zpackFile.length() + " bytes");
+            System.out.println("Latest ZPACK downloaded: " + zpackFile.getName() + " " + new DecimalFormat("#,###").format(zpackFile.length()) + " bytes");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
