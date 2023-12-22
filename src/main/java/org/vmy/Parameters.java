@@ -21,15 +21,18 @@ public class Parameters {
     public String jarName = "";
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
-    public boolean showDamageGraph = true;
+    public boolean showSquadSummary = true;
+    public boolean showEnemySummary = true;
     public boolean showDamage = true;
+    public boolean showSpikeDmg = true;
     public boolean showCleanses = true;
     public boolean showStrips = true;
-    public boolean showSpikeDmg = true;
     public boolean showDefensiveBoons = true;
-    public boolean showCCs = true;
-    public boolean showQuickReport = true;
     public boolean showHeals = true;
+    public boolean showCCs = true;
+    public boolean showEnemyBreakdown = true;
+    public boolean showQuickReport = true;
+    public boolean showDamageGraph = true;
 
     private static Parameters instance = null;
     public static Parameters getInstance() {
@@ -61,15 +64,18 @@ public class Parameters {
             jarName = prop.getProperty("jarName",jarName);
             maxParseMemory = Integer.parseInt(prop.getProperty("maxParseMemory", maxParseMemory+""));
             graphPlayerLimit = Integer.parseInt(prop.getProperty("graphPlayerLimit", graphPlayerLimit+""));
-            showDamageGraph = Boolean.valueOf(prop.getProperty("showDamageGraph", "true"));
+            showSquadSummary = Boolean.valueOf(prop.getProperty("showSquadSummary", "true"));
+            showEnemySummary = Boolean.valueOf(prop.getProperty("showEnemySummary", "true"));
             showDamage = Boolean.valueOf(prop.getProperty("showDamage", "true"));
+            showSpikeDmg = Boolean.valueOf(prop.getProperty("showSpikeDmg", "true"));
             showCleanses = Boolean.valueOf(prop.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(prop.getProperty("showStrips", "true"));
-            showSpikeDmg = Boolean.valueOf(prop.getProperty("showSpikeDmg", "true"));
             showDefensiveBoons = Boolean.valueOf(prop.getProperty("showDefensiveBoons", "true"));
             showCCs = Boolean.valueOf(prop.getProperty("showCCs", "true"));
-            showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));
             showHeals = Boolean.valueOf(prop.getProperty("showHeals", "true"));
+            showEnemyBreakdown = Boolean.valueOf(prop.getProperty("showEnemyBreakdown", "true"));
+            showQuickReport = Boolean.valueOf(prop.getProperty("showQuickReport", "true"));
+            showDamageGraph = Boolean.valueOf(prop.getProperty("showDamageGraph", "true"));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
         } finally { if (file != null) { try { file.close(); } catch (IOException e) {}}}

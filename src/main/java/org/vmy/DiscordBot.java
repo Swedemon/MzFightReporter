@@ -3,6 +3,7 @@ package org.vmy;
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.vmy.util.FightReport;
 
 import java.awt.Color;
@@ -53,9 +54,10 @@ public class DiscordBot {
         embedBuilder.setColor(Color.CYAN.getAlpha());
         embedBuilder.setThumbnailUrl(p.discordThumbnail);
         embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Duration**: "+report.getDuration()+"\n");
-        String squadSummary = "```"+report.getSquadSummary()+"```";
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary",squadSummary));
-        embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
+        if (p.showSquadSummary && report.getSquadSummary()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```"));
+        if (p.showEnemySummary && report.getEnemySummary()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
@@ -70,10 +72,11 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals  (only accurate for healers w/ arcdps heal addon)","```"+report.getHealers()+"```"));
         if (p.showCCs && report.getCcs()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's  (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
+        if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1024)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
         embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",report.getUrl()==null || report.getUrl().isEmpty()?"[DPSReports using EI: Upload process failed]":"[Full Report]("+report.getUrl()+")"));
-        //embedBuilder.setImageUrl("attachment://fightreport.png");
         embedBuilder.setTimestamp(Instant.now());
         WebhookEmbed embed = embedBuilder.build();
         client.send(embed);
