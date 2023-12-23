@@ -10,7 +10,7 @@
 	2. On the left choose 'Integrations' then 'Webhooks'.
 	3. Click on 'New Webhook' then 'Copy Webhook URL' to copy the link.
 3.  Using Notepad edit the file **config.properties** located at your unzip location:
-	1. Set the value of 'discordWebhook' to your new webhook URL.
+	1. Set the value of 'discordWebhook' to your new webhook URL.  Save your file.
 		- Example: ```discordWebhook=https://discord.com/api/webhooks/84073...```
 4.  Open Guild Wars 2 and enter the game.  Open ArcDps options by pressing Alt-Shift-T.
 	1. Under the 'Logging' tab check the wvw option: save (after squad combat)
@@ -33,7 +33,7 @@
 	2. Authorize.
 		- Note: You can manage these connections at https://www.twitch.tv/settings/connections
 3.  Copy the provided 'ACCESS TOKEN'.
-4.  Using Notepad edit the file **config.properties** located at your unzip location.
+4.  Using Notepad edit the file **config.properties** located at your unzip location.  Save your file.
 	1. Set the value of 'twitchChannelName' to your main channel name.
 		- Example: ```twitchChannelName=drdisrespect```
 	2. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
@@ -46,7 +46,7 @@
 <p align="center"><img height="230" src="https://i.imgur.com/GBULKZa.png"/></p>
 <p align="center"><img height="330" src="https://i.imgur.com/GeRrpQh.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/aERE0sC.png"/></p>
-<p align="center"><img src="https://i.imgur.com/LzLxS2C.png"/></p>
+<p align="center"><img height="80" src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img height="360" src="https://i.imgur.com/4pWH2xH.png"/></p>
 
 ## About the Data
