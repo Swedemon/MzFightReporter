@@ -8,9 +8,10 @@ public class Parameters {
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
-    public String gw2EIExe = "\\GW2EI-12-3-23\\GuildWars2EliteInsights.exe";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EISettings = "\\GW2EI-12-3-23\\Settings\\";
+    public String gw2EIDir = "\\GW2EI-12-21-23";
+    public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
+    public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder =
             System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
@@ -19,6 +20,10 @@ public class Parameters {
     public String twitchChannelName = "";
     public String twitchBotToken = "";
     public String jarName = "";
+    public String uploadPostUrl = "https://dps.report/uploadContent";
+    public String uploadPostAltUrl = "https://b.dps.report/uploadContent";
+    public String activeUploadPostUrl = uploadPostUrl;
+    public String uploadToken = "mzfightreporter"+ System.currentTimeMillis();
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
     public boolean showSquadSummary = true;
@@ -53,7 +58,7 @@ public class Parameters {
             prop.load(file);
 
             //set properties
-            gw2EIExe = homeDir + "\\GW2EI-12-3-23\\GuildWars2EliteInsights.exe";
+            gw2EIExe = homeDir + gw2EIDir + "\\GuildWars2EliteInsights.exe";
             curlExe = homeDir + "\\curl\\bin\\curl.exe";
             String lg = prop.getProperty("customLogFolder");
             customLogFolder = prop.getProperty("customLogFolder");
