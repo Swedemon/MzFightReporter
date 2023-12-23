@@ -95,7 +95,7 @@ public class FileWatcher {
 
                         int sizeFactor = 1 + ((int) f.length() / 5000000);
                         int eiWaitTime = sizeFactor * 60 + 60;
-                        int uploadWaitTime = sizeFactor * 60 + 60;
+                        int uploadWaitTime = 150;
                         int parseWaitTime = sizeFactor * 60 + 60;
                         //System.out.println(sizeFactor +","+ eiWaitTime +","+uploadWaitTime +","+parseWaitTime);
 
@@ -120,18 +120,19 @@ public class FileWatcher {
 
                             //upload
                             String uploadUrl = "";
-                            for (int k=0; k<8; k++) {
-                                String uploadPostUrl = "https://dps.report/uploadContent";
+                            for (int k=0; k<5; k++) {
                                 startTime = System.currentTimeMillis();
                                 String uploadRespText = new String();
                                 try {
                                     System.out.println("Invoking Upload...");
                                     ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                            ".\\curl\\bin\\curl.exe", "--max-time", uploadWaitTime + "", "--request", "POST", uploadPostUrl,
+                                            ".\\curl\\bin\\curl.exe",
+                                            "--max-time", Integer.toString(uploadWaitTime),
+                                            "--request", "POST", p.activeUploadPostUrl,
                                             "-H", "\"Transfer-Encoding: chunked\"",
                                             "-H", "\"Connection: keep-alive\"",
                                             "-H", "\"Accept-Encoding: identity\"",
-                                            "-H", "\"Cookie: userToken=0dhhn6op61qb6m7ete5tr2aus0mho374\"",
+                                            "-H", "\"Cookie: userToken=" + p.uploadToken + "\"",
                                             //"-H", "\"Content-Length: " + f.length()+"\"",
                                             //"--limit-rate", "5M",
                                             "--form", "json=1", "--form", "detailedwvw=true",
@@ -165,8 +166,35 @@ public class FileWatcher {
                                     System.out.println("Upload failed: " + e.getMessage());
                                     FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
                                 }
+
                                 if (uploadUrl.length() > 0)
-                                    break;
+                                    break; //break on success
+
+                                //handle failure
+                                int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
+                                System.out.println(seconds+"s");
+                                //if quick failure then change URL
+                                if (seconds < 10) {
+                                    p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
+                                    System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
+                                }
+                                //if long failure
+                                else if (seconds > 60) {
+                                    //change URL at certain increments
+                                    if (k == 1 || k == 3) {
+                                        p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
+                                        System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
+                                    }
+                                    //return to original URL after final failure
+                                    else if (k == 5) {
+                                        p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
+                                    }
+                                    //give the server a break
+                                    else {
+                                        System.out.println("Giving report server a 60s break...");
+                                        Thread.sleep(60000L);
+                                    }
+                                }
                             }
 
                             //call parsebot
