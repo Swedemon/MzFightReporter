@@ -1,5 +1,6 @@
 package org.vmy;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -113,6 +114,10 @@ public class CheckUpdater {
         String jarUrl = null;
         try {
             JSONObject jsonTop = new JSONObject(jsonTxt);
+            if (!jsonTop.has("assets")) {
+                System.out.println("Unable check for updates as the Github rate limit was exceeded.  Try again later.");
+                return null;
+            }
             JSONArray assets = jsonTop.getJSONArray("assets");
             for (Object ao : assets.toList()) {
                 HashMap asset = ((HashMap) ao);
@@ -243,4 +248,57 @@ public class CheckUpdater {
 
         return normalizePath;
     }
+
+    public static void syncBatFile() {
+        Parameters p = Parameters.getInstance();
+
+        try {
+            File batFile = new File(p.homeDir + File.separator + "MzFightReporter.bat");
+            if (batFile.length() != latestContents.length()) {
+                System.out.println("Updating Batch file...");
+                FileUtils.writeStringToFile(batFile, latestContents, "UTF-8");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final String latestContents = "@echo off\n" +
+            "\n" +
+            "tasklist /fi \"imagename eq java.exe\" /v | find \"MzFightReporter\" 1>NUL 2>NUL\n" +
+            "if %ERRORLEVEL% == 0 (\n" +
+            "  echo.\n" +
+            "  echo MzFightReporter is already running!  Exiting.\n" +
+            "  echo.\n" +
+            "  timeout /T 10 /NOBREAK\n" +
+            "  exit\n" +
+            ")\n" +
+            "\n" +
+            "title MzFightReporter Launcher\n" +
+            "\n" +
+            "set .\\jre8\\bin\\;PATH=%PATH%\n" +
+            "\n" +
+            "java -version 1>/dev/nul 2>/dev/nul\n" +
+            "\n" +
+            "if %ERRORLEVEL% == 0 (\n" +
+            "  rem Java is available\n" +
+            ") else (\n" +
+            "  @echo PROBLEM DETECTED: Java could not be located.  Install at www.java.com and try again.\n" +
+            "  @echo.\n" +
+            "  pause\n" +
+            ")\n" +
+            "\n" +
+            "if not DEFINED IS_MINIMIZED set IS_MINIMIZED=1 && start \"\" /min \"%~dpnx0\" %* && exit\n" +
+            "\n" +
+            "echo java -jar MzApp-Latest.jar CheckUpdater\n" +
+            "\n" +
+            "IF EXIST .\\zcore.jar (\n" +
+            "    timeout 3\n" +
+            "    move /y zcore.jar MzApp-Latest.jar\n" +
+            ")\n" +
+            "\n" +
+            "@echo Launching UI...\n" +
+            "\n" +
+            "java -jar MzApp-Latest.jar FileWatcher\n" +
+            "exit\n";
 }
