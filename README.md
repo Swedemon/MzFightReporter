@@ -5,15 +5,18 @@
 ## Setup Instructions (< 5 minutes)
 1. Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
    - https://github.com/Swedemon/MzFightReporter/releases [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
-1. Run the application, go to your unzip location and double click the 'MzFightReporter' file.
-1. In the UI go to 'Settings' tab and enter the 'Discord Webhook'.  Click Apply to save.
-   - Note: On how to create a discord webhook [click here](#create-a-discord-webhook).
-1. Open Guild Wars 2 and enter the game.  Open ArcDps options by pressing Alt-Shift-T.
-   1. Under the 'Logging' tab check the wvw option: save (after squad combat)
-   1. Beside the 'Open' button enter exactly: ```c:\arc```  
-   1. Observe the other settings such as 'min enemy participants': recommended value is 10.
+1. Run the application by going your unzip location and double clicking the 'MzFightReporter' batch file.
+   <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
+1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
+   - On how to create a discord webhook [click here](#create-a-discord-webhook).
+   <p align="center"><img height="100" src="https://i.imgur.com/G91hC1P.png"/></p>
+1. Open Guild Wars 2 then open the ArcDps options by pressing Alt-Shift-T.
+   1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
+   1. Beside the 'OPEN' button enter: ```C:\ARC```  
+   1. Observe the other settings such as 'MINIMUM ENEMY PARTICIPANTS': recommended is 10.
+   <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
 1. Setup complete! Eligible fights will send reports to the UI and your discord channel.
-- Note: To enable healing stats [click here](#enable-healing-stats).
+- Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#optional-twitch-bot-instructions).
 ## Create a Discord Webhook
 1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
