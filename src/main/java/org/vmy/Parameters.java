@@ -26,7 +26,7 @@ public class Parameters {
     public String discordWebhook = "";
     public String twitchChannelName = "";
     public String twitchBotToken = "";
-    public String jarName = "";
+    public String jarName = "MzApp-Latest.jar";
     public String uploadPostUrl = "https://dps.report/uploadContent";
     public String uploadPostAltUrl = "https://b.dps.report/uploadContent";
     public String activeUploadPostUrl = uploadPostUrl;
