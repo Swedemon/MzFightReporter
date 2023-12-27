@@ -235,20 +235,16 @@ public class FileWatcher {
                                         p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
                                         System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
                                     }
-                                    //return to original URL after final failure
-                                    else if (k == 5) {
-                                        p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
-                                    }
                                     //give the server a break
                                     else {
-                                        System.out.println("Giving report server a 60s break...");
+                                        System.out.println("Giving the poor report server a 60s break...");
                                         Thread.sleep(60000L);
                                     }
                                 }
                             }
 
                             //call discordbot on report URL
-                            if (!StringUtils.isEmpty(uploadUrl)) {
+                            if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
                                 System.setOut(new PrintStream(MainFrame.reportStream));
                                 System.out.println("Report URL = " + uploadUrl);
                                 System.setOut(new PrintStream(MainFrame.consoleStream));
@@ -273,7 +269,7 @@ public class FileWatcher {
                                     System.out.println("Graphing Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p3.exitValue());
 
                                     //call discordbot on graph
-                                    if (p3.exitValue() == 0) {
+                                    if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.discordWebhook)) {
                                         MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
                                         DiscordBot dBot = DiscordBot.getSingletonInstance();
                                         dBot.sendGraphMessage();
@@ -293,7 +289,7 @@ public class FileWatcher {
             }
 
             System.out.print(".");
-            if (dotCount > 0 && dotCount % 200 == 0)
+            if (dotCount > 0 && dotCount % 150 == 0)
                 System.out.println();
         }
     }

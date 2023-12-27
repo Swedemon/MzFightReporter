@@ -82,8 +82,6 @@ public class DiscordBot {
     }
 
     protected void sendReportUrlMessage(String url) {
-        Parameters p = Parameters.getInstance();
-
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
 

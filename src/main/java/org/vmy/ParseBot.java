@@ -240,7 +240,7 @@ public class ParseBot {
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
-            System.out.println(buffer);
+            System.out.println("Squad Summary:" + CRLF + buffer);
             System.out.println();
 
             //approximate enemyDps
@@ -253,7 +253,7 @@ public class ParseBot {
                     DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumEnemyDps, 1),
                     countEnemyDowns, countEnemyDeaths));
             report.setEnemySummary(buffer.toString());
-            System.out.println(buffer);
+            System.out.println("Enemy Summary:" + CRLF + buffer);
             System.out.println();
 
             if (dpsers.size()>0) {
@@ -267,7 +267,7 @@ public class ParseBot {
                     if (x.getDamage() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setDamage(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Damage:" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -281,7 +281,7 @@ public class ParseBot {
                 for (Spiker x : spikers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setSpikers(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Spike Damage:" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -295,7 +295,7 @@ public class ParseBot {
                 for (Cleanser x : cleansers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCleanses(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Cleanses:" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -309,7 +309,7 @@ public class ParseBot {
                 for (Stripper x : strippers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setStrips(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Strips:" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -327,7 +327,7 @@ public class ParseBot {
                     }
                 }
                 report.setDbooners(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Defensive Boons:" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -342,7 +342,7 @@ public class ParseBot {
                     if (x.getTotal() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setHealers(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Heals  (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -358,7 +358,7 @@ public class ParseBot {
                     if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCcs(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Outgoing CCs  (stuns immobs chills cripples):" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -373,7 +373,7 @@ public class ParseBot {
                     if (++i <= 15 || (i <= 50 && x.getCount() > 1))
                         buffer.append(x + CRLF);
                 report.setEnemyBreakdown(buffer.toString());
-                System.out.println(buffer);
+                System.out.println("Enemy Breakdown:" + CRLF + buffer);
                 System.out.println();
             }
 

@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
@@ -18,6 +20,7 @@ public class MainFrame {
     public static TextAreaOutputStream reportStream;
     public static JLabel statusLabel = new JLabel();
     public static Parameters p = Parameters.getInstance();
+    public static HashMap<String, Component> settingsMap = new LinkedHashMap<>();
     private static final Color BGCOLOR = new Color(0, 0, 0);
     private static final Color FGCOLOR = new Color(255, 255, 230);
 
@@ -37,7 +40,7 @@ public class MainFrame {
                 VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_ALWAYS);
         consolePanel.add(consoleScroll);
         consoleStream = new TextAreaOutputStream(consoleArea, consoleScroll);
-        consoleArea.append("Welcome to MzFightReporter v4.0.0");
+        consoleArea.append("Welcome to MzFightReporter v" + Parameters.appVersion);
         consoleArea.append("\r\nHosted at https://github.com/Swedemon/MzFightReporter");
         consoleArea.append("\r\n\r\nClick on the Settings tab to apply changes.\r\n\r\n");
 
@@ -51,10 +54,10 @@ public class MainFrame {
         caret = (DefaultCaret) logArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         JScrollPane logScroll = new JScrollPane (logArea,
-                VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+                VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_ALWAYS);
         logPanel.add(logScroll);
         reportStream = new TextAreaOutputStream(logArea, logScroll);
-        logArea.append("Fight Reports will be displayed here.  Ensure the Discord Webhook is applied in the Settings tab.\r\n\r\n");
+        logArea.append("New Fight Reports will be displayed below.\r\n\r\n");
 
         //settings checkbox panel
         JPanel settingsGrandParentPanel = new JPanel();
@@ -65,29 +68,29 @@ public class MainFrame {
         settingsParentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         JPanel settingsCheckboxPanel = new JPanel();
         settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
-        buildCheckBox("Show Squad Summary", settingsCheckboxPanel, p.showSquadSummary);
-        buildCheckBox("Show Enemy Summary", settingsCheckboxPanel, p.showEnemySummary);
-        buildCheckBox("Show Damage", settingsCheckboxPanel, p.showDamage);
-        buildCheckBox("Show Spike Damage", settingsCheckboxPanel, p.showSpikeDmg);
-        buildCheckBox("Show Cleanses", settingsCheckboxPanel, p.showCleanses);
-        buildCheckBox("Show Strips", settingsCheckboxPanel, p.showStrips);
-        buildCheckBox("Show Defensive Boons", settingsCheckboxPanel, p.showDefensiveBoons);
-        buildCheckBox("Show Heals", settingsCheckboxPanel, p.showHeals);
-        buildCheckBox("Show Outgoing CC's", settingsCheckboxPanel, p.showCCs);
-        buildCheckBox("Show Enemy Breakdown", settingsCheckboxPanel, p.showEnemyBreakdown);
-        buildCheckBox("Show Quick Report", settingsCheckboxPanel, p.showQuickReport);
-        buildCheckBox("Show Damage Graph", settingsCheckboxPanel, p.showDamageGraph);
+        buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", p.showSquadSummary);
+        buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", p.showEnemySummary);
+        buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", p.showDamage);
+        buildCheckBox(settingsCheckboxPanel, "showSpikeDmg", "Show Spike Damage", p.showSpikeDmg);
+        buildCheckBox(settingsCheckboxPanel, "showCleanses", "Show Cleanses", p.showCleanses);
+        buildCheckBox(settingsCheckboxPanel, "showStrips", "Show Strips", p.showStrips);
+        buildCheckBox(settingsCheckboxPanel, "showDefensiveBoons", "Show Defensive Boons", p.showDefensiveBoons);
+        buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", p.showHeals);
+        buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", p.showCCs);
+        buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", p.showEnemyBreakdown);
+        buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
+        buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
         settingsTextFieldPanel.setPreferredSize(new Dimension(300,200));
-        buildTextField(settingsTextFieldPanel, "Discord Webhook", p.discordWebhook, 50, true);
-        buildTextField(settingsTextFieldPanel, "Discord Thumbnail", p.discordThumbnail, 12, false);
-        buildTextField(settingsTextFieldPanel, "Twitch Channel Name", p.twitchChannelName, 12, false);
-        buildTextField(settingsTextFieldPanel, "Twitch Bot Token", p.twitchBotToken, 12, false);
-        buildTextField(settingsTextFieldPanel, "Custom Log Folder", p.customLogFolder, 12, false);
-        buildTextField(settingsTextFieldPanel, "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
-        buildTextField(settingsTextFieldPanel, "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
+        buildTextField(settingsTextFieldPanel, "customLogFolder", "Custom Log Folder", p.customLogFolder, 12, false);
+        buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook", p.discordWebhook, 50, true);
+        buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
+        buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
+        buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
+        buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
         settingsParentPanel.add(settingsCheckboxPanel);
         settingsParentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
         settingsParentPanel.add(settingsTextFieldPanel);
@@ -100,9 +103,23 @@ public class MainFrame {
         settingsButtonPane.setLayout(new BoxLayout(settingsButtonPane, BoxLayout.LINE_AXIS));
         settingsButtonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         settingsButtonPane.add(Box.createHorizontalGlue());
-        settingsButtonPane.add(new Button("Apply"));
+        Button saveButton = new Button("Apply");
+        settingsButtonPane.add(saveButton);
+        saveButton.addActionListener(actionEvent -> {
+            String errors = Parameters.getInstance().validateSettings(settingsMap);
+            if (errors.length() == 0) {
+                Parameters.getInstance().saveSettings(settingsMap);
+                JOptionPane.showMessageDialog(null, "Settings updated successfully." + errors, "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Errors detected:\n\n" + errors, "Error Saving", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         settingsButtonPane.add(Box.createRigidArea(new Dimension(30, 0)));
-        settingsButtonPane.add(new Button("Reset"));
+        Button resetButton = new Button("Reset");
+        settingsButtonPane.add(resetButton);
+        resetButton.addActionListener(actionEvent -> {
+            Parameters.getInstance().resetSettings(settingsMap);
+        });
         settingsButtonPane.add(Box.createRigidArea(new Dimension(30, 200)));
         settingsButtonPane.add(Box.createHorizontalGlue());
         settingsGrandParentPanel.add(settingsButtonPane);
@@ -117,9 +134,8 @@ public class MainFrame {
         aboutPanel.setLayout(new BoxLayout(aboutPanel, BoxLayout.Y_AXIS));
         aboutPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         aboutPanel.add(Box.createHorizontalGlue());
-        aboutPanel.add(new JLabel("MzFightReporter v4.0.0"));
+        aboutPanel.add(new JLabel("MzFightReporter v" + Parameters.appVersion));
         aboutPanel.add(buildURLButton("https://github.com/Swedemon/MzFightReporter", "Website"));
-        aboutPanel.add(new JLabel("Author: Swedemon.4670"));
 
         //add tab panels
         tabbedPane.addTab("Console", consolePanel);
@@ -136,25 +152,28 @@ public class MainFrame {
         component.setForeground(FGCOLOR);
     }
 
-    private static void buildCheckBox(String label, JPanel settingsCheckboxPanel, boolean state) {
+    private static void buildCheckBox(JPanel jPanel, String property, String label, boolean state) {
         Checkbox checkbox = new Checkbox(label);
         checkbox.setState(state);
+        checkbox.setName(property);
         addMouseOver(checkbox);
-        settingsCheckboxPanel.add(checkbox);
+        jPanel.add(checkbox);
+        settingsMap.put(property, checkbox);
     }
 
-    private static JTextField buildTextField(JPanel panel, String name, String value, int columns, boolean isBold) {
+    private static void buildTextField(JPanel panel, String property, String label, String value, int columns, boolean isBold) {
         GridBagConstraints c = new GridBagConstraints();
-        JLabel label = new JLabel(name);
-        label.setSize(50, 20);
-        label.setPreferredSize(new Dimension(50, 20));
-        label.setMinimumSize(new Dimension(50, 20));
-        label.setMaximumSize(new Dimension(50, 20));
+        JLabel jLabel = new JLabel(label);
+        jLabel.setSize(50, 20);
+        jLabel.setPreferredSize(new Dimension(50, 20));
+        jLabel.setMinimumSize(new Dimension(50, 20));
+        jLabel.setMaximumSize(new Dimension(50, 20));
         if (isBold)
-            label.setFont(new Font(label.getFont().getFontName(), Font.BOLD, label.getFont().getSize()));
+            jLabel.setFont(new Font(jLabel.getFont().getFontName(), Font.BOLD, jLabel.getFont().getSize()));
         c.gridx = 100;
-        panel.add(label, c);
+        panel.add(jLabel, c);
         JTextField textField = new JTextField(value, columns);
+        textField.setToolTipText(property);
         textField.setSize(70, 20);
         textField.setPreferredSize(new Dimension(70, 20));
         textField.setMinimumSize(new Dimension(70, 20));
@@ -163,7 +182,9 @@ public class MainFrame {
         addMouseOver(textField);
         panel.add(textField, c);
         textField.setHorizontalAlignment(SwingConstants.LEFT);
-        return textField;
+        textField.setScrollOffset(0);
+        textField.setCaretPosition(0);
+        settingsMap.put(property, textField);
     }
 
     private static void addMouseOver(Component component) {
@@ -186,8 +207,7 @@ public class MainFrame {
             public void mouseClicked(MouseEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI(url));
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }
         });
         return webLabel;
@@ -200,7 +220,7 @@ public class MainFrame {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("MzFightReporter UI v4.0.0");
+        JFrame frame = new JFrame("MzFightReporter UI v" + Parameters.appVersion);
         frame.setSize(900,700);
         frame.setLocation(200, 100);
         //frame.setLocationRelativeTo(null);
