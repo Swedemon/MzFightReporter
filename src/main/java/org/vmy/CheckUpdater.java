@@ -290,7 +290,7 @@ public class CheckUpdater {
             "\n" +
             "if not DEFINED IS_MINIMIZED set IS_MINIMIZED=1 && start \"\" /min \"%~dpnx0\" %* && exit\n" +
             "\n" +
-            "echo java -jar MzApp-Latest.jar CheckUpdater\n" +
+            "java -jar MzApp-Latest.jar CheckUpdater\n" +
             "\n" +
             "IF EXIST .\\zcore.jar (\n" +
             "    timeout 3\n" +
