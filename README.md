@@ -3,20 +3,19 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
 ## Setup Instructions (< 5 minutes)
-1. Download and unzip the latest version of ```MzFightReporter_X.zip``` to any directory.
-   - https://github.com/Swedemon/MzFightReporter/releases [![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)](https://github.com/Swedemon/MzFightReporter/releases/latest)
-1. Run the application by going your unzip location and double clicking the 'MzFightReporter' batch file.
+1. Download and unzip the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total) to any directory. 
+1. Start the application by going your unzip location and double clicking the 'MzFightReporter' batch file.
    <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
 1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
-   - On how to create a discord webhook [click here](#create-a-discord-webhook).
+   - For help creating a discord webhook [click here](#create-a-discord-webhook).
    <p align="center"><img height="100" src="https://i.imgur.com/G91hC1P.png"/></p>
 1. Open Guild Wars 2 then open the ArcDps options by pressing Alt-Shift-T.
    1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
    1. Beside the 'OPEN' button enter: ```C:\ARC```  
-   1. Observe the other settings such as 'MINIMUM ENEMY PARTICIPANTS': recommended is 10.
+   1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10.
    <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
-1. Setup complete! Eligible fights will send reports to the UI and your discord channel.
-- Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#optional-twitch-bot-instructions).
+Setup is complete! Eligible fights will send reports to the UI and your discord channel.
+- Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
 ## Create a Discord Webhook
 1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
@@ -27,20 +26,17 @@
    - Note: To view the in-game heal window check 'peers outgoing' option.
 ## How to Upgrade?
 - Releases since version 2.1 will automatically update. For older versions go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.
-## (Optional) Twitch Bot Instructions
+## Twitch Bot Instructions
 1. Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
 1. Go to https://twitchtokengenerator.com/
    1. Choose the option: Bot Chat Token
    1. Authorize.
       - Note: You can manage these connections at https://www.twitch.tv/settings/connections
 1.  Copy the provided 'ACCESS TOKEN'.
-1.  Using Notepad edit the file **config.properties** located at your unzip location.  Save your file.
-   1. Set the value of 'twitchChannelName' to your main channel name.
-      - Example: ```twitchChannelName=drdisrespect```
-   1. Set the value of 'twitchBotToken' to the copied ACCESS TOKEN.
-      - Example: ```twitchBotToken=li3j3l1ijlj13llj13lj1i3```
-- Note: To disable the twitch bot revert ```twitchChannelName``` back to empty.
-- Note: Do not to share your access token.  If necessary you can disconnect it and create a new one.
+1.  In the UI click on the 'Settings' tab and enter the below settings.  Click Apply to save.
+      1. Set the value of 'Twitch Channel Name' to your main channel name.
+      1. Set the value of 'Twitch Bot Token' to the copied ACCESS TOKEN.
+- Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
 <p align="center"><img height="450" src="https://i.imgur.com/OeQPypv.png"/></p>
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
