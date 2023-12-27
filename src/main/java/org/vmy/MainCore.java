@@ -7,10 +7,9 @@ public class MainCore {
         String mainName = args[0];
         switch (mainName) {
             case "CheckUpdater": CheckUpdater.main(args); break;
-            case "FileWatcher": FileWatcher.main(args); break;
             case "ParseBot": ParseBot.main(args); break;
             case "GraphBot": GraphBot.main(args); break;
-            default: throw new Exception("Unknown mainClass: " + mainName);
+            default: FileWatcher.main(args);
         }
     }
 }

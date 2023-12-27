@@ -2,6 +2,7 @@
 package org.vmy;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.vmy.util.FightReport;
 
 import java.io.*;
@@ -20,6 +21,8 @@ public class FileWatcher {
 
     public void run() throws Exception {
         Parameters p = Parameters.getInstance();
+
+        CheckUpdater.syncBatFile();
 
         if (new File(p.homeDir + File.separator + p.gw2EIExe).exists()) {
             System.out.println("Detected GuildWars2EliteInsights application.");
@@ -49,13 +52,13 @@ public class FileWatcher {
         File defaultFolder = new File(p.defaultLogFolder);
 
         //loop to await folder detection
-        System.out.println("Parent folder(s) configured to monitor ArcDps log files:");
+        System.out.println("\r\nParent folders configured to monitor ArcDps log files:");
         if (p.customLogFolder!=null && p.customLogFolder.length()>0)
             System.out.println("   > " + folder.getAbsolutePath());
         System.out.println("   > " + defaultFolder.getAbsolutePath());
         while (true) {
             if (folder.exists() || defaultFolder.exists()) {
-                System.out.println("OK");
+                System.out.println();
                 break;
             }
             Thread.sleep(10000L);
@@ -68,7 +71,11 @@ public class FileWatcher {
         System.out.println("Monitoring ArcDps log files.");
 
         //continuous file monitor loop
+        int dotCount = 0;
         while (true) {
+            dotCount++;
+
+            MainFrame.statusLabel.setText("Status: Monitoring ArcDps logs");
 
             //short pause
             Thread.sleep(2000L);
@@ -81,6 +88,8 @@ public class FileWatcher {
 
             //monitor file for completion then process
             if (f != null) {
+                dotCount = 0;
+                MainFrame.statusLabel.setText("Status: Processing " + f.getName());
                 String fullFilePath = f.getAbsolutePath();
                 fileMap.put(fullFilePath,f);
                 long lastModified = f.lastModified();
@@ -102,11 +111,12 @@ public class FileWatcher {
                         //parse json
                         long startTime = System.currentTimeMillis();
                         System.out.println("Invoking GW2EI...");
+                        MainFrame.statusLabel.setText("Status: Invoking GW2EI");
                         ProcessBuilder pb1 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
                                 "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
                         pb1.directory(new File(p.homeDir));
-                        pb1.inheritIO();
                         Process p1 = pb1.start();
+                        //handleIO(p1);
                         boolean finished = p1.waitFor(eiWaitTime, TimeUnit.SECONDS);
                         if (finished) {
                             System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p1.exitValue());
@@ -114,17 +124,54 @@ public class FileWatcher {
                             System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
                         }
 
-                        File logFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+".log");
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
                         if (jsonFile.exists()) {
+
+                            //call parsebot
+                            startTime = System.currentTimeMillis();
+                            System.out.println("Generating FightReport...");
+                            MainFrame.statusLabel.setText("Status: Generating FightReport");
+                            System.setOut(new PrintStream(MainFrame.reportStream));
+                            System.out.println("------------------------------------------------------------------------------------------------");
+                            ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+                                    "/wait", "java", "-Xms1M", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot",
+                                    jsonFile.getAbsolutePath(), p.homeDir, "");
+                            pb2.directory(new File(p.homeDir));
+                            Process p2 = pb2.start();
+                            handleIO(p2);
+                            p2.waitFor(parseWaitTime, TimeUnit.SECONDS);
+                            System.setOut(new PrintStream(MainFrame.consoleStream));
+                            System.out.println("FightReport Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p2.exitValue());
+
+                            //delete json file
+                            try { jsonFile.delete(); } catch (Exception ignored) {}
+
+                            //call discordbot and twitchbot on main fight report
+                            FightReport report = FightReport.readReportFile();
+                            if (report==null) {
+                                System.out.println("ERROR: FightReport file not available.");
+                            } else {
+                                if (!StringUtils.isEmpty(p.discordWebhook)) {
+                                    MainFrame.statusLabel.setText("Status: Sending to Discord");
+                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
+                                    dBot.sendMainMessage(report);
+                                }
+                                if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
+                                    MainFrame.statusLabel.setText("Status: Sending to Twitch");
+                                    TwitchBot tBot = TwitchBot.getSingletonInstance();
+                                    tBot.sendMessage(report.getOverview());
+                                }
+                                MainFrame.statusLabel.setText("Status: Finished " + f.getName());
+                            }
 
                             //upload
                             String uploadUrl = "";
                             for (int k=0; k<5; k++) {
                                 startTime = System.currentTimeMillis();
-                                String uploadRespText = new String();
+                                String uploadRespText = "";
                                 try {
                                     System.out.println("Invoking Upload...");
+                                    MainFrame.statusLabel.setText("Status: Invoking Upload");
                                     ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
                                             ".\\curl\\bin\\curl.exe",
                                             "--max-time", Integer.toString(uploadWaitTime),
@@ -139,8 +186,11 @@ public class FileWatcher {
                                             "--form", "\"file=@" + fullFilePath + "\"" )
                                             .redirectError(new File("uploadStats.txt"));
                                     //System.out.println(String.join(" ", pb0.command()));
+                                    //pb0.inheritIO();
+                                    //pb0.redirectError(ProcessBuilder.Redirect.INHERIT);
                                     pb0.directory(new File(p.homeDir));
                                     Process p0 = pb0.start();
+                                    //handleIO(p0);
                                     try (BufferedReader reader =
                                                  new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
                                         StringBuilder builder = new StringBuilder();
@@ -185,57 +235,50 @@ public class FileWatcher {
                                         p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
                                         System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
                                     }
-                                    //return to original URL after final failure
-                                    else if (k == 5) {
-                                        p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
-                                    }
                                     //give the server a break
                                     else {
-                                        System.out.println("Giving report server a 60s break...");
+                                        System.out.println("Giving the poor report server a 60s break...");
                                         Thread.sleep(60000L);
                                     }
                                 }
                             }
 
-                            //call parsebot
-                            startTime = System.currentTimeMillis();
-                            System.out.println("Generating FightReport...");
-                            ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                    "/wait", "java", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot", jsonFile.getAbsolutePath(),
-                                    logFile.getAbsolutePath(), p.homeDir, uploadUrl);
-                            pb2.inheritIO();
-                            pb2.directory(new File(p.homeDir));
-                            Process p2 = pb2.start();
-                            p2.waitFor(parseWaitTime, TimeUnit.SECONDS);
-                            System.out.println("FightReport Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p2.exitValue());
+                            //call discordbot on report URL
+                            if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
+                                System.setOut(new PrintStream(MainFrame.reportStream));
+                                System.out.println("Report URL = " + uploadUrl);
+                                System.setOut(new PrintStream(MainFrame.consoleStream));
+                                MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
+                                DiscordBot dBot = DiscordBot.getSingletonInstance();
+                                dBot.sendReportUrlMessage(uploadUrl);
+                            }
+                            MainFrame.statusLabel.setText("Status: Finished " + f.getName());
 
+                            //call graphbot
                             if (p2.exitValue() == 0) {
-
-                                //call graphbot
                                 if (p.graphPlayerLimit > 0 && p.showDamageGraph) {
                                     startTime = System.currentTimeMillis();
                                     System.out.println("Generating Graph...");
+                                    MainFrame.statusLabel.setText("Status: Generating Graph");
                                     ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b",
                                             "/belownormal", "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
-                                    pb3.inheritIO();
                                     pb3.directory(new File(p.homeDir));
                                     Process p3 = pb3.start();
+                                    handleIO(p3);
                                     p3.waitFor(parseWaitTime, TimeUnit.SECONDS);
                                     System.out.println("Graphing Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p3.exitValue());
-                                }
 
-                                //call discordbot and twitchbot
-                                FightReport report = FightReport.readReportFile();
-                                if (report==null) {
-                                    System.out.println("ERROR: FightReport file not available.");
-                                } else {
-                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
-                                    dBot.sendWebhookMessage(report);
-                                    TwitchBot tBot = TwitchBot.getSingletonInstance();
-                                    tBot.sendMessage(report.getOverview());
+                                    //call discordbot on graph
+                                    if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.discordWebhook)) {
+                                        MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
+                                        DiscordBot dBot = DiscordBot.getSingletonInstance();
+                                        dBot.sendGraphMessage();
+                                    }
                                 }
                             }
-                            try { jsonFile.delete(); if (logFile.exists()) logFile.delete(); } catch (Exception e) {}
+
+                            //finished
+                            MainFrame.statusLabel.setText("Status: Finished " + f.getName());
                         }
                         break; //exit loop
                     } else { //else keep looping until file is no longer being modified
@@ -246,6 +289,19 @@ public class FileWatcher {
             }
 
             System.out.print(".");
+            if (dotCount > 0 && dotCount % 150 == 0)
+                System.out.println();
+        }
+    }
+
+    private void handleIO(Process p) throws IOException {
+        InputStream is = p.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String line;
+        while ((line = br.readLine()) != null)
+        {
+            System.out.println(line);
         }
     }
 
@@ -310,41 +366,16 @@ public class FileWatcher {
     public static void main(String[] args) throws Exception {
         Parameters p = Parameters.getInstance();
 
-        System.out.println("\n*** MzFightReporter ***\n");
-        System.out.println("Note:\n   You should see a dot printed below every few seconds indicating ArcDps log polling.\n"
-                +"   You can change settings in the config properties file at the install location.\n");
+        MainFrame.start();
 
-        if (args.length>1)
-            p.homeDir = args[1];
+        System.setOut(new PrintStream(MainFrame.consoleStream));
 
-        System.out.println("homeDir="+p.homeDir);
-        System.out.println("defaultLogFolder="+p.defaultLogFolder);
-        System.out.println("customLogFolder="+p.customLogFolder);
-        System.out.print("showSquadSummary="+p.showSquadSummary);
-        System.out.print(" showEnemySummary="+p.showEnemySummary);
-        System.out.print(" showDamage="+p.showDamage);
-        System.out.print(" showSpikeDmg="+p.showSpikeDmg);
-        System.out.print(" showCleanses="+p.showCleanses);
-        System.out.print(" showStrips="+p.showStrips);
-        System.out.print(" showDefensiveBoons="+p.showDefensiveBoons);
-        System.out.print(" showCCs="+p.showCCs);
-        System.out.print(" showHeals="+p.showHeals);
-        System.out.print(" showEnemyBreakdown="+p.showEnemyBreakdown);
-        System.out.print(" showQuickReport="+p.showQuickReport);
-        System.out.print(" showDamageGraph="+p.showDamageGraph);
-        System.out.println();
-        System.out.println("discordThumbnail="+p.discordThumbnail);
-        System.out.println("discordWebhook=("+new String(p.discordWebhook).length()+" characters)");
-        System.out.println("twitchChannelName="+p.twitchChannelName);
-        System.out.println("twitchBotToken=("+new String(p.twitchBotToken).length()+" characters)");
-        System.out.println("jarName="+p.jarName);
-        System.out.println("maxParseMemory="+p.maxParseMemory);
-        System.out.println("graphPlayerLimit="+p.graphPlayerLimit);
-        System.out.println();
+        System.out.println("Note:  You will see a dot printed below every few seconds indicating ArcDps log polling.\n");
+
+        p.homeDir = System.getProperty("user.dir");
 
         if (p.discordWebhook==null || p.discordWebhook.length()==0) {
-            System.out.println("ERROR: Discord webhook is missing.  Review README.txt for install instructions.");
-            System.exit(1);
+            System.out.println("*** WARNING ***: Discord webhook is not yet defined in the Settings!\r\n");
         }
 
         new FileWatcher().run();

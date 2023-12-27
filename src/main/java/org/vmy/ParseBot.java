@@ -18,7 +18,7 @@ public class ParseBot {
 
     private static final String CRLF = "\n";
 
-    protected static FightReport processWvwJsonLog(File jsonFile, File logFile, String uploadUrl) throws IOException {
+    protected static FightReport processWvwJsonLog(File jsonFile, String uploadUrl) throws IOException {
         JSONObject jo = new JSONObject();
         FightReport report = new FightReport();
 
@@ -226,6 +226,11 @@ public class ParseBot {
                 g.setDeaths(g.getDeaths()+plyr.getDeaths());
             }
 
+            System.out.println("Zone: " + report.getZone());
+            System.out.println("Commander: " + report.getCommander());
+            System.out.println("Time: " + report.getEndTime());
+            System.out.println("Duration: " + report.getDuration());
+            System.out.println();
 
             //write to buffer
             StringBuffer buffer = new StringBuffer();
@@ -235,6 +240,8 @@ public class ParseBot {
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
+            System.out.println("Squad Summary:" + CRLF + buffer);
+            System.out.println();
 
             //approximate enemyDps
             sumEnemyDps = (int) sumEnemyDmg / battleLength;
@@ -246,6 +253,8 @@ public class ParseBot {
                     DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumEnemyDps, 1),
                     countEnemyDowns, countEnemyDeaths));
             report.setEnemySummary(buffer.toString());
+            System.out.println("Enemy Summary:" + CRLF + buffer);
+            System.out.println();
 
             if (dpsers.size()>0) {
                 buffer = new StringBuffer();
@@ -258,6 +267,8 @@ public class ParseBot {
                     if (x.getDamage() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setDamage(buffer.toString());
+                System.out.println("Damage:" + CRLF + buffer);
+                System.out.println();
             }
 
             if (spikers.size()>0) {
@@ -270,6 +281,8 @@ public class ParseBot {
                 for (Spiker x : spikers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setSpikers(buffer.toString());
+                System.out.println("Spike Damage:" + CRLF + buffer);
+                System.out.println();
             }
 
             if (cleansers.size()>0) {
@@ -282,6 +295,8 @@ public class ParseBot {
                 for (Cleanser x : cleansers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCleanses(buffer.toString());
+                System.out.println("Cleanses:" + CRLF + buffer);
+                System.out.println();
             }
 
             if (strippers.size()>0) {
@@ -294,6 +309,8 @@ public class ParseBot {
                 for (Stripper x : strippers.subList(0, count))
                     buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setStrips(buffer.toString());
+                System.out.println("Strips:" + CRLF + buffer);
+                System.out.println();
             }
 
             if (dbooners.size()>0) {
@@ -310,6 +327,8 @@ public class ParseBot {
                     }
                 }
                 report.setDbooners(buffer.toString());
+                System.out.println("Defensive Boons:" + CRLF + buffer);
+                System.out.println();
             }
 
             if (healers.size()>0) {
@@ -323,6 +342,8 @@ public class ParseBot {
                     if (x.getTotal() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setHealers(buffer.toString());
+                System.out.println("Heals  (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
+                System.out.println();
             }
 
             if (condiers.size()>0) {
@@ -337,6 +358,8 @@ public class ParseBot {
                     if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCcs(buffer.toString());
+                System.out.println("Outgoing CCs  (stuns immobs chills cripples):" + CRLF + buffer);
+                System.out.println();
             }
 
             if (enemies.size()>0) {
@@ -350,6 +373,8 @@ public class ParseBot {
                     if (++i <= 15 || (i <= 50 && x.getCount() > 1))
                         buffer.append(x + CRLF);
                 report.setEnemyBreakdown(buffer.toString());
+                System.out.println("Enemy Breakdown:" + CRLF + buffer);
+                System.out.println();
             }
 
             buffer = new StringBuffer();
@@ -358,6 +383,7 @@ public class ParseBot {
                     countEnemyPlayers, DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2), countEnemyDeaths));
             report.setOverview(buffer.toString());
             System.out.println(buffer);
+            System.out.println();
 
         } finally {
             is.close();
@@ -483,16 +509,15 @@ public class ParseBot {
 
     public static void main(String[] args) throws Exception {
         File jsonFile = new File(args[1]);
-        File logFile = new File(args[2]);
-        String homeDir = args[3];
-        String uploadUrl = args[4];
+        String homeDir = args[2];
+        String uploadUrl = args[3];
         if (jsonFile.exists()) {
-            FightReport report = processWvwJsonLog(jsonFile, logFile, uploadUrl);
+            FightReport report = processWvwJsonLog(jsonFile, uploadUrl);
 
             FileOutputStream frf = null;
             ObjectOutputStream o = null;
             try {
-                frf = new FileOutputStream(new File(homeDir + File.separator + "fightreport.bin"));
+                frf = new FileOutputStream(homeDir + File.separator + "fightreport.bin");
                 o = new ObjectOutputStream(frf);
                 // Write objects to file
                 o.writeObject(report);
