@@ -3,13 +3,13 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
 ## Setup Instructions (< 5 minutes)
-1. Download and unzip the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total) to any directory. 
-1. Start the application by going your unzip location and double clicking the 'MzFightReporter' batch file.
+1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total). 
+1. Start the application by going to your unzip location and double clicking the 'MzFightReporter' batch file.
    <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
 1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
    - For help creating a discord webhook [click here](#create-a-discord-webhook).
    <p align="center"><img height="100" src="https://i.imgur.com/G91hC1P.png"/></p>
-1. Open Guild Wars 2 then open the ArcDps options by pressing Alt-Shift-T.
+1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).
    1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
    1. Beside the 'OPEN' button enter: ```C:\ARC```  
    1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10.
@@ -17,12 +17,12 @@
 Setup is complete! Eligible fights will send reports to the UI and your discord channel.
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
 ## Create a Discord Webhook
-1. In your Discord create a channel.  Right click on it and choose 'Edit Channel'.
+1. In your Discord create a channel Then right click it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
-1. Click on 'New Webhook' then 'Copy Webhook URL' to copy the link.
+1. Click on 'New Webhook' then click 'Copy Webhook URL' to copy the link.
 ## Enable Healing Stats
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
-1. In the ArcDps options (Alt-Shift-T) under 'Extensions' choose the 'healing_stats' tab. Then check 'log healing' and 'enable live sharing'.
+1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check 'peers outgoing' option.
 ## How to Upgrade?
 - Releases since version 2.1 will automatically update. For older versions go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.
@@ -32,10 +32,10 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
    1. Choose the option: Bot Chat Token
    1. Authorize.
       - Note: You can manage these connections at https://www.twitch.tv/settings/connections
-1.  Copy the provided 'ACCESS TOKEN'.
+1.  Copy the provided 'Access Token'.
 1.  In the UI click on the 'Settings' tab and enter the below settings.  Click Apply to save.
       1. Set the value of 'Twitch Channel Name' to your main channel name.
-      1. Set the value of 'Twitch Bot Token' to the copied ACCESS TOKEN.
+      1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
 <p align="center"><img height="450" src="https://i.imgur.com/OeQPypv.png"/></p>
