@@ -266,6 +266,7 @@ public class CheckUpdater {
     private static final String latestContents = "@echo off\n" +
             "\n" +
             "tasklist /fi \"imagename eq java.exe\" /v | find \"MzFightReporter\" 1>NUL 2>NUL\n" +
+            "\n" +
             "if %ERRORLEVEL% == 0 (\n" +
             "  echo.\n" +
             "  echo MzFightReporter is already running!  Exiting.\n" +
@@ -276,9 +277,9 @@ public class CheckUpdater {
             "\n" +
             "title MzFightReporter Launcher\n" +
             "\n" +
-            "set .\\jre8\\bin\\;PATH=%PATH%\n" +
+            "set PATH=.\\jre8\\bin\\;%PATH%\n" +
             "\n" +
-            "java -version 1>/dev/nul 2>/dev/nul\n" +
+            "java -version 1>nul 2>nul\n" +
             "\n" +
             "if %ERRORLEVEL% == 0 (\n" +
             "  rem Java is available\n" +
