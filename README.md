@@ -3,8 +3,10 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
 ## Setup Instructions (< 5 minutes)
-1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total). 
+1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
+   - Note: To unzip right click the downloaded file and select 'Extract All...'
 1. Start the application by going to your unzip location and double clicking the 'MzFightReporter' batch file.
+   - Note: If windows gives a warning message you can click on 'More Info' then 'Run Anyways'.
    <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
 1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
    - For help creating a discord webhook [click here](#create-a-discord-webhook).
