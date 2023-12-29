@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.0.1";
+    public static final String appVersion = "4.0.2";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -105,8 +105,7 @@ public class Parameters {
                         ((JTextField) o).setText("C:\\Arc\\");
                         break;
                     } else {
-                        File f = new File(text);
-                        if (!f.isDirectory() || text.length() < 4)
+                        if (text.length() < 4)
                             errorContent += "- Not a valid Custom Log Folder.\r\n";
                     }
                     break;
