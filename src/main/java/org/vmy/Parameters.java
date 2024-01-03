@@ -33,6 +33,7 @@ public class Parameters {
     public Properties props = new Properties();
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
+    public int uploadLimitMegabytes = 15;
     public boolean enableReportUpload = false;
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
@@ -73,6 +74,7 @@ public class Parameters {
             jarName = props.getProperty("jarName",jarName);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
+            uploadLimitMegabytes = Integer.parseInt(props.getProperty("uploadLimitMegabytes", uploadLimitMegabytes+""));
             enableReportUpload = Boolean.valueOf(props.getProperty("enableReportUpload", "true"));
             showSquadSummary = Boolean.valueOf(props.getProperty("showSquadSummary", "true"));
             showEnemySummary = Boolean.valueOf(props.getProperty("showEnemySummary", "true"));
@@ -157,6 +159,19 @@ public class Parameters {
                 case "twitchBotToken":
                 case "twitchChannelName":
                     break;
+                case "uploadLimitMegabytes":
+                    if (StringUtils.isEmpty(text)) {
+                        ((JTextField) o).setText("15");
+                    } else {
+                        try {
+                            int val = Integer.parseInt(text);
+                            if (val < 0 || val > 99)
+                                errorContent += "- Upload Limit (MB) must be a number from 0 to 99.\r\n";
+                        } catch (Exception e) {
+                            errorContent += "- Upload Limit (MB) must be a number from 0 to 99.\r\n";
+                        }
+                    }
+                    break;
                 default:
             }
         }
@@ -225,6 +240,7 @@ public class Parameters {
                     case "maxParseMemory": jTextField.setText(String.valueOf(p.maxParseMemory)); jTextField.setCaretPosition(0); break;
                     case "twitchBotToken": jTextField.setText(p.twitchBotToken); jTextField.setCaretPosition(0); break;
                     case "twitchChannelName": jTextField.setText(p.twitchChannelName); jTextField.setCaretPosition(0); break;
+                    case "uploadLimitMegabytes": jTextField.setText(String.valueOf(p.uploadLimitMegabytes)); jTextField.setCaretPosition(0); break;
                     default:
                 }
             }

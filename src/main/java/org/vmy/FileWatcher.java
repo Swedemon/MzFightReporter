@@ -102,11 +102,11 @@ public class FileWatcher {
                         String confFolder = p.homeDir + p.gw2EISettings;
                         String parseConfig = confFolder + "wvwnoupload.conf";
 
+                        int fileMegabytes = (int) f.length() / 1048576;
                         int sizeFactor = 1 + ((int) f.length() / 5000000);
                         int eiWaitTime = sizeFactor * 60 + 60;
                         int uploadWaitTime = 150;
                         int parseWaitTime = sizeFactor * 60 + 60;
-                        //System.out.println(sizeFactor +","+ eiWaitTime +","+uploadWaitTime +","+parseWaitTime);
 
                         //parse json
                         long startTime = System.currentTimeMillis();
@@ -116,7 +116,6 @@ public class FileWatcher {
                                 "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
                         pb1.directory(new File(p.homeDir));
                         Process p1 = pb1.start();
-                        //handleIO(p1);
                         boolean finished = p1.waitFor(eiWaitTime, TimeUnit.SECONDS);
                         if (finished) {
                             System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p1.exitValue());
@@ -165,7 +164,9 @@ public class FileWatcher {
                             }
 
                             //upload
-                            if (p.enableReportUpload) {
+                            if (fileMegabytes > p.uploadLimitMegabytes) {
+                                System.out.println("Skipping upload. File size exceeds limit defined in the Settings.");
+                            } else if (p.enableReportUpload) {
                                 String uploadUrl = "";
                                 for (int k = 0; k < 2; k++) {
                                     startTime = System.currentTimeMillis();
@@ -186,12 +187,8 @@ public class FileWatcher {
                                                 "--form", "json=1", "--form", "detailedwvw=true",
                                                 "--form", "\"file=@" + fullFilePath + "\"")
                                                 .redirectError(new File("uploadStats.txt"));
-                                        //System.out.println(String.join(" ", pb0.command()));
-                                        //pb0.inheritIO();
-                                        //pb0.redirectError(ProcessBuilder.Redirect.INHERIT);
                                         pb0.directory(new File(p.homeDir));
                                         Process p0 = pb0.start();
-                                        //handleIO(p0);
                                         try (BufferedReader reader =
                                                      new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
                                             StringBuilder builder = new StringBuilder();
@@ -231,8 +228,13 @@ public class FileWatcher {
                                     }
                                     //if long failure
                                     else if (k == 0 && seconds > 60) {
+                                        if (fileMegabytes < 20) {
                                             System.out.println("Giving the poor report server a 60s break...");
                                             Thread.sleep(60000L);
+                                        } else {
+                                            System.out.println("Giving the poor report server a 120s break...");
+                                            Thread.sleep(120000L);
+                                        }
                                     }
                                 }
 

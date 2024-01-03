@@ -92,6 +92,7 @@ public class MainFrame {
         buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
         buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
+        buildTextField(settingsTextFieldPanel, "uploadLimitMegabytes", "Upload Limit (MB)", String.valueOf(p.uploadLimitMegabytes), 2, false);
         settingsParentPanel.add(settingsCheckboxPanel);
         settingsParentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
         settingsParentPanel.add(settingsTextFieldPanel);
