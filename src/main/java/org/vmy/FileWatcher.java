@@ -112,7 +112,7 @@ public class FileWatcher {
                         long startTime = System.currentTimeMillis();
                         System.out.println("Invoking GW2EI...");
                         MainFrame.statusLabel.setText("Status: Invoking GW2EI");
-                        ProcessBuilder pb1 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+                        ProcessBuilder pb1 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
                                 "/wait", "." + p.gw2EIExe, "-c", parseConfig, fullFilePath);
                         pb1.directory(new File(p.homeDir));
                         Process p1 = pb1.start();
@@ -133,7 +133,7 @@ public class FileWatcher {
                             MainFrame.statusLabel.setText("Status: Generating FightReport");
                             System.setOut(new PrintStream(MainFrame.reportStream));
                             System.out.println("------------------------------------------------------------------------------------------------");
-                            ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
+                            ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
                                     "/wait", "java", "-Xms1M", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot",
                                     jsonFile.getAbsolutePath(), p.homeDir, "");
                             pb2.directory(new File(p.homeDir));
@@ -165,94 +165,87 @@ public class FileWatcher {
                             }
 
                             //upload
-                            String uploadUrl = "";
-                            for (int k=0; k<5; k++) {
-                                startTime = System.currentTimeMillis();
-                                String uploadRespText = "";
-                                try {
-                                    System.out.println("Invoking Upload...");
-                                    MainFrame.statusLabel.setText("Status: Invoking Upload");
-                                    ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/belownormal",
-                                            ".\\curl\\bin\\curl.exe",
-                                            "--max-time", Integer.toString(uploadWaitTime),
-                                            "--request", "POST", p.activeUploadPostUrl,
-                                            "-H", "\"Transfer-Encoding: chunked\"",
-                                            "-H", "\"Connection: keep-alive\"",
-                                            "-H", "\"Accept-Encoding: identity\"",
-                                            "-H", "\"Cookie: userToken=" + p.uploadToken + "\"",
-                                            //"-H", "\"Content-Length: " + f.length()+"\"",
-                                            //"--limit-rate", "5M",
-                                            "--form", "json=1", "--form", "detailedwvw=true",
-                                            "--form", "\"file=@" + fullFilePath + "\"" )
-                                            .redirectError(new File("uploadStats.txt"));
-                                    //System.out.println(String.join(" ", pb0.command()));
-                                    //pb0.inheritIO();
-                                    //pb0.redirectError(ProcessBuilder.Redirect.INHERIT);
-                                    pb0.directory(new File(p.homeDir));
-                                    Process p0 = pb0.start();
-                                    //handleIO(p0);
-                                    try (BufferedReader reader =
-                                                 new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
-                                        StringBuilder builder = new StringBuilder();
-                                        String line = null;
-                                        while ((line = reader.readLine()) != null) {
-                                            builder.append(line);
-                                            builder.append("\r\n");
+                            if (p.enableReportUpload) {
+                                String uploadUrl = "";
+                                for (int k = 0; k < 2; k++) {
+                                    startTime = System.currentTimeMillis();
+                                    String uploadRespText = "";
+                                    try {
+                                        System.out.println("Invoking Upload...");
+                                        MainFrame.statusLabel.setText("Status: Invoking Upload");
+                                        ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
+                                                ".\\curl\\bin\\curl.exe",
+                                                "--max-time", Integer.toString(uploadWaitTime),
+                                                "--request", "POST", p.activeUploadPostUrl,
+                                                "-H", "\"Transfer-Encoding: chunked\"",
+                                                "-H", "\"Connection: keep-alive\"",
+                                                "-H", "\"Accept-Encoding: identity\"",
+                                                "-H", "\"Cookie: userToken=" + p.uploadToken + "\"",
+                                                //"-H", "\"Content-Length: " + f.length()+"\"",
+                                                //"--limit-rate", "5M",
+                                                "--form", "json=1", "--form", "detailedwvw=true",
+                                                "--form", "\"file=@" + fullFilePath + "\"")
+                                                .redirectError(new File("uploadStats.txt"));
+                                        //System.out.println(String.join(" ", pb0.command()));
+                                        //pb0.inheritIO();
+                                        //pb0.redirectError(ProcessBuilder.Redirect.INHERIT);
+                                        pb0.directory(new File(p.homeDir));
+                                        Process p0 = pb0.start();
+                                        //handleIO(p0);
+                                        try (BufferedReader reader =
+                                                     new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
+                                            StringBuilder builder = new StringBuilder();
+                                            String line = null;
+                                            while ((line = reader.readLine()) != null) {
+                                                builder.append(line);
+                                                builder.append("\r\n");
+                                            }
+                                            uploadRespText = builder.toString();
                                         }
-                                        uploadRespText = builder.toString();
-                                    }
-                                    int baseIndex = uploadRespText.indexOf("permalink");
-                                    if (baseIndex < 0) {
+                                        int baseIndex = uploadRespText.indexOf("permalink");
+                                        if (baseIndex < 0) {
+                                            FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
+                                            System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
+                                        } else {
+                                            int startIndex = uploadRespText.indexOf("http", baseIndex);
+                                            int endIndex = uploadRespText.indexOf("\"", startIndex);
+                                            uploadUrl = uploadRespText.substring(startIndex, endIndex).replace("\\", "");
+                                            System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p0.exitValue());
+                                            System.out.println("URL = " + uploadUrl);
+                                        }
+                                    } catch (Exception e) {
+                                        System.out.println("Upload failed: " + e.getMessage());
                                         FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
-                                        System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
-                                    } else {
-                                        int startIndex = uploadRespText.indexOf("http", baseIndex);
-                                        int endIndex = uploadRespText.indexOf("\"", startIndex);
-                                        uploadUrl = uploadRespText.substring(startIndex, endIndex).replace("\\", "");
-                                        System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p0.exitValue());
-                                        System.out.println("URL = " + uploadUrl);
                                     }
-                                } catch (Exception e) {
-                                    System.out.println("Upload failed: " + e.getMessage());
-                                    FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
-                                }
 
-                                if (uploadUrl.length() > 0)
-                                    break; //break on success
+                                    if (uploadUrl.length() > 0)
+                                        break; //break on success
 
-                                //handle failure
-                                int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
-                                System.out.println(seconds+"s");
-                                //if quick failure then change URL
-                                if (seconds < 10) {
-                                    p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
-                                    System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
-                                }
-                                //if long failure
-                                else if (seconds > 60) {
-                                    //change URL at certain increments
-                                    if (k == 1 || k == 3) {
+                                    //handle failure
+                                    int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
+                                    System.out.println(seconds + "s");
+                                    //if quick failure then change URL
+                                    if (seconds < 10) {
                                         p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
-                                        System.out.println("Retrying at " + p.activeUploadPostUrl + "...");
+                                        System.out.println("Changing URL to " + p.activeUploadPostUrl + "...");
                                     }
-                                    //give the server a break
-                                    else {
-                                        System.out.println("Giving the poor report server a 60s break...");
-                                        Thread.sleep(60000L);
+                                    //if long failure
+                                    else if (k == 0 && seconds > 60) {
+                                            System.out.println("Giving the poor report server a 60s break...");
+                                            Thread.sleep(60000L);
                                     }
                                 }
-                            }
 
-                            //call discordbot on report URL
-                            if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
-                                System.setOut(new PrintStream(MainFrame.reportStream));
-                                System.out.println("Report URL = " + uploadUrl);
-                                System.setOut(new PrintStream(MainFrame.consoleStream));
-                                MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
-                                DiscordBot dBot = DiscordBot.getSingletonInstance();
-                                dBot.sendReportUrlMessage(uploadUrl);
+                                //call discordbot on report URL
+                                if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
+                                    System.setOut(new PrintStream(MainFrame.reportStream));
+                                    System.out.println("Report URL = " + uploadUrl);
+                                    System.setOut(new PrintStream(MainFrame.consoleStream));
+                                    MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
+                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
+                                    dBot.sendReportUrlMessage(uploadUrl);
+                                }
                             }
-                            MainFrame.statusLabel.setText("Status: Finished " + f.getName());
 
                             //call graphbot
                             if (p2.exitValue() == 0) {
@@ -260,8 +253,8 @@ public class FileWatcher {
                                     startTime = System.currentTimeMillis();
                                     System.out.println("Generating Graph...");
                                     MainFrame.statusLabel.setText("Status: Generating Graph");
-                                    ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b",
-                                            "/belownormal", "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
+                                    ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
+                                            "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
                                     pb3.directory(new File(p.homeDir));
                                     Process p3 = pb3.start();
                                     handleIO(p3);

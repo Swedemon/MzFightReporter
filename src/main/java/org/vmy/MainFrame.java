@@ -68,6 +68,7 @@ public class MainFrame {
         settingsParentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         JPanel settingsCheckboxPanel = new JPanel();
         settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
+        buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", p.enableReportUpload);
         buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", p.showSquadSummary);
         buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", p.showEnemySummary);
         buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", p.showDamage);

@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.0.2";
+    public static final String appVersion = "4.0.3";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -34,6 +33,7 @@ public class Parameters {
     public Properties props = new Properties();
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
+    public boolean enableReportUpload = false;
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
     public boolean showDamage = true;
@@ -73,6 +73,7 @@ public class Parameters {
             jarName = props.getProperty("jarName",jarName);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
+            enableReportUpload = Boolean.valueOf(props.getProperty("enableReportUpload", "true"));
             showSquadSummary = Boolean.valueOf(props.getProperty("showSquadSummary", "true"));
             showEnemySummary = Boolean.valueOf(props.getProperty("showEnemySummary", "true"));
             showDamage = Boolean.valueOf(props.getProperty("showDamage", "true"));
@@ -198,8 +199,8 @@ public class Parameters {
             //System.out.println(key + ", " + text);
             if (o instanceof Checkbox) {
                 Checkbox checkbox = (Checkbox) o;
-                boolean state = checkbox.getState();
                 switch (key) {
+                    case "enableReportUpload": checkbox.setState(p.enableReportUpload); break;
                     case "showSquadSummary": checkbox.setState(p.showSquadSummary); break;
                     case "showEnemySummary": checkbox.setState(p.showEnemySummary); break;
                     case "showDamage": checkbox.setState(p.showDamage); break;
