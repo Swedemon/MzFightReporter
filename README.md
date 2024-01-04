@@ -13,7 +13,7 @@
    <p align="center"><img height="100" src="https://i.imgur.com/G91hC1P.png"/></p>
 1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).
    1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
-   1. Beside the 'OPEN' button enter: ```C:\ARC```  
+   1. Beside the 'OPEN' button enter: ```C:\ARC```
    1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10.
    <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
 Setup is complete! Eligible fights will send reports to the UI and your discord channel.
@@ -36,8 +36,8 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       - Note: You can manage these connections at https://www.twitch.tv/settings/connections
 1.  Copy the provided 'Access Token'.
 1.  In the UI click on the 'Settings' tab and enter the below settings.  Click Apply to save.
-      1. Set the value of 'Twitch Channel Name' to your main channel name.
-      1. Set the value of 'Twitch Bot Token' to the copied access token.
+   1. Set the value of 'Twitch Channel Name' to your main channel name.
+   1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
 <p align="center"><img height="450" src="https://i.imgur.com/OeQPypv.png"/></p>
