@@ -27,8 +27,6 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check 'peers outgoing' option.
-## How to Upgrade?
-- Releases since version 2.1 will automatically update. For older versions go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.
 ## Twitch Bot Instructions
 1. Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
 1. Go to https://twitchtokengenerator.com/
@@ -40,6 +38,8 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       1. Set the value of 'Twitch Channel Name' to your main channel name.
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
+## How to Upgrade?
+- Releases since version 2.1 will automatically update. For older versions go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.
 ## Sneak Peek
 <p align="center"><img height="450" src="https://i.imgur.com/OeQPypv.png"/></p>
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
