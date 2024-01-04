@@ -33,7 +33,7 @@ public class Parameters {
     public Properties props = new Properties();
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
-    public int maxUploadMegabytes = 12;
+    public int maxUploadMegabytes = 15;
     public boolean enableReportUpload = true;
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
@@ -71,7 +71,6 @@ public class Parameters {
             discordWebhook = props.getProperty("discordWebhook",discordWebhook);
             twitchChannelName = props.getProperty("twitchChannelName",twitchChannelName);
             twitchBotToken = props.getProperty("twitchBotToken",twitchBotToken);
-            jarName = props.getProperty("jarName",jarName);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
             maxUploadMegabytes = Integer.parseInt(props.getProperty("maxUploadMegabytes", maxUploadMegabytes +""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
