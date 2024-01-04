@@ -133,7 +133,7 @@ public class FileWatcher {
                             System.setOut(new PrintStream(MainFrame.reportStream));
                             System.out.println("------------------------------------------------------------------------------------------------");
                             ProcessBuilder pb2 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
-                                    "/wait", "java", "-Xms1M", "-Xmx" + p.maxParseMemory + "M", "-jar", p.jarName, "ParseBot",
+                                    "/wait", "java", "-Xms512m", "-Xmx" + p.maxParseMemory + "m", "-jar", p.jarName, "ParseBot",
                                     jsonFile.getAbsolutePath(), p.homeDir, "");
                             pb2.directory(new File(p.homeDir));
                             Process p2 = pb2.start();
@@ -164,8 +164,8 @@ public class FileWatcher {
                             }
 
                             //upload
-                            if (fileMegabytes > p.uploadLimitMegabytes) {
-                                System.out.println("Skipping upload. File size exceeds limit defined in the Settings.");
+                            if (fileMegabytes >= p.maxUploadMegabytes) {
+                                System.out.println("Skipping upload. File size exceeds max defined in the Settings (" + p.maxUploadMegabytes + "MB).");
                             } else if (p.enableReportUpload) {
                                 String uploadUrl = "";
                                 for (int k = 0; k < 2; k++) {
@@ -220,7 +220,6 @@ public class FileWatcher {
 
                                     //handle failure
                                     int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
-                                    System.out.println(seconds + "s");
                                     //if quick failure then change URL
                                     if (seconds < 10) {
                                         p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
@@ -256,7 +255,7 @@ public class FileWatcher {
                                     System.out.println("Generating Graph...");
                                     MainFrame.statusLabel.setText("Status: Generating Graph");
                                     ProcessBuilder pb3 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
-                                            "/wait", "java", "-jar", p.jarName, "GraphBot", p.homeDir);
+                                            "/wait", "java", "-Xms256m", "-jar", p.jarName, "GraphBot", p.homeDir);
                                     pb3.directory(new File(p.homeDir));
                                     Process p3 = pb3.start();
                                     handleIO(p3);
@@ -284,6 +283,8 @@ public class FileWatcher {
             }
 
             System.out.print(".");
+            if (dotCount % 5 == 0)
+                MainFrame.statusLabel.setText("Status: Monitoring ArcDps logs");
             if (dotCount > 0 && dotCount % 150 == 0)
                 System.out.println();
         }

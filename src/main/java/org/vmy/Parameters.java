@@ -33,8 +33,8 @@ public class Parameters {
     public Properties props = new Properties();
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
-    public int uploadLimitMegabytes = 15;
-    public boolean enableReportUpload = false;
+    public int maxUploadMegabytes = 12;
+    public boolean enableReportUpload = true;
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
     public boolean showDamage = true;
@@ -73,8 +73,8 @@ public class Parameters {
             twitchBotToken = props.getProperty("twitchBotToken",twitchBotToken);
             jarName = props.getProperty("jarName",jarName);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
+            maxUploadMegabytes = Integer.parseInt(props.getProperty("maxUploadMegabytes", maxUploadMegabytes +""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
-            uploadLimitMegabytes = Integer.parseInt(props.getProperty("uploadLimitMegabytes", uploadLimitMegabytes+""));
             enableReportUpload = Boolean.valueOf(props.getProperty("enableReportUpload", "true"));
             showSquadSummary = Boolean.valueOf(props.getProperty("showSquadSummary", "true"));
             showEnemySummary = Boolean.valueOf(props.getProperty("showEnemySummary", "true"));
@@ -99,7 +99,7 @@ public class Parameters {
         for (String key : settingsMap.keySet()) {
             Object o = settingsMap.get(key);
             //System.out.println(key + ", " + text);
-            if (o instanceof Checkbox)
+            if (o instanceof JCheckBox)
                 continue; //ignore checkbox validation
             String text = ((JTextField) o).getText();
             switch (key) {
@@ -149,17 +149,14 @@ public class Parameters {
                     } else {
                         try {
                             int val = Integer.parseInt(text);
-                            if (val < 512 || val > 20480)
-                                errorContent += "- Max Parse Memory (MB) must be from 512 to 20480.\r\n";
+                            if (val < 1024 || val > 20480)
+                                errorContent += "- Max Parse Memory (MB) must be from 1024 to 20480.\r\n";
                         } catch (Exception e) {
-                            errorContent += "- Max Parse Memory (MB) must be from 512 to 20480.\r\n";
+                            errorContent += "- Max Parse Memory (MB) must be from 1024 to 20480.\r\n";
                         }
                     }
                     break;
-                case "twitchBotToken":
-                case "twitchChannelName":
-                    break;
-                case "uploadLimitMegabytes":
+                case "maxUploadMegabytes":
                     if (StringUtils.isEmpty(text)) {
                         ((JTextField) o).setText("15");
                     } else {
@@ -171,6 +168,10 @@ public class Parameters {
                             errorContent += "- Upload Limit (MB) must be a number from 0 to 99.\r\n";
                         }
                     }
+                    break;
+                case "twitchBotToken":
+                    break;
+                case "twitchChannelName":
                     break;
                 default:
             }
@@ -184,9 +185,9 @@ public class Parameters {
             System.out.println();
             for (String key : settingsMap.keySet()) {
                 Object o = settingsMap.get(key);
-                if (o instanceof Checkbox) {
-                    System.out.println(key + " = " + ((Checkbox) o).getState());
-                    props.setProperty(key, String.valueOf(((Checkbox) o).getState()));
+                if (o instanceof JCheckBox) {
+                    System.out.println(key + " = " + ((JCheckBox) o).isSelected());
+                    props.setProperty(key, String.valueOf(((JCheckBox) o).isSelected()));
                 }
                 else if (o instanceof JTextField) {
                     String text = ((JTextField)o).getText();
@@ -212,22 +213,22 @@ public class Parameters {
         for (String key : settingsMap.keySet()) {
             Object o = settingsMap.get(key);
             //System.out.println(key + ", " + text);
-            if (o instanceof Checkbox) {
-                Checkbox checkbox = (Checkbox) o;
+            if (o instanceof JCheckBox) {
+                JCheckBox checkbox = (JCheckBox) o;
                 switch (key) {
-                    case "enableReportUpload": checkbox.setState(p.enableReportUpload); break;
-                    case "showSquadSummary": checkbox.setState(p.showSquadSummary); break;
-                    case "showEnemySummary": checkbox.setState(p.showEnemySummary); break;
-                    case "showDamage": checkbox.setState(p.showDamage); break;
-                    case "showSpikeDmg": checkbox.setState(p.showSpikeDmg); break;
-                    case "showCleanses": checkbox.setState(p.showCleanses); break;
-                    case "showStrips": checkbox.setState(p.showStrips); break;
-                    case "showDefensiveBoons": checkbox.setState(p.showDefensiveBoons); break;
-                    case "showCCs": checkbox.setState(p.showCCs); break;
-                    case "showHeals": checkbox.setState(p.showHeals); break;
-                    case "showEnemyBreakdown": checkbox.setState(p.showEnemyBreakdown); break;
-                    case "showQuickReport": checkbox.setState(p.showQuickReport); break;
-                    case "showDamageGraph": checkbox.setState(p.showDamageGraph); break;
+                    case "enableReportUpload": checkbox.setSelected(p.enableReportUpload); break;
+                    case "showSquadSummary": checkbox.setSelected(p.showSquadSummary); break;
+                    case "showEnemySummary": checkbox.setSelected(p.showEnemySummary); break;
+                    case "showDamage": checkbox.setSelected(p.showDamage); break;
+                    case "showSpikeDmg": checkbox.setSelected(p.showSpikeDmg); break;
+                    case "showCleanses": checkbox.setSelected(p.showCleanses); break;
+                    case "showStrips": checkbox.setSelected(p.showStrips); break;
+                    case "showDefensiveBoons": checkbox.setSelected(p.showDefensiveBoons); break;
+                    case "showCCs": checkbox.setSelected(p.showCCs); break;
+                    case "showHeals": checkbox.setSelected(p.showHeals); break;
+                    case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
+                    case "showQuickReport": checkbox.setSelected(p.showQuickReport); break;
+                    case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
                     default:
                 }
             } else {
@@ -240,7 +241,7 @@ public class Parameters {
                     case "maxParseMemory": jTextField.setText(String.valueOf(p.maxParseMemory)); jTextField.setCaretPosition(0); break;
                     case "twitchBotToken": jTextField.setText(p.twitchBotToken); jTextField.setCaretPosition(0); break;
                     case "twitchChannelName": jTextField.setText(p.twitchChannelName); jTextField.setCaretPosition(0); break;
-                    case "uploadLimitMegabytes": jTextField.setText(String.valueOf(p.uploadLimitMegabytes)); jTextField.setCaretPosition(0); break;
+                    case "maxUploadMegabytes": jTextField.setText(String.valueOf(p.maxUploadMegabytes)); jTextField.setCaretPosition(0); break;
                     default:
                 }
             }

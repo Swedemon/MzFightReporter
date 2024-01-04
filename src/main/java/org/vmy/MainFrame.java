@@ -90,9 +90,9 @@ public class MainFrame {
         buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook", p.discordWebhook, 50, true);
         buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
         buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
+        buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), 2, false);
         buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
-        buildTextField(settingsTextFieldPanel, "uploadLimitMegabytes", "Upload Limit (MB)", String.valueOf(p.uploadLimitMegabytes), 2, false);
         settingsParentPanel.add(settingsCheckboxPanel);
         settingsParentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
         settingsParentPanel.add(settingsTextFieldPanel);
@@ -126,8 +126,8 @@ public class MainFrame {
         settingsButtonPane.add(Box.createHorizontalGlue());
         settingsGrandParentPanel.add(settingsButtonPane);
         JPanel settingsBottonPane = new JPanel();
-        settingsBottonPane.setPreferredSize(new Dimension(400, 400));
-        settingsBottonPane.setMaximumSize(new Dimension(400, 400));
+        settingsBottonPane.setPreferredSize(new Dimension(320, 400));
+        settingsBottonPane.setMaximumSize(new Dimension(320, 400));
         settingsBottonPane.setLayout(new BoxLayout(settingsBottonPane, BoxLayout.LINE_AXIS));
         settingsGrandParentPanel.add(settingsBottonPane);
 
@@ -154,9 +154,10 @@ public class MainFrame {
         component.setForeground(FGCOLOR);
     }
 
-    private static void buildCheckBox(JPanel jPanel, String property, String label, boolean state) {
-        Checkbox checkbox = new Checkbox(label);
-        checkbox.setState(state);
+    private static void buildCheckBox(JPanel jPanel, String property, String label, boolean selected) {
+        JCheckBox checkbox = new JCheckBox(label);
+        checkbox.setToolTipText(property);
+        checkbox.setSelected(selected);
         checkbox.setName(property);
         addMouseOver(checkbox);
         jPanel.add(checkbox);
@@ -166,6 +167,7 @@ public class MainFrame {
     private static void buildTextField(JPanel panel, String property, String label, String value, int columns, boolean isBold) {
         GridBagConstraints c = new GridBagConstraints();
         JLabel jLabel = new JLabel(label);
+        jLabel.setToolTipText(property);
         jLabel.setSize(50, 20);
         jLabel.setPreferredSize(new Dimension(50, 20));
         jLabel.setMinimumSize(new Dimension(50, 20));
@@ -181,6 +183,8 @@ public class MainFrame {
         textField.setMinimumSize(new Dimension(70, 20));
         textField.setMaximumSize(new Dimension(70, 20));
         c.gridx = 200;
+        if (property.equals("twitchBotToken") || property.equals("discordWebhook"))
+            textField.setBackground(Color.black);
         addMouseOver(textField);
         panel.add(textField, c);
         textField.setHorizontalAlignment(SwingConstants.LEFT);
@@ -191,11 +195,12 @@ public class MainFrame {
 
     private static void addMouseOver(Component component) {
         component.addMouseListener(new java.awt.event.MouseAdapter() {
+            private final Color origBgColor = component.getBackground();
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 component.setBackground(Color.GREEN);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                component.setBackground(UIManager.getColor("control"));
+                component.setBackground(origBgColor);
             }
         });
     }
