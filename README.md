@@ -7,6 +7,7 @@
    - Healing (if setup)
    - Outgoing CCs
    - Enemy Breakdown
+   - Web Link to WvW Dps Report
    - Damage Graph (Outgoing)
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
