@@ -1,5 +1,13 @@
 # MzFightReporter (Guild Wars 2 WvW)
-- **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a UI, Discord channel and optionally a Twitch channel.
+- **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a UI, Discord channel and optionally a Twitch channel.  This includes:
+   - Squad Summary, Enemy Summary
+   - Spike Damage (Outgoing)
+   - Cleanses, Strips
+   - Defensive Boons
+   - Healing (if setup)
+   - Outgoing CCs
+   - Enemy Breakdown
+   - Damage Graph (Outgoing)
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
 ## Setup Instructions (< 5 minutes)
@@ -19,7 +27,7 @@
 Setup is complete! Eligible fights will send reports to the UI and your discord channel.
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
 ## Create a Discord Webhook
-1. In your Discord create a channel Then right click it and choose 'Edit Channel'.
+1. In your Discord create a channel then right click it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
 1. Click on 'New Webhook' then click 'Copy Webhook URL' to copy the link.
 ## Enable Healing Stats
@@ -47,7 +55,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 <p align="center"><img height="230" src="https://i.imgur.com/GBULKZa.png"/></p>
 <p align="center"><img height="330" src="https://i.imgur.com/GeRrpQh.png"/></p>
 <p align="center"><img height="300" src="https://i.imgur.com/aERE0sC.png"/></p>
-<p align="center"><img height="60" src="https://i.imgur.com/LzLxS2C.png"/></p>
+<p align="center"><img height="50" src="https://i.imgur.com/LzLxS2C.png"/></p>
 
 ## About the Data
 ### Limitations
