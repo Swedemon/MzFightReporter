@@ -1,3 +1,4 @@
+## NOTICE: Since the most recent GW2 patch there is a known issue with the Elite Insights parser and target enemy data.  EI should be fixed in the next couple days followed by an update here.
 # MzFightReporter (Guild Wars 2 WvW)
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a UI, Discord channel and optionally a Twitch channel.  This includes:
    - Squad Summary, Enemy Summary
@@ -11,10 +12,11 @@
    - Damage Graph (Outgoing)
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
 - **Author:** Swedemon.4670
+- **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
-   - Note: To unzip right click the downloaded file and select 'Extract All...'
-1. Start the application by going to your unzip location and double clicking the 'MzFightReporter' batch file.
+   - To unzip right click the downloaded file and select 'Extract All...'
+1. Start the application by going into the extracted folder and double clicking the 'MzFightReporter' batch file.
    - Note: If windows gives a warning message you can click on 'More Info' then 'Run Anyways'.
    <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
 1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
@@ -22,8 +24,7 @@
    <p align="center"><img height="100" src="https://i.imgur.com/G91hC1P.png"/></p>
 1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).
    1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
-   1. Beside the 'OPEN' button enter: ```C:\ARC```
-   1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10.
+   1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10 // less for havoc.
    <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
 Setup is complete! Eligible fights will send reports to the UI and your discord channel.
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
