@@ -1,4 +1,3 @@
-## NOTICE: Since the most recent GW2 patch there is a known issue with the Elite Insights parser and target enemy data.  EI should be fixed in the next couple days ([watch here](https://github.com/baaron4/GW2-Elite-Insights-Parser/releases)) followed by an update here.
 # MzFightReporter (Guild Wars 2 WvW)
 - **Description:** Monitor [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a UI, Discord channel and optionally a Twitch channel.  This includes:
    - Squad Summary, Enemy Summary
