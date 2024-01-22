@@ -67,7 +67,7 @@ Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Outgoing CC's**: There is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. Also, outgoing CC durations are not considered.
 - **Commander**: At times the data is ambiguous on who the commander is in which case it is skipped.
 - **Long Fights**: Fights exceeding 15 minutes run the risk of not reporting due to system memory constraints.  Healing data will not be included when the arcdps logs exceed 10MB.
-### Defensive Boons
-- EI provides a data point called squadBuffs as the source of this data.  The value is a percentage on a given boon shared across the squad during the fight.
-- Rating Formula = Stability(x3) + Aegis(x2) + Protection + Resistance + Resolution(x0.5) + Alacrity(x0.5)
-- The maximum possible rating is 800 (%) which is normalized across the entire squad.
+### Defensive Boons Score Formula
+- EI provides a data point called buffUptimes as the source of this data.  The value is a percentage uptime on a given boon during the fight.
+- Score Formula = Stability(x5) + Aegis(x3) + Protection(x2) + Resistance(x2) + Alacrity(x2) + Quickness(x2) + Resolution(x1)
+- The maximum possible score for a given party is 1700 (%).
