@@ -5,6 +5,7 @@
    - Cleanses, Strips
    - Defensive Boons
    - Healing (if setup)
+   - Outgoing Downs and Kills
    - Outgoing CCs
    - Enemy Breakdown
    - Web Link to WvW Dps Report
