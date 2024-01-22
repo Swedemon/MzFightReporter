@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ParseBot {
 
     private static final String CRLF = "\n";
 
     protected static FightReport processWvwJsonLog(File jsonFile, String uploadUrl) throws IOException {
-        JSONObject jo = new JSONObject();
         FightReport report = new FightReport();
 
         InputStream is = new FileInputStream(jsonFile);
@@ -50,14 +50,14 @@ public class ParseBot {
 
             //players
             JSONArray players = jsonTop.getJSONArray("players");
-            List<DPSer> dpsers = new ArrayList<DPSer>();
-            List<Cleanser> cleansers = new ArrayList<Cleanser>();
-            List<Stripper> strippers = new ArrayList<Stripper>();
-            List<DefensiveBooner> dbooners = new ArrayList<DefensiveBooner>();
-            List<Spiker> spikers = new ArrayList<Spiker>();
-            List<Healer> healers = new ArrayList<Healer>();
-            HashMap<String, Player> playerMap = new HashMap<String, Player>();
-            HashMap<String, Group> groups = new HashMap<String, Group>();
+            List<DPSer> dpsers = new ArrayList<>();
+            List<Cleanser> cleansers = new ArrayList<>();
+            List<Stripper> strippers = new ArrayList<>();
+            List<DefensiveBooner> dbooners = new ArrayList<>();
+            List<Spiker> spikers = new ArrayList<>();
+            List<Healer> healers = new ArrayList<>();
+            HashMap<String, Player> playerMap = new HashMap<>();
+            HashMap<String, Group> groups = new HashMap<>();
             int sumPlayerDmg = 0;
             int battleLength = 0;
             int countEnemyDowns = 0;
@@ -85,9 +85,11 @@ public class ParseBot {
                         countEnemyDeaths += map.get("killed");
                         if (playerMap.containsKey(name)) {
                             Player p = playerMap.get(name);
+                            p.setDownsOut(p.getDownsOut()+map.get("downed"));
                             p.setKills(p.getKills()+map.get("killed"));
                         } else {
                             Player p = new Player(name, profession, group);
+                            p.setDownsOut(map.get("downed"));
                             p.setKills(map.get("killed"));
                             playerMap.put(name, p);
                         }
@@ -244,7 +246,7 @@ public class ParseBot {
             System.out.println();
 
             //approximate enemyDps
-            sumEnemyDps = (int) sumEnemyDmg / battleLength;
+            sumEnemyDps = sumEnemyDmg / battleLength;
 
             buffer = new StringBuffer();
             buffer.append(" Enemies   Damage    DPS    Downs    Deaths" + CRLF);
@@ -343,6 +345,20 @@ public class ParseBot {
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setHealers(buffer.toString());
                 System.out.println("Heals  (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
+                System.out.println();
+            }
+
+            if (playerMap.size()>0) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                   Downs + Kills" + CRLF);
+                buffer.append("--- ------------------------ -----   -----" + CRLF);
+                List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
+                int index = 1;
+                int count = plist.size() > 10 ? 10 : plist.size();
+                for (Player x : plist.subList(0, count))
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                report.setDownsKills(buffer.toString());
+                System.out.println("Outgoing Downs & Kills:" + CRLF + buffer);
                 System.out.println();
             }
 
