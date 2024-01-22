@@ -10,7 +10,12 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
     private int resistance=0;
     private int resolution=0;
     private int alacrity=0;
+    private int quickness=0;
     private int defensiveRating=0;
+
+    public DefensiveBooner(String group) {
+        this.group = group;
+    }
 
     public DefensiveBooner(String name, String profession, String group) {
         this.name = name;
@@ -18,7 +23,7 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
         this.group = group;
     }
 
-    public DefensiveBooner(String name, String profession, String group, int stability, int aegis, int protection, int resistance, int resolution, int alacrity) {
+    public DefensiveBooner(String name, String profession, String group, int stability, int aegis, int protection, int resistance, int resolution, int alacrity, int quickness) {
         this.name = name;
         this.profession = profession;
         this.group = group;
@@ -28,11 +33,12 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
         this.resistance = resistance;
         this.resolution = resolution;
         this.alacrity = alacrity;
+        this.quickness = quickness;
         computeRating();
     }
 
     public void computeRating() {
-        defensiveRating = 3*stability + 2*aegis + protection + (int)(0.5*resistance) + resolution + (int)(0.5*alacrity);
+        defensiveRating = 5*stability + 3*aegis + 2*resistance + 2*protection + 2*alacrity + 2*quickness + resolution;
     }
 
     public int compareTo(DefensiveBooner d) {
@@ -45,10 +51,14 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
     }
 
     public String toString() {
-        return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",defensiveRating);
-                //+ " =>" + 3*stability + "+" +2*aegis + "+" +protection + "+" +(int)(0.5*resistance) + "+" +resolution + "+" +(int)(0.5*alacrity);
+        if (name == null) {
+            return String.format("%3s", group)
+                    + String.format("%7s", defensiveRating);
+        } else {
+            return String.format("%-25s",
+                    String.format("%.18s", name).trim() + " (" + profession.substring(0, 4) + ")")
+                    + String.format("%7s", defensiveRating);
+        }
     }
 
     public String getName() {
@@ -121,6 +131,14 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
 
     public void setAlacrity(int alacrity) {
         this.alacrity = alacrity;
+    }
+
+    public int getQuickness() {
+        return quickness;
+    }
+
+    public void setQuickness(int quickness) {
+        this.quickness = quickness;
     }
 
     public String getGroup() {

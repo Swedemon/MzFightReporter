@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.0.4";
+    public static final String appVersion = "4.0.5";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -43,6 +43,7 @@ public class Parameters {
     public boolean showStrips = true;
     public boolean showDefensiveBoons = true;
     public boolean showHeals = true;
+    public boolean showDownsKills = true;
     public boolean showCCs = true;
     public boolean showEnemyBreakdown = true;
     public boolean showQuickReport = true;
@@ -82,6 +83,7 @@ public class Parameters {
             showCleanses = Boolean.valueOf(props.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(props.getProperty("showStrips", "true"));
             showDefensiveBoons = Boolean.valueOf(props.getProperty("showDefensiveBoons", "true"));
+            showDownsKills = Boolean.valueOf(props.getProperty("showDownsKills", "true"));
             showCCs = Boolean.valueOf(props.getProperty("showCCs", "true"));
             showHeals = Boolean.valueOf(props.getProperty("showHeals", "true"));
             showEnemyBreakdown = Boolean.valueOf(props.getProperty("showEnemyBreakdown", "true"));
@@ -223,6 +225,7 @@ public class Parameters {
                     case "showCleanses": checkbox.setSelected(p.showCleanses); break;
                     case "showStrips": checkbox.setSelected(p.showStrips); break;
                     case "showDefensiveBoons": checkbox.setSelected(p.showDefensiveBoons); break;
+                    case "showDownsKills": checkbox.setSelected(p.showDownsKills); break;
                     case "showCCs": checkbox.setSelected(p.showCCs); break;
                     case "showHeals": checkbox.setSelected(p.showHeals); break;
                     case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
