@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class FileWatcher {
@@ -146,19 +146,17 @@ public class FileWatcher {
                             try { jsonFile.delete(); } catch (Exception ignored) {}
 
                             //call discordbot and twitchbot on main fight report
+                            boolean discordOkay = true;
                             FightReport report = FightReport.readReportFile();
                             if (report==null) {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
                                 if (!StringUtils.isEmpty(p.discordWebhook)) {
-                                    MainFrame.statusLabel.setText("Status: Sending to Discord");
-                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
-                                    dBot.sendMainMessage(report);
+                                    System.out.println(p.discordWebhook);
+                                    discordOkay = sendDiscordMsg(report);
                                 }
                                 if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
-                                    MainFrame.statusLabel.setText("Status: Sending to Twitch");
-                                    TwitchBot tBot = TwitchBot.getSingletonInstance();
-                                    tBot.sendMessage(report.getOverview());
+                                    sendTwitchMsg(report);
                                 }
                                 MainFrame.statusLabel.setText("Status: Finished " + f.getName());
                             }
@@ -242,9 +240,8 @@ public class FileWatcher {
                                     System.setOut(new PrintStream(MainFrame.reportStream));
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
-                                    MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
-                                    DiscordBot dBot = DiscordBot.getSingletonInstance();
-                                    dBot.sendReportUrlMessage(uploadUrl);
+                                    if (discordOkay)
+                                        discordOkay = sendDiscordUrlMsg(uploadUrl);
                                 }
                             }
 
@@ -264,9 +261,8 @@ public class FileWatcher {
 
                                     //call discordbot on graph
                                     if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.discordWebhook)) {
-                                        MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
-                                        DiscordBot dBot = DiscordBot.getSingletonInstance();
-                                        dBot.sendGraphMessage();
+                                        if (discordOkay)
+                                            sendDiscordGraphMsg();
                                     }
                                 }
                             }
@@ -288,6 +284,80 @@ public class FileWatcher {
             if (dotCount > 0 && dotCount % 150 == 0)
                 System.out.println();
         }
+    }
+
+    private static boolean sendDiscordMsg(FightReport report) {
+        MainFrame.statusLabel.setText("Status: Sending to Discord");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Runnable task = () -> {
+            DiscordBot dBot = DiscordBot.getSingletonInstance();
+            dBot.sendMainMessage(report);
+        };
+        Future<?> future = executor.submit(task);
+        try {
+            future.get(30, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean sendDiscordUrlMsg(String uploadUrl) {
+        MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Runnable task = () -> {
+            DiscordBot dBot = DiscordBot.getSingletonInstance();
+            dBot.sendReportUrlMessage(uploadUrl);
+        };
+        Future<?> future = executor.submit(task);
+        try {
+            future.get(30, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean sendDiscordGraphMsg() {
+        MainFrame.statusLabel.setText("Status: Sending Report Graph to Discord");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Runnable task = () -> {
+            DiscordBot dBot = DiscordBot.getSingletonInstance();
+            dBot.sendGraphMessage();
+        };
+        Future<?> future = executor.submit(task);
+        try {
+            future.get(30, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            System.out.println("Failed to send Discord Graph message: " + e.getMessage());
+            e.printStackTrace(System.out);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean sendTwitchMsg(FightReport report) {
+        MainFrame.statusLabel.setText("Status: Sending to Twitch");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Runnable task = () -> {
+            TwitchBot tBot = TwitchBot.getSingletonInstance();
+            try {
+                tBot.sendMessage(report.getOverview());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+        Future<?> future = executor.submit(task);
+        try {
+            future.get(30, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            System.out.println("Failed to send Twitch message: " + e.getMessage());
+            e.printStackTrace(System.out);
+            return false;
+        }
+        return true;
     }
 
     private void handleIO(Process p) throws IOException {
@@ -316,7 +386,7 @@ public class FileWatcher {
         try {
             CheckUpdater.unzipFolder(Paths.get("zpack.zip"), Paths.get(p.homeDir));
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 

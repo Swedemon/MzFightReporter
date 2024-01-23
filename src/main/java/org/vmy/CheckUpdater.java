@@ -64,10 +64,10 @@ public class CheckUpdater {
                 IOUtils.write(latestVersion.getBytes(StandardCharsets.UTF_8), os);
                 System.out.println("Set version: " + latestVersion);
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 
@@ -85,7 +85,7 @@ public class CheckUpdater {
             }
             System.out.println("Latest JAR downloaded: " + tempJarFile.getName() + " " + new DecimalFormat("#,###").format(tempJarFile.length()) + " bytes");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             return false;
         }
         return true;
@@ -104,7 +104,7 @@ public class CheckUpdater {
             }
             System.out.println("Latest ZPACK downloaded: " + zpackFile.getName() + " " + new DecimalFormat("#,###").format(zpackFile.length()) + " bytes");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             return false;
         }
         return true;
@@ -129,7 +129,7 @@ public class CheckUpdater {
                 throw new Exception("JAR download url was not found." );
             System.out.println("Latest JAR path: " + jarUrl);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             return null;
         }
         return jarUrl;
@@ -150,7 +150,7 @@ public class CheckUpdater {
                 throw new Exception("ZPACK download url was not found." );
             System.out.println("Latest ZPACK path: " + zipUrl);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             return null;
         }
         return zipUrl;
@@ -164,7 +164,7 @@ public class CheckUpdater {
             HttpResponse result = httpClient.execute(request);
             jsonTxt = EntityUtils.toString(result.getEntity(), "UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
         if (jsonTxt == null)
             return null;
@@ -259,7 +259,7 @@ public class CheckUpdater {
                 FileUtils.writeStringToFile(batFile, latestContents, "UTF-8");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 
