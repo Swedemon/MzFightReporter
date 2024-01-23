@@ -173,7 +173,7 @@ public class GraphBot extends Application {
             Platform.exit();
             System.exit(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.exit(1);
         }
     }
@@ -184,7 +184,7 @@ public class GraphBot extends Application {
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             System.exit(1);
         }
     }

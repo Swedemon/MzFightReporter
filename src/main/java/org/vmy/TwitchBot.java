@@ -42,7 +42,7 @@ public class TwitchBot {
             System.out.println("Twitch msg sent to " + channelName + ".");
             Thread.sleep(3000);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 

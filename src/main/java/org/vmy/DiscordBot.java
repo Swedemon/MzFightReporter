@@ -25,7 +25,7 @@ public class DiscordBot {
         try {
             openSession();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 
@@ -43,6 +43,11 @@ public class DiscordBot {
             client = WebhookClient.withUrl(Parameters.getInstance().discordWebhook);
         }
         return this;
+    }
+
+    public void resetSession()
+    {
+        client = WebhookClient.withUrl(Parameters.getInstance().discordWebhook);
     }
 
     protected void sendMainMessage(FightReport report) {
@@ -79,8 +84,12 @@ public class DiscordBot {
         embedBuilder.setTimestamp(Instant.now());
 
         WebhookEmbed embed = embedBuilder.build();
-        client.send(embed);
-        System.out.println("Discord fight report msg sent.");
+        if (client != null) {
+            client.send(embed);
+            System.out.println("Discord fight report msg sent.");
+        } else {
+            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+        }
     }
 
     protected void sendReportUrlMessage(String url) {
@@ -90,8 +99,12 @@ public class DiscordBot {
         embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report]("+url+")"));
 
         WebhookEmbed embed = embedBuilder.build();
-        client.send(embed);
-        System.out.println("Discord URL msg sent.");
+        if (client != null) {
+            client.send(embed);
+            System.out.println("Discord URL msg sent.");
+        } else {
+            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+        }
     }
 
     protected void sendGraphMessage() {
@@ -99,8 +112,12 @@ public class DiscordBot {
 
         File graphImage = new File(p.homeDir + File.separator + "fightreport.png");
         if (graphImage.exists() && p.graphPlayerLimit > 0 && p.showDamageGraph) {
-            client.send(graphImage);
-            System.out.println("Discord graph msg sent.");
+            if (client != null) {
+                client.send(graphImage);
+                System.out.println("Discord graph msg sent.");
+            } else {
+                throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+            }
         }
     }
 

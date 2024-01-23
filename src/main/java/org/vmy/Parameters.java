@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.0.5";
+    public static final String appVersion = "4.0.6";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -127,8 +127,7 @@ public class Parameters {
                 case "discordWebhook":
                     if (StringUtils.isEmpty(text))
                         break;
-                    else if (!text.toLowerCase().startsWith("https://") || !text.toLowerCase().contains("discord.com")
-                            || text.length() < 40)
+                    else if (!text.toLowerCase().startsWith("http"))
                         errorContent += "- Discord Webhook is not a valid webhook URL.\r\n";
                     break;
                 case "graphPlayerLimit":
@@ -205,6 +204,13 @@ public class Parameters {
             loadResources();
         } catch (Exception e) {
             System.out.println("Warning: Unable to save config.properties.");
+        }
+
+        try {
+            if (discordWebhook != null && !discordWebhook.isEmpty())
+                DiscordBot.getSingletonInstance().resetSession(); //in case webhook changed
+        } catch (Exception e) {
+            System.out.println("Warning: Unable to establish Discord webhook connection.");
         }
     }
 
