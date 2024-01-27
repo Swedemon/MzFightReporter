@@ -152,7 +152,6 @@ public class FileWatcher {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
                                 if (!StringUtils.isEmpty(p.discordWebhook)) {
-                                    System.out.println(p.discordWebhook);
                                     discordOkay = sendDiscordMsg(report);
                                 }
                                 if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {

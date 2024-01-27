@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class Condier implements Comparable<Condier> {
     private String name;
     private String profession;
+    private int interruptCount=0;
     private int stunCount=0;
     private BigDecimal stunDur=new BigDecimal(0);
     private int knockdownCount=0;
@@ -40,9 +41,9 @@ public class Condier implements Comparable<Condier> {
 
     public int compareTo(Condier c) {
 
-        if (stunCount+immobCount+.1*(chilledCount+crippledCount) == c.stunCount+c.immobCount+.1*(c.chilledCount+c.crippledCount))
+        if (stunCount+immobCount+.5*interruptCount+.1*(chilledCount+crippledCount) == c.stunCount+c.immobCount+.5*c.interruptCount+.1*(c.chilledCount+c.crippledCount))
             return 0;
-        else if (stunCount+immobCount+.1*(chilledCount+crippledCount) > c.stunCount+c.immobCount+.1*(c.chilledCount+c.crippledCount))
+        else if (stunCount+immobCount+.5*interruptCount+.1*(chilledCount+crippledCount) > c.stunCount+c.immobCount+.5*c.interruptCount+.1*(c.chilledCount+c.crippledCount))
             return -1;
         else
             return 1;
@@ -50,11 +51,12 @@ public class Condier implements Comparable<Condier> {
 
     public String toString() {
         return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
+                String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
                 + String.format("%3s",stunCount) + " "
                 + String.format("%3s",immobCount) + " "
                 + String.format("%3s",chilledCount) + " "
-                + String.format("%3s",crippledCount);
+                + String.format("%3s",crippledCount) + "  "
+                + String.format("%3s",interruptCount);
     }
 
     public String getName() {
@@ -71,6 +73,14 @@ public class Condier implements Comparable<Condier> {
 
     public void setProfession(String profession) {
         this.profession = profession;
+    }
+
+    public int getInterruptCount() {
+        return interruptCount;
+    }
+
+    public void setInterruptCount(int interruptCount) {
+        this.interruptCount = interruptCount;
     }
 
     public int getStunCount() {
