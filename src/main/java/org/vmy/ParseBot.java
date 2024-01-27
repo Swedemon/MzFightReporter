@@ -71,6 +71,7 @@ public class ParseBot {
                 String name = currPlayer.getString("name");
                 String profession = currPlayer.getString("profession");
                 String group = ""+currPlayer.getInt("group");
+                int downDmgOut = 0;
                 if (currPlayer.getBoolean("hasCommanderTag"))
                     commander = commander==null ? currPlayer.getString("name") : "n/a";
                 if (condiers.containsKey(name))
@@ -93,7 +94,22 @@ public class ParseBot {
                             p.setKills(map.get("killed"));
                             playerMap.put(name, p);
                         }
+                        Condier c = condiers.get(name);
+                        if (c == null)
+                            c = new Condier(name, profession);
+                        c.setInterruptCount(map.get("interrupts"));
+                        condiers.put(name, c);
                     }
+                }
+
+                //statsAll
+                List<Object> playerStatsAll = currPlayer.getJSONArray("statsAll").toList();
+                for (Object a : playerStatsAll) {
+                    HashMap<String, Integer> map = (HashMap<String, Integer>) a;
+                    Condier c = condiers.get(name);
+                    c.setInterruptCount(map.get("interrupts"));
+                    downDmgOut = map.get("downContribution");
+                    condiers.put(name, c);
                 }
 
                 //defenses
@@ -134,6 +150,7 @@ public class ParseBot {
 
                 //set player damage
                 DPSer dpser = new DPSer(name, profession, netTargetDmgList);
+                dpser.setOnDowns(downDmgOut);
                 dpsers.add(dpser);
                 sumPlayerDmg += dpser.getDamage();
                 battleLength = netTargetDmgList.size();
@@ -274,8 +291,8 @@ public class ParseBot {
 
             if (dpsers.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                      Damage     DPS" + CRLF);
-                buffer.append("--- -------------------------  --------   -----" + CRLF);
+                buffer.append(" #  Player                  Total   DPS   Downs" + CRLF);
+                buffer.append("--- ---------------------- ------- ----- ------" + CRLF);
                 dpsers.sort(Comparator.naturalOrder());
                 int index = 1;
                 int count = dpsers.size() > 10 ? 10 : dpsers.size();
@@ -367,7 +384,7 @@ public class ParseBot {
                     if (x.getTotal() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setHealers(buffer.toString());
-                System.out.println("Heals  (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
+                System.out.println("Heals (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -387,17 +404,17 @@ public class ParseBot {
 
             if (condiers.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                          CCs" + CRLF);
-                buffer.append("--- ------------------------  --------------" + CRLF);
-                List<Condier> clist = new ArrayList<Condier>(condiers.values());
+                buffer.append(" #  Player                          CCs       Ints" + CRLF);
+                buffer.append("--- ------------------------  --------------- ----" + CRLF);
+                List<Condier> clist = new ArrayList<>(condiers.values());
                 clist.sort(Comparator.naturalOrder());
                 int index = 1;
                 int count = clist.size() > 10 ? 10 : clist.size();
                 for (Condier x : clist.subList(0, count))
-                    if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
+                    if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCcs(buffer.toString());
-                System.out.println("Outgoing CCs  (stuns immobs chills cripples):" + CRLF + buffer);
+                System.out.println("Outgoing CCs (stuns immobs chills cripples) and Interrupts:" + CRLF + buffer);
                 System.out.println();
             }
 
