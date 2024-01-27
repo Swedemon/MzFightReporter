@@ -1,12 +1,12 @@
 # MzFightReporter (Guild Wars 2 WvW)
 - **Description:** Monitor live [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a UI, Discord channel and optionally a Twitch channel.  This includes:
    - Squad Summary, Enemy Summary
-   - Spike Damage (Outgoing)
+   - Player Damage, Downs Contribution, Spike Damage
    - Cleanses, Strips
    - Defensive Boons
    - Healing (if setup)
    - Outgoing Downs and Kills
-   - Outgoing CCs
+   - Outgoing CCs and Interrupts
    - Enemy Breakdown
    - Web Link to WvW Dps Report
    - Damage Graph (Outgoing)
