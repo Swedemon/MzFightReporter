@@ -10,6 +10,7 @@ import java.util.List;
 public class FightReport implements Serializable {
     private String zone;
     private String duration;
+    private int durationMS;
     private String commander;
     private String squadSummary;
     private String enemySummary;
@@ -72,6 +73,14 @@ public class FightReport implements Serializable {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public int getDurationMS() {
+        return durationMS;
+    }
+
+    public void setDurationMS(int durationMS) {
+        this.durationMS = durationMS;
     }
 
     public String getCommander() {
