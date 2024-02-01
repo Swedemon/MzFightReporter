@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,12 @@ public class ParseBot {
 
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject jsonTop = new JSONObject(jsonTxt);
+
+            Map<String, String> healUsers = new HashMap<>();
+            try {
+                JSONArray healExts = jsonTop.getJSONArray("usedExtensions").getJSONObject(0).getJSONArray("runningExtension");
+                healExts.forEach(jo -> healUsers.put(String.valueOf(jo), ""));
+            } catch (Exception ignored) {}
 
             //targets
             JSONArray targets = jsonTop.getJSONArray("targets");
@@ -186,9 +194,11 @@ public class ParseBot {
                         barrier = ohObj.getInt("barrier");
                     }
                 }
-                Healer healer = new Healer(name, profession, healing, barrier);
-                if (healer.getTotal() > 0)
-                    healers.add(healer);
+                if (healUsers.isEmpty() || healUsers.containsKey(name)) {
+                    Healer healer = new Healer(name, profession, healing, barrier);
+                    if (healer.getTotal() > 0)
+                        healers.add(healer);
+                }
             }
 
             //basic info
@@ -196,6 +206,7 @@ public class ParseBot {
             zone = zone.indexOf(" - ") > 0 ? zone.substring(zone.indexOf(" - ") + 3) : zone;
             report.setZone(zone);
             report.setDuration(jsonTop.getString("duration"));
+            report.setDurationMS(jsonTop.getInt("durationMS"));
             report.setCommander("n/a".equals(commander)?null:commander); //EI bug in json output
             JSONArray uploadLinks = jsonTop.getJSONArray("uploadLinks");
             if (jsonTop.has("uploadLinks"))
@@ -289,10 +300,10 @@ public class ParseBot {
             System.out.println("Enemy Summary:" + CRLF + buffer);
             System.out.println();
 
-            if (dpsers.size()>0) {
+            if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                  Total   DPS   Downs" + CRLF);
-                buffer.append("--- ---------------------- ------- ----- ------" + CRLF);
+                buffer.append(" #  Player                  Damage  DPS  @Downs" + CRLF);
+                buffer.append("--- ----------------------- ------ ----- ------" + CRLF);
                 dpsers.sort(Comparator.naturalOrder());
                 int index = 1;
                 int count = dpsers.size() > 10 ? 10 : dpsers.size();
@@ -320,13 +331,17 @@ public class ParseBot {
 
             if (cleansers.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                     Cleanses" + CRLF);
-                buffer.append("--- -------------------------  --------" + CRLF);
+                buffer.append(" #  Player                    Cleanses  CPS" + CRLF);
+                buffer.append("--- ------------------------- -------- -----" + CRLF);
                 cleansers.sort(Comparator.naturalOrder());
                 int index = 1;
                 int count = cleansers.size() > 10 ? 10 : cleansers.size();
-                for (Cleanser x : cleansers.subList(0, count))
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                for (Cleanser x : cleansers.subList(0, count)) {
+                    BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
+                    BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
+                    buffer.append(String.format("%2s", (index++)) + "  " + x
+                            + String.format("%8s", new DecimalFormat("##0.00").format(rate)) + CRLF);
+                }
                 report.setCleanses(buffer.toString());
                 System.out.println("Cleanses:" + CRLF + buffer);
                 System.out.println();
@@ -334,24 +349,27 @@ public class ParseBot {
 
             if (strippers.size()>0) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                      Strips" + CRLF);
-                buffer.append("--- -------------------------  --------" + CRLF);
+                buffer.append(" #  Player                     Strips   SPS" + CRLF);
+                buffer.append("--- ------------------------- -------- -----" + CRLF);
                 strippers.sort(Comparator.naturalOrder());
                 int index = 1;
                 int count = strippers.size() > 10 ? 10 : strippers.size();
-                for (Stripper x : strippers.subList(0, count))
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                for (Stripper x : strippers.subList(0, count)) {
+                    BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
+                    BigDecimal rate = BigDecimal.valueOf(x.getStrips()).divide(sec, 2, RoundingMode.HALF_UP);
+                    buffer.append(String.format("%2s", (index++)) + "  " + x
+                            + String.format("%8s", new DecimalFormat("##0.00").format(rate)) + CRLF);
+                }
                 report.setStrips(buffer.toString());
                 System.out.println("Strips:" + CRLF + buffer);
                 System.out.println();
             }
 
-            if (aggDbooners.size()>0) {
+            if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
                 buffer = new StringBuffer();
                 buffer.append("Party Score KDR Stab Aegi Prot Resi Alac Quik Reso" + CRLF);
                 buffer.append("----- ----- --- ---- ---- ---- ---- ---- ---- ----" + CRLF);
                 aggDbooners.sort(Comparator.naturalOrder());
-                int index = 1;
                 int count = Math.min(aggDbooners.size(), 15);
                 for (DefensiveBooner x : aggDbooners.subList(0, count)) {
                     if (x.getDefensiveRating() > 0) {
@@ -373,7 +391,7 @@ public class ParseBot {
                 System.out.println();
             }
 
-            if (healers.size()>0) {
+            if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
                 buffer = new StringBuffer();
                 buffer.append(" #  Player                 Total  Heals Barrier" + CRLF);
                 buffer.append("--- ---------------------- ------ ------ ------" + CRLF);
@@ -384,15 +402,15 @@ public class ParseBot {
                     if (x.getTotal() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setHealers(buffer.toString());
-                System.out.println("Heals (only accurate for healers w/ arcdps heal addon):" + CRLF + buffer);
+                System.out.println("Heals (arcdps heal addon required):" + CRLF + buffer);
                 System.out.println();
             }
 
-            if (playerMap.size()>0) {
+            List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
+            if (plist.size()>0) {
                 buffer = new StringBuffer();
                 buffer.append(" #  Player                   Downs + Kills" + CRLF);
                 buffer.append("--- ------------------------ -----   -----" + CRLF);
-                List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
                 int index = 1;
                 int count = plist.size() > 10 ? 10 : plist.size();
                 for (Player x : plist.subList(0, count))
@@ -402,7 +420,7 @@ public class ParseBot {
                 System.out.println();
             }
 
-            if (condiers.size()>0) {
+            if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
                 buffer = new StringBuffer();
                 buffer.append(" #  Player                          CCs       Ints" + CRLF);
                 buffer.append("--- ------------------------  --------------- ----" + CRLF);
@@ -414,7 +432,7 @@ public class ParseBot {
                     if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setCcs(buffer.toString());
-                System.out.println("Outgoing CCs (stuns immobs chills cripples) and Interrupts:" + CRLF + buffer);
+                System.out.println("Outgoing CCs and Interrupts (stuns immobs chills cripples):" + CRLF + buffer);
                 System.out.println();
             }
 

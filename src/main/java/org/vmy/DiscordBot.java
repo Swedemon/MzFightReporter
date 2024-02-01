@@ -72,7 +72,7 @@ public class DiscordBot {
         if (p.showDefensiveBoons && report.getDbooners()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
         if (p.showHeals && report.getHealers()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals (only accurate for healers w/ arcdps heal addon)","```"+report.getHealers()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals (arcdps heal addon required)","```"+report.getHealers()+"```"));
         if (p.showDownsKills && report.getDownsKills()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
         if (p.showCCs && report.getCcs()!=null)
