@@ -48,8 +48,6 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       1. Set the value of 'Twitch Channel Name' to your main channel name.
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
-## How to Upgrade?
-- Releases since version 2.1 will automatically update. For older versions go to [Releases](https://github.com/Swedemon/MzFightReporter/releases) for manual upgrade instructions.
 ## Sneak Peek
 <p align="center"><img height="450" src="https://i.imgur.com/OeQPypv.png"/></p>
 <p align="center"><img height="400" src="https://i.imgur.com/yVJ7CST.png"/></p>
