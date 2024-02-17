@@ -11,12 +11,12 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.0.8";
+    public static final String appVersion = "4.0.9";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2023-01-14";
+    public String gw2EIDir = "\\GW2EI-2024-02-11";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";

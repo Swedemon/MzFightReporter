@@ -367,14 +367,14 @@ public class ParseBot {
 
             if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
                 buffer = new StringBuffer();
-                buffer.append("Party Score KDR Stab Aegi Prot Resi Alac Quik Reso" + CRLF);
-                buffer.append("----- ----- --- ---- ---- ---- ---- ---- ---- ----" + CRLF);
+                buffer.append(" # Score KDR Stab Aegi Prot Resi Alac Quik Reso" + CRLF);
+                buffer.append("--- ---  --- ---- ---- ---- ---- ---- ---- ----" + CRLF);
                 aggDbooners.sort(Comparator.naturalOrder());
                 int count = Math.min(aggDbooners.size(), 15);
                 for (DefensiveBooner x : aggDbooners.subList(0, count)) {
                     if (x.getDefensiveRating() > 0) {
-                        buffer.append(String.format("%3s", x.getGroup())
-                                + String.format("%7s", x.getDefensiveRating())
+                        buffer.append(String.format("%2s", x.getGroup())
+                                + String.format("%5s", x.getDefensiveRating())
                                 + String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
                                 + String.format("%4s", x.getStability())
                                 + String.format("%5s", x.getAegis())
@@ -422,8 +422,8 @@ public class ParseBot {
 
             if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                          CCs       Ints" + CRLF);
-                buffer.append("--- ------------------------  --------------- ----" + CRLF);
+                buffer.append(" #  Player                       CCs       Ints" + CRLF);
+                buffer.append("--- ---------------------- --------------- ----" + CRLF);
                 List<Condier> clist = new ArrayList<>(condiers.values());
                 clist.sort(Comparator.naturalOrder());
                 int index = 1;

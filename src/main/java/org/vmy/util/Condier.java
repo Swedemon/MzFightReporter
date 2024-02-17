@@ -50,7 +50,7 @@ public class Condier implements Comparable<Condier> {
     }
 
     public String toString() {
-        return String.format("%-25s",
+        return String.format("%-22s",
                 String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
                 + String.format("%3s",stunCount) + " "
                 + String.format("%3s",immobCount) + " "
