@@ -298,8 +298,8 @@ public class CheckUpdater {
             "    move /y zcore.jar MzApp-Latest.jar\n" +
             ")\n" +
             "\n" +
-            "@echo Launching UI...\n" +
+            "@echo Launching UI... (leave this window open)\n" +
             "\n" +
-            "java -jar MzApp-Latest.jar FileWatcher\n" +
+            "start javaw -jar MzApp-Latest.jar FileWatcher\n" +
             "exit\n";
 }
