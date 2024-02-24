@@ -265,7 +265,17 @@ public class CheckUpdater {
 
     private static final String latestContents = "@echo off\n" +
             "\n" +
-            "tasklist /fi \"imagename eq java.exe\" /v | find \"MzFightReporter\" 1>NUL 2>NUL\n" +
+            "tasklist /fi \"imagename eq javaw.exe\" /v | find \"MzFightReporter\" 1>NUL 2>NUL\n" +
+            "\n" +
+            "if %ERRORLEVEL% == 0 (\n" +
+            "  echo.\n" +
+            "  echo MzFightReporter is already running!  Exiting.\n" +
+            "  echo.\n" +
+            "  timeout /T 10 /NOBREAK\n" +
+            "  exit\n" +
+            ")\n" +
+            "\n" +
+            "tasklist /fi \"imagename eq javaw.exe\" /v | find \"D3DFocusWindow\" 1>NUL 2>NUL\n" +
             "\n" +
             "if %ERRORLEVEL% == 0 (\n" +
             "  echo.\n" +
@@ -300,6 +310,6 @@ public class CheckUpdater {
             "\n" +
             "@echo Launching UI... (leave this window open)\n" +
             "\n" +
-            "start javaw -jar MzApp-Latest.jar FileWatcher\n" +
+            "start \"MzFightReporter\" /B javaw -jar MzApp-Latest.jar FileWatcher\n" +
             "exit\n";
 }
