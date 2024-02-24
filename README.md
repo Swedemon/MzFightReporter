@@ -11,7 +11,7 @@
    - Web Link to WvW Dps Report
    - Damage Graph (Outgoing)
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
-- **Author:** Swedemon.4670
+- **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
