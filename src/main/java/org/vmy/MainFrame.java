@@ -1,19 +1,20 @@
 package org.vmy;
 
+import org.apache.commons.io.FileUtils;
 import org.vmy.util.TextAreaOutputStream;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static java.awt.Frame.*;
+import static javax.swing.ScrollPaneConstants.*;
 
 public class MainFrame {
     public static TextAreaOutputStream consoleStream;
@@ -82,6 +83,8 @@ public class MainFrame {
         buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", p.showEnemyBreakdown);
         buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
         buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);
+        buildCheckBox(settingsCheckboxPanel, "startMinimized", "Start Minimized", p.startMinimized);
+        buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (Requires restart)", p.minimizeToTray);
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
@@ -228,11 +231,71 @@ public class MainFrame {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("MzFightReporter UI v" + Parameters.appVersion);
-        frame.setSize(900,700);
+        JFrame frame = new JFrame("MzFightReporter v" + Parameters.appVersion);
+        frame.setSize(900, 700);
         frame.setLocation(200, 100);
         //frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage("mztray.png"));
+
+        if (Parameters.getInstance().minimizeToTray) {
+            TrayIcon trayIcon;
+            if (SystemTray.isSupported()) {
+                // create a popup menu
+                PopupMenu popup = new PopupMenu();
+                // get the SystemTray instance
+                SystemTray tray = SystemTray.getSystemTray();
+                // load an image
+                Image image = Toolkit.getDefaultToolkit().getImage("mztray.png");
+                // construct a TrayIcon
+                trayIcon = new TrayIcon(image, "MzFightReporter v" + Parameters.appVersion, popup);
+                // create menu item for the default action
+                MenuItem viewItem = new MenuItem("Show Interface");
+                ActionListener viewListener = event -> {
+                    frame.setVisible(true);
+                    frame.setExtendedState(JFrame.NORMAL);
+                };
+                viewItem.addActionListener(viewListener);
+                popup.add(viewItem);
+                // create menu item for the default action
+                MenuItem exitItem = new MenuItem("Exit Program");
+                ActionListener exitListener = event -> {
+                    tray.remove(trayIcon);
+                    System.exit(0);
+                };
+                exitItem.addActionListener(exitListener);
+                popup.add(exitItem);
+                // set the TrayIcon properties
+                trayIcon.addActionListener(viewListener);
+
+                frame.addWindowStateListener(e -> {
+                    if (e.getNewState() == ICONIFIED) {
+                        try {
+                            tray.add(trayIcon);
+                            frame.setVisible(false);
+                        } catch (AWTException ex) {
+                            System.out.println("Unable to add to system tray...");
+                        }
+                    }
+                    if (e.getNewState() == 7) {
+                        try {
+                            tray.add(trayIcon);
+                            frame.setVisible(false);
+                        } catch (AWTException ex) {
+                            System.out.println("Unable to add to system tray...");
+                        }
+                    }
+                    if (e.getNewState() == MAXIMIZED_BOTH) {
+                        tray.remove(trayIcon);
+                        frame.setVisible(true);
+                    }
+                    if (e.getNewState() == NORMAL) {
+                        tray.remove(trayIcon);
+                        frame.setVisible(true);
+                    }
+                });
+            }
+        }
 
         //Create and set up the content pane.
         MainFrame mainFrame = new MainFrame();
@@ -251,10 +314,22 @@ public class MainFrame {
         //Display the window.
         frame.pack();
         frame.setVisible(true);
+
+        if (Parameters.getInstance().startMinimized) {
+            frame.setState(Frame.ICONIFIED);
+        }
     }
+
+    private static final String base64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABtElEQVQ4y6XRv2sTYRzH8XfOp03uYhMNSayorQotDWgNogaHGgeHLnZx0H/ASUToP+Hg7uIfUTp2CoiWokVJEYQmhgx6NhG9JrnzmvvxPA6lqUcyNZ/xeb68+P6IlZe3VxgjAlgfFwBgppBicXYS/yCg8naf+Bmde3eSxBRsfuxQupXmlHZYa5kO73fcKNAXgtUXs+D6fK12KT65yOrDFPvNLp8bHk8fZ6nUJI/KU6y9rg8A7QiwzD4+oOmCuwtx7hcNAHqWh1KCjbU9krk4AF8a7mAEbXiqGKWlLFenB81h1v/wpuJw/YKA0Gf3mz8asG0fKeFGOYfT7kfYsxmDTErD/e3RCtRowG271CyJhmLjkxMB5m+n0WPws9kjCBgNoCQfqg5+74CaGUa+bl5LArC7YyNHnfEo77a6lBICW/5vaywuJEAptqpupH5oiY3NFs9e/oi8TWbjXJ7SCP2QjqHz6nl+GDh3xSCT08kmwZewVDhsOX/JoFhIMSGAUPJg5Ty/TO/4ZuXlbQWQziWYyQuadZueB3Nzp0lMAAr2rIDpzPG0re8u7U4YBU4aAfwdBxg7/wDO053gp55eKwAAAABJRU5ErkJggg==";
+    private static final byte[] iconBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
     public static void start() {
         try {
+            if (!new File("mztray.png").exists()) {
+                try {
+                    FileUtils.writeByteArrayToFile(new File("mztray.png"), iconBytes);
+                } catch (Exception ignored) {}
+            }
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
             SwingUtilities.invokeLater(MainFrame::createAndShowGUI);
             Thread.sleep(1000);
