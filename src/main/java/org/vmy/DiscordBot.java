@@ -62,7 +62,7 @@ public class DiscordBot {
         if (p.showEnemySummary && report.getEnemySummary()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage","```"+report.getDamage()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage and Down Contribution","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
         if (p.showCleanses && report.getCleanses()!=null)
