@@ -302,7 +302,7 @@ public class ParseBot {
 
             if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                  Damage  DPS  @Downs" + CRLF);
+                buffer.append(" #  Player                  Damage  DPS  DownCn" + CRLF);
                 buffer.append("--- ----------------------- ------ ----- ------" + CRLF);
                 dpsers.sort(Comparator.naturalOrder());
                 int index = 1;
@@ -311,7 +311,7 @@ public class ParseBot {
                     if (x.getDamage() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
                 report.setDamage(buffer.toString());
-                System.out.println("Damage:" + CRLF + buffer);
+                System.out.println("Damage and Down Contribution:" + CRLF + buffer);
                 System.out.println();
             }
 
