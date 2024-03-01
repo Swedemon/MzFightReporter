@@ -124,6 +124,8 @@ public class FileWatcher {
                         }
 
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
+                        if (!jsonFile.exists())
+                            jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_gh_kill.json");
                         if (jsonFile.exists()) {
 
                             //call parsebot
