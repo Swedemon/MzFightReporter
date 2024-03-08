@@ -33,7 +33,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 1. On the left choose 'Integrations' then 'Webhooks'.
 1. Click on 'New Webhook' then click 'Copy Webhook URL' to copy the link.
 ## Enable Healing Stats
-<ins>Warning:</ins> Healing stats can increase game lag after long fights.  If you encounter issues uncheck the 'log healing' setting described below.
+<ins>Warning:</ins> Healing stats can increase game lag after excessively long fights.  If you encounter issues uncheck the 'log healing' setting described below.
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check 'peers outgoing' option.
@@ -65,8 +65,7 @@ Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Defensive Boons**:  Does not consider whether boons such as stab were wasted so a higher rating is not always better.  However, this rating does show someone was at least actively pressing the buttons that matter.
 - **Healing**:  Only players using the Heal Addon with Live Sharing enabled will be accurately represented.
 - **Outgoing CC's**: There is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. Also, outgoing CC durations are not considered.
-- **Commander**: At times the data is ambiguous on who the commander is in which case it is skipped.
-- **Long Fights**: Fights exceeding 15 minutes run the risk of not reporting due to system memory constraints.  Healing data will not be included when the arcdps logs exceed 10MB.
+- **Long Fights**: Fights exceeding 15 minutes run the risk of not reporting due to system memory constraints.  By defeault healing data will not be included when the arcdps logs exceed 10MB.
 ### Defensive Boons Score Formula
 - EI provides a data point called buffUptimes as the source of this data.  The value is a percentage uptime on a given boon during the fight.
 - Score Formula = Stability(x5) + Aegis(x3) + Protection(x2) + Resistance(x2) + Alacrity(x2) + Quickness(x2) + Resolution(x1)
