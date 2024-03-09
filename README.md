@@ -33,7 +33,6 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 1. On the left choose 'Integrations' then 'Webhooks'.
 1. Click on 'New Webhook' then click 'Copy Webhook URL' to copy the link.
 ## Enable Healing Stats
-<ins>Warning:</ins> Healing stats can increase game lag after excessively long fights.  If you encounter issues uncheck the 'log healing' setting described below.
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check 'peers outgoing' option.
