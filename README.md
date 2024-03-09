@@ -49,7 +49,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
-<p align="center"><img src="https://i.imgur.com/5ci7Ca4.png"/></p>
+<p align="center"><img width="600" src="https://i.imgur.com/5ci7Ca4.png"/></p>
 <p align="center"><img src="https://i.imgur.com/KqISj0K.png"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/LzLxS2C.png"/></p>
 
