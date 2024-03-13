@@ -36,6 +36,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 1. Install the ArcDps [heal addon](https://github.com/Krappa322/arcdps_healing_stats#readme).
 1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check 'peers outgoing' option.
+   - Note: Healing stats does contribute to larger arcdps logs and therefore it is more resource intensive.
 ## Twitch Bot Instructions
 1. Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
 1. Go to https://twitchtokengenerator.com/
