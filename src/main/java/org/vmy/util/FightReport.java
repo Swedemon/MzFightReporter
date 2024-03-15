@@ -21,6 +21,7 @@ public class FightReport implements Serializable {
     private String enemyBreakdown;
     private String overview;
     private String dbooners;
+    private String obooners;
     private String spikers;
     private String downsKills;
     private String healers;
@@ -132,6 +133,14 @@ public class FightReport implements Serializable {
     public String getDbooners() { return dbooners; }
 
     public void setDbooners(String dbooners) { this.dbooners = dbooners; }
+
+    public String getObooners() {
+        return obooners;
+    }
+
+    public void setObooners(String obooners) {
+        this.obooners = obooners;
+    }
 
     public String getUrl() {
         return url;

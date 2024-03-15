@@ -69,10 +69,23 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         if (p.showStrips && report.getStrips()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
-        if (p.showDefensiveBoons && report.getDbooners()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
         if (p.showHeals && report.getHealers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals (arcdps heal addon required)","```"+report.getHealers()+"```"));
+        embedBuilder.setTimestamp(Instant.now());
+
+        WebhookEmbed embed = embedBuilder.build();
+        if (client != null) {
+            client.send(embed);
+        } else {
+            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+        }
+
+        embedBuilder = new WebhookEmbedBuilder();
+        embedBuilder.setColor(Color.CYAN.getAlpha());
+        if (p.showDefensiveBoons && report.getDbooners()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
+        if (p.showOffensiveBoons && report.getObooners()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party (Avg. Might Stacks)","```"+report.getObooners()+"```"));
         if (p.showDownsKills && report.getDownsKills()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
         if (p.showCCs && report.getCcs()!=null)
@@ -81,15 +94,15 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1024)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
-        embedBuilder.setTimestamp(Instant.now());
 
-        WebhookEmbed embed = embedBuilder.build();
+        embed = embedBuilder.build();
         if (client != null) {
             client.send(embed);
-            System.out.println("Discord fight report msg sent.");
         } else {
             throw new RuntimeException("Unable to connect to the provided Discord webhook.");
         }
+
+        System.out.println("Discord fight report msg sent.");
     }
 
     protected void sendReportUrlMessage(String url) {

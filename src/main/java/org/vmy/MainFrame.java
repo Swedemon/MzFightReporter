@@ -77,6 +77,7 @@ public class MainFrame {
         buildCheckBox(settingsCheckboxPanel, "showCleanses", "Show Cleanses", p.showCleanses);
         buildCheckBox(settingsCheckboxPanel, "showStrips", "Show Strips", p.showStrips);
         buildCheckBox(settingsCheckboxPanel, "showDefensiveBoons", "Show Defensive Boons", p.showDefensiveBoons);
+        buildCheckBox(settingsCheckboxPanel, "showOffensiveBoons", "Show Offensive Boons", p.showOffensiveBoons);
         buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", p.showHeals);
         buildCheckBox(settingsCheckboxPanel, "showDownsKills", "Show Outgoing Downs & Kills", p.showDownsKills);
         buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", p.showCCs);
