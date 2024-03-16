@@ -11,7 +11,7 @@
    - Enemy Breakdown
    - Report Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
-- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
+- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
 - **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com) Feel free to send feedback.
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
@@ -52,7 +52,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
-<p align="center"><img src="https://i.imgur.com/phu7tkM.png)"/></p>
+<p align="center"><img src="https://i.imgur.com/phu7tkM.png"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/LzLxS2C.png"/></p>
 <p align="center"><img width="600" src="https://i.imgur.com/5ci7Ca4.png"/></p>
 
@@ -67,4 +67,8 @@ Some data points are not provided due to a limitation in the game, arcdps or EI.
 ### Defensive Boons Score Formula
 - EI provides a data point called buffUptimes as the source of this data.  The value is a percentage uptime on a given boon during the fight.
 - Score Formula = Stability(x5) + Aegis(x3) + Protection(x2) + Resistance(x2) + Alacrity(x2) + Quickness(x2) + Resolution(x1)
-- The maximum possible score for a given party is 1700 (%).
+- The maximum possible score for a given party is 1700.
+### Offensive Boons Score Formula
+- Might is an average number of total stacks during the fight.  Others are a percentage uptime.
+- Score Formula = Might(x10) + Fury(x1) + Alacrity(x2) + Quickness(x2)
+- The maximum possible score for a given party is 750.
