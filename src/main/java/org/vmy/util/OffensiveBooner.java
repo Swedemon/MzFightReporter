@@ -5,7 +5,6 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
     private String profession;
     private String group;
     private int might=0;
-    private int mightAvgStacks=0;
     private int fury=0;
     private int alacrity=0;
     private int quickness=0;
@@ -33,7 +32,7 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
     }
 
     public void computeRating() {
-        offensiveRating = 10*mightAvgStacks + fury + 2*alacrity + 2*quickness;
+        offensiveRating = 10*might + fury + 2*alacrity + 2*quickness;
     }
 
     public int compareTo(OffensiveBooner d) {
@@ -78,14 +77,6 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
 
     public void setMight(int might) {
         this.might = might;
-    }
-
-    public int getMightAvgStacks() {
-        return mightAvgStacks;
-    }
-
-    public void setMightAvgStacks(int mightAvgStacks) {
-        this.mightAvgStacks = mightAvgStacks;
     }
 
     public int getFury() {
