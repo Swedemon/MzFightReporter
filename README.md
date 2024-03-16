@@ -3,8 +3,9 @@
    - Squad Summary, Enemy Summary
    - Player Damage, Down Contribution, Spike Damage
    - Cleanses, Strips
+   - Heals (if setup)
    - Defensive Boons
-   - Healing (if setup)
+   - Offensive Boons
    - Outgoing Downs and Kills
    - Outgoing CCs and Interrupts
    - Enemy Breakdown
