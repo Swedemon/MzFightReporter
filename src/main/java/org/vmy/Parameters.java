@@ -11,12 +11,12 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.1.1";
+    public static final String appVersion = "4.1.3";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-02-11";
+    public String gw2EIDir = "\\GW2EI-2024-02-26";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
@@ -42,6 +42,7 @@ public class Parameters {
     public boolean showCleanses = true;
     public boolean showStrips = true;
     public boolean showDefensiveBoons = true;
+    public boolean showOffensiveBoons = true;
     public boolean showHeals = true;
     public boolean showDownsKills = true;
     public boolean showCCs = true;
@@ -85,6 +86,7 @@ public class Parameters {
             showCleanses = Boolean.valueOf(props.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(props.getProperty("showStrips", "true"));
             showDefensiveBoons = Boolean.valueOf(props.getProperty("showDefensiveBoons", "true"));
+            showOffensiveBoons = Boolean.valueOf(props.getProperty("showOffensiveBoons", "true"));
             showDownsKills = Boolean.valueOf(props.getProperty("showDownsKills", "true"));
             showCCs = Boolean.valueOf(props.getProperty("showCCs", "true"));
             showHeals = Boolean.valueOf(props.getProperty("showHeals", "true"));
@@ -235,6 +237,7 @@ public class Parameters {
                     case "showCleanses": checkbox.setSelected(p.showCleanses); break;
                     case "showStrips": checkbox.setSelected(p.showStrips); break;
                     case "showDefensiveBoons": checkbox.setSelected(p.showDefensiveBoons); break;
+                    case "showOffensiveBoons": checkbox.setSelected(p.showOffensiveBoons); break;
                     case "showDownsKills": checkbox.setSelected(p.showDownsKills); break;
                     case "showCCs": checkbox.setSelected(p.showCCs); break;
                     case "showHeals": checkbox.setSelected(p.showHeals); break;

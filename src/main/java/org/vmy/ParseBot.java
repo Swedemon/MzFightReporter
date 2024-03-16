@@ -63,6 +63,8 @@ public class ParseBot {
             List<Stripper> strippers = new ArrayList<>();
             List<DefensiveBooner> dbooners = new ArrayList<>();
             List<DefensiveBooner> aggDbooners = new ArrayList<>();
+            List<OffensiveBooner> obooners = new ArrayList<>();
+            List<OffensiveBooner> aggObooners = new ArrayList<>();
             List<Spiker> spikers = new ArrayList<>();
             List<Healer> healers = new ArrayList<>();
             HashMap<String, Player> playerMap = new HashMap<>();
@@ -168,12 +170,16 @@ public class ParseBot {
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(name, profession, group);
+                OffensiveBooner oBooner = new OffensiveBooner(name, profession, group);
                 if (!currPlayer.isNull("buffUptimes")) {
                     JSONArray bArray = currPlayer.getJSONArray("buffUptimes");
                     populateDefensiveBoons(dBooner, bArray);
+                    populateOffensiveBoons(oBooner, bArray);
                 }
                 dBooner.computeRating();
                 dbooners.add(dBooner);
+                oBooner.computeRating();
+                obooners.add(oBooner);
 
                 //healing
                 int healing = 0;
@@ -268,6 +274,19 @@ public class ParseBot {
                 aggDbooner.setResolution(grpBooners.stream().map(DefensiveBooner::getResolution).reduce(0, Integer::sum) / grpSize / 1000);
                 aggDbooner.computeRating();
                 aggDbooners.add(aggDbooner);
+            }
+
+            //compile obooner data
+            for (String grp : obooners.stream().map(ob -> ob.getGroup()).distinct().collect(Collectors.toList())) {
+                List<OffensiveBooner> grpBooners = obooners.stream().filter(db -> db.getGroup().equals(grp)).collect(Collectors.toList());
+                int grpSize = grpBooners.size();
+                OffensiveBooner aggObooner = new OffensiveBooner(grp);
+                aggObooner.setMight(grpBooners.stream().map(OffensiveBooner::getMight).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setFury(grpBooners.stream().map(OffensiveBooner::getFury).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setAlacrity(grpBooners.stream().map(OffensiveBooner::getAlacrity).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setQuickness(grpBooners.stream().map(OffensiveBooner::getQuickness).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.computeRating();
+                aggObooners.add(aggObooner);
             }
 
             System.out.println("Zone: " + report.getZone());
@@ -365,6 +384,21 @@ public class ParseBot {
                 System.out.println();
             }
 
+            if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
+                buffer = new StringBuffer();
+                buffer.append(" #  Player                 Total  Heals Barrier" + CRLF);
+                buffer.append("--- ---------------------- ------ ------ ------" + CRLF);
+                healers.sort(Comparator.naturalOrder());
+                int index = 1;
+                int count = healers.size() > 10 ? 10 : healers.size();
+                for (Healer x : healers.subList(0, count))
+                    if (x.getTotal() > 0)
+                        buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
+                report.setHealers(buffer.toString());
+                System.out.println("Heals (arcdps heal addon required):" + CRLF + buffer);
+                System.out.println();
+            }
+
             if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
                 buffer = new StringBuffer();
                 buffer.append(" # Score KDR Stab Aegi Prot Resi Alac Quik Reso" + CRLF);
@@ -391,18 +425,26 @@ public class ParseBot {
                 System.out.println();
             }
 
-            if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
+            if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
                 buffer = new StringBuffer();
-                buffer.append(" #  Player                 Total  Heals Barrier" + CRLF);
-                buffer.append("--- ---------------------- ------ ------ ------" + CRLF);
-                healers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = healers.size() > 10 ? 10 : healers.size();
-                for (Healer x : healers.subList(0, count))
-                    if (x.getTotal() > 0)
-                        buffer.append(String.format("%2s", (index++)) + "  " + x + CRLF);
-                report.setHealers(buffer.toString());
-                System.out.println("Heals (arcdps heal addon required):" + CRLF + buffer);
+                buffer.append(" # Score KDR Mght Fury Alac Quik" + CRLF);
+                buffer.append("--- ---  --- ---- ---- ---- ----" + CRLF);
+                aggObooners.sort(Comparator.naturalOrder());
+                int count = Math.min(aggObooners.size(), 15);
+                for (OffensiveBooner x : aggObooners.subList(0, count)) {
+                    if (x.getOffensiveRating() > 0) {
+                        buffer.append(String.format("%2s", x.getGroup())
+                                + String.format("%5s", x.getOffensiveRating())
+                                + String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
+                                + String.format("%4s", x.getMight())
+                                + String.format("%5s", x.getFury())
+                                + String.format("%5s", x.getAlacrity())
+                                + String.format("%5s", x.getQuickness())
+                                + CRLF);
+                    }
+                }
+                report.setObooners(buffer.toString());
+                System.out.println("Offensive Boon Uptime by Party (Avg. Might Stacks):" + CRLF + buffer);
                 System.out.println();
             }
 
@@ -554,12 +596,29 @@ public class ParseBot {
         }
     }
 
+    private static void populateOffensiveBoons(OffensiveBooner oBooner, JSONArray bArray) {
+        for (Object obj : bArray.toList()) {
+            HashMap m = (HashMap)obj;
+            int id = (int) (Integer) m.get("id");
+            switch (id) {
+                case 740 : oBooner.setMight(oBooner.getMight() + getBuffGeneration(m, true)); break;
+                case 725 : oBooner.setFury(oBooner.getFury() + getBuffGeneration(m)); break;
+                case 30328 : oBooner.setAlacrity(oBooner.getAlacrity() + getBuffGeneration(m)); break;
+                case 1187 : oBooner.setQuickness(oBooner.getQuickness() + getBuffGeneration(m)); break;
+            }
+        }
+    }
+
     private static int getBuffGeneration(HashMap m) {
+        return getBuffGeneration(m, false);
+    }
+
+    private static int getBuffGeneration(HashMap m, boolean doUptime) {
         if (m.containsKey("buffData")) {
             List buffData = (List) m.get("buffData");
             if (buffData!=null && buffData.size()>0) {
                 HashMap bdMap = (HashMap) buffData.get(0);
-                if (bdMap.containsKey("presence")) {
+                if (!doUptime && bdMap.containsKey("presence")) {
                     BigDecimal presence = (BigDecimal) bdMap.get("presence");
                     if (presence.compareTo(BigDecimal.ZERO) > 0)
                         return presence.multiply(new BigDecimal(1000)).intValue();
