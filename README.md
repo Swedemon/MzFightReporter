@@ -9,10 +9,10 @@
    - Outgoing Downs and Kills
    - Outgoing CCs and Interrupts
    - Enemy Breakdown
-   - Web Link to WvW Dps Report
-   - Damage Graph (Outgoing)
+   - Report Link to [WvW Dps Report](https://dps.report/)
+   - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights and ArcDps devs.
-- **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com)
+- **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com) Feel free to send feedback.
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
@@ -52,9 +52,9 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot revert 'Twitch Channel Name' back to empty.
 ## Sneak Peek
-<p align="center"><img width="600" src="https://i.imgur.com/5ci7Ca4.png"/></p>
-<p align="center"><img src="https://i.imgur.com/KqISj0K.png"/></p>
+<p align="center"><img src="https://i.imgur.com/phu7tkM.png)"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/LzLxS2C.png"/></p>
+<p align="center"><img width="600" src="https://i.imgur.com/5ci7Ca4.png"/></p>
 
 ## About the Data
 ### Limitations
