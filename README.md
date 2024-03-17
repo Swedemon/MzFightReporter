@@ -4,12 +4,11 @@
    - Player Damage, Down Contribution, Spike Damage
    - Cleanses, Strips
    - Heals (if setup)
-   - Defensive Boons
-   - Offensive Boons
+   - Defensive and Offensive Boons
    - Outgoing Downs and Kills
    - Outgoing CCs and Interrupts
    - Enemy Breakdown
-   - Report Link to [WvW Dps Report](https://dps.report/)
+   - Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
 - **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com) Feel free to send feedback.
