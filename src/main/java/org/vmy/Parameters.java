@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.1.4";
+    public static final String appVersion = "4.1.5";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -214,7 +214,7 @@ public class Parameters {
 
         try {
             if (discordWebhook != null && !discordWebhook.isEmpty())
-                DiscordBot.getSingletonInstance().resetSession(); //in case webhook changed
+                DiscordBot.getSingletonInstance().buildSession(); //in case webhook changed
         } catch (Exception e) {
             System.out.println("Warning: Unable to establish Discord webhook connection.");
         }

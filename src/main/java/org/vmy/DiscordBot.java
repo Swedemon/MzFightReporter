@@ -14,6 +14,8 @@ import java.time.Instant;
 public class DiscordBot {
 
     private static DiscordBot singleton;
+    private static String url = "";
+    private static String threadId = "";
 
     public static DiscordBot getSingletonInstance() {
         if (singleton == null)
@@ -40,14 +42,21 @@ public class DiscordBot {
     private DiscordBot openSession()
     {
         if (client == null) {
-            client = WebhookClient.withUrl(Parameters.getInstance().discordWebhook);
+            buildSession();
         }
         return this;
     }
 
-    public void resetSession()
-    {
-        client = WebhookClient.withUrl(Parameters.getInstance().discordWebhook);
+    public void buildSession() {
+        url = Parameters.getInstance().discordWebhook;
+        int indexOfThreadId = url.indexOf("?thread_id=");
+        if (indexOfThreadId > 0) {
+            String sThreadId = url.substring(indexOfThreadId + 11);
+            url = url.substring(0, indexOfThreadId);
+            client = WebhookClient.withUrl(url).onThread(Long.parseLong(sThreadId));
+        } else {
+            client = WebhookClient.withUrl(url);
+        }
     }
 
     protected void sendMainMessage(FightReport report) {

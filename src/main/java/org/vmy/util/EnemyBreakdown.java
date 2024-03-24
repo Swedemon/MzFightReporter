@@ -1,25 +1,26 @@
 package org.vmy.util;
 
-public class EnemyProfession implements Comparable<EnemyProfession> {
+import org.apache.commons.lang.StringUtils;
+
+public class EnemyBreakdown implements Comparable<EnemyBreakdown> {
+    private String team;
     private String profession;
     private int count;
     private int damage;
-    private int condiDamage;
 
-    public EnemyProfession(String profession, int damage, int condiDamage) {
-        this.profession = profession;
+    public EnemyBreakdown(Enemy e) {
+        this.team = e.getTeam();
+        this.profession = e.getProfession();
         this.count = 1;
-        this.damage = damage;
-        this.condiDamage = condiDamage;
+        this.damage = e.getDamage();
     }
 
-    public void addEnemy(int damage, int condiDamage) {
+    public void addEnemy(Enemy e) {
         this.count++;
-        this.damage += damage;
-        this.condiDamage += condiDamage;
+        this.damage += e.getDamage();
     }
 
-    public int compareTo(EnemyProfession d) {
+    public int compareTo(EnemyBreakdown d) {
         if (count > d.count)
             return -1;
         if (count < d.count)
@@ -32,10 +33,9 @@ public class EnemyProfession implements Comparable<EnemyProfession> {
     }
 
     public String toString() {
-        return String.format("%3d", count) + "   "
-                + String.format("%-15s", profession)
-                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 1 : 2)) + " "
-                + String.format("%7s",withSuffix(condiDamage,condiDamage < 1000000 ? 1 : 2));
+        return String.format("%2d", count) + "  "
+                + String.format("%-9s", StringUtils.left(profession, 8))
+                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 1 : 2));
     }
 
     public static String withSuffix(long count, int decimals) {
@@ -54,6 +54,14 @@ public class EnemyProfession implements Comparable<EnemyProfession> {
         this.profession = profession;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
+
     public int getCount() {
         return count;
     }
@@ -68,13 +76,5 @@ public class EnemyProfession implements Comparable<EnemyProfession> {
 
     public void setDamage(int damage) {
         this.damage = damage;
-    }
-
-    public int getCondiDamage() {
-        return condiDamage;
-    }
-
-    public void setCondiDamage(int condiDamage) {
-        this.condiDamage = condiDamage;
     }
 }
