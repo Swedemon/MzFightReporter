@@ -506,37 +506,16 @@ public class ParseBot {
                     int count1 = ebdMap.get(team1).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum);
                     List<EnemyBreakdown> e1 = ebdMap.get(team1).values().stream().sorted().collect(Collectors.toList());
                     e1 = e1.stream().sorted().collect(Collectors.toList());
-                    int half1 = e1.size() / 2;
+                    int half1 = (int) Math.ceil((double)e1.size() / 2);
                     String team2 = keys.size() > 1 ? keys.get(1) : null;
                     int count2 = team2 != null ? ebdMap.get(team2).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum) : 0;
                     List<EnemyBreakdown> e2 = team2 != null ? ebdMap.get(team2).values().stream().sorted().collect(Collectors.toList()) : new ArrayList<>();
                     e2 = e2.stream().sorted().collect(Collectors.toList());
-                    int half2 = e2.size() / 2;
+                    int half2 = (int) Math.ceil((double)e2.size() / 2);
                     buffer = new StringBuffer();
                     buffer.append(" #  Prof      Dmg       #  Prof      Dmg  \n");
                     buffer.append("--- -------- ------    --- -------- ------\n");
-                    for (int i = 0; i<e1.size(); i++) {
-                        if (i == 0) {
-                            buffer.append(">>> " + team1 + ": " + count1).append("\n");
-                        }
-                        if (i+half1 >= e1.size())
-                            break;
-                        buffer.append(e1.get(i)).append("    ");
-                        if (i+half1+1 < e1.size())
-                            buffer.append(e1.get(i+half1+1));
-                        buffer.append("\n");
-                    }
-                    for (int i = 0; i<e2.size(); i++) {
-                        if (i == 0) {
-                            buffer.append(">>> " + team2 + ": " + count2).append("\n");
-                        }
-                        if (i+half2 >= e2.size())
-                            break;
-                        buffer.append(e2.get(i)).append("    ");
-                        if (i+half2+1 < e2.size())
-                            buffer.append(e2.get(i+half2+1));
-                        buffer.append("\n");
-                    }
+                    buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
                     report.setEnemyBreakdown(buffer.toString());
                     System.out.println("Enemy Breakdown:" + LF + buffer);
                     System.out.println();
@@ -556,6 +535,33 @@ public class ParseBot {
         }
 
         return report;
+    }
+
+    private static void buildEnemyBreakdown(StringBuffer buffer, String team1, int count1, List<EnemyBreakdown> e1, int half1, String team2, int count2, List<EnemyBreakdown> e2, int half2) {
+        for (int i = 0; i*2 < e1.size(); i++) {
+            if (i == 0) {
+                buffer.append(">>> " + team1 + ": " + count1).append("\n");
+            }
+            if (i+ half1 > e1.size())
+                break;
+            buffer.append(e1.get(i)).append("    ");
+            if (i+ half1 < e1.size())
+                buffer.append(e1.get(i+ half1));
+            buffer.append("\n");
+        }
+        for (int i = 0; i*2 < e2.size(); i++) {
+            if (i == 0) {
+                buffer.append(">>> " + team2 + ": " + count2).append("\n");
+            }
+            if (i+ half2 > e2.size())
+                break;
+            buffer.append(e2.get(i)).append("    ");
+            if (i+ half2 < e2.size())
+                buffer.append(e2.get(i+ half2));
+            buffer.append("\n");
+            if (i+ half2 >= e2.size())
+                break;
+        }
     }
 
     private static String getPlayerTeamText(int numPlayers, String team) {

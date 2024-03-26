@@ -114,11 +114,11 @@ public class DiscordBot {
         System.out.println("Discord fight report msg sent.");
     }
 
-    protected void sendReportUrlMessage(String url) {
+    protected void sendReportUrlMessage(String url, String endTime) {
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
 
-        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report]("+url+")"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report (" + endTime + ")]("+url+")"));
 
         WebhookEmbed embed = embedBuilder.build();
         if (client != null) {
