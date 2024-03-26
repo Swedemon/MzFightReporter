@@ -307,7 +307,7 @@ public class ParseBot {
             buffer.append("--------- --------  -----  -------  --------" + LF);
             String playerText = getPlayerTeamText(players.length(), team);
             buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
-                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
+                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
             System.out.println("Squad Summary:" + LF + buffer);
@@ -545,8 +545,8 @@ public class ParseBot {
 
             buffer = new StringBuffer();
             buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Deaths: %d) | Enemy Players: %d (Dmg: %s, Deaths: %d)",
-                    players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), totalPlayersDead,
-                    enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 1 : 2), countEnemyDeaths));
+                    players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : 2), totalPlayersDead,
+                    enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : 2), countEnemyDeaths));
             report.setOverview(buffer.toString());
             System.out.println(buffer);
             System.out.println();
@@ -574,7 +574,7 @@ public class ParseBot {
             int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
             String playerText = getPlayerTeamText(thisTeam.size(), team);
             buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
-                    DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
+                    DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : 2), DPSer.withSuffix(sumDps, 1),
                     sumDwn, sumDed));
             buffer.append("\r\n");
         }

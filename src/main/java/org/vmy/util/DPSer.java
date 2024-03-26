@@ -44,9 +44,9 @@ public class DPSer implements Comparable<DPSer> {
     public String toString() {
         return String.format("%-23s",
                 String.format("%.16s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(damage,damage < 1000000 ? 1 : 2)) + " "
+                + String.format("%7s",withSuffix(damage,damage < 1000000 ? 0 : 2)) + " "
                 + String.format("%5s",withSuffix(dps,1)) + " "
-                + String.format("%6s",withSuffix(onDowns,1));
+                + String.format("%6s",withSuffix(onDowns,0));
     }
 
     public static String withSuffix(long count, int decimals) {

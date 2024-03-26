@@ -35,7 +35,7 @@ public class EnemyBreakdown implements Comparable<EnemyBreakdown> {
     public String toString() {
         return String.format("%2d", count) + "  "
                 + String.format("%-9s", StringUtils.left(profession, 8))
-                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 1 : 2));
+                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 0 : 2));
     }
 
     public static String withSuffix(long count, int decimals) {
