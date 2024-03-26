@@ -77,14 +77,16 @@ public class ParseBot {
             int battleLength = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
-            int sumEnemyDps = 0;
             int sumEnemyDmg = 0;
+            String team = null;
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
                 String name = currPlayer.getString("name");
                 String profession = currPlayer.getString("profession");
                 String group = ""+currPlayer.getInt("group");
+                if (team == null)
+                    team = currPlayer.isNull("teamID") ? "" : mapTeamID(currPlayer.getInt("teamID"));
                 int downDmgOut = 0;
                 if (currPlayer.getBoolean("hasCommanderTag"))
                     commander = commander==null ? currPlayer.getString("name") : "n/a";
@@ -303,7 +305,8 @@ public class ParseBot {
             StringBuffer buffer = new StringBuffer();
             buffer.append(" Players   Damage    DPS    Downs    Deaths" + LF);
             buffer.append("--------- --------  -----  -------  --------" + LF);
-            buffer.append(String.format("%6d %10s %7s %6d %8d", players.length(),
+            String playerText = getPlayerTeamText(players.length(), team);
+            buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
             report.setSquadSummary(buffer.toString());
@@ -448,7 +451,7 @@ public class ParseBot {
                     }
                 }
                 report.setObooners(buffer.toString());
-                System.out.println("Offensive Boon Uptime by Party (Avg. Might Stacks):" + LF + buffer);
+                System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
                 System.out.println();
             }
 
@@ -555,21 +558,27 @@ public class ParseBot {
         return report;
     }
 
+    private static String getPlayerTeamText(int numPlayers, String team) {
+        String playerText = StringUtils.isEmpty(team) ? " " + StringUtils.center(String.valueOf(numPlayers), 8)
+                : StringUtils.leftPad(String.valueOf(numPlayers), 3) + " " + StringUtils.rightPad(team, 5);
+        return playerText;
+    }
+
     @NotNull
     private static List<Enemy> appendEnemySummary(String team, List<Enemy> enemies, StringBuffer buffer) {
-        List<Enemy> reds = enemies.stream().filter(e->team.equals(e.getTeam())).collect(Collectors.toList());
-        if (reds.size() > 0) {
-            int sumDmg = reds.stream().map(Enemy::getDamage).reduce(0, Integer::sum);
-            int sumDps = reds.stream().map(Enemy::getDps).reduce(0, Integer::sum);
-            int sumDwn = reds.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
-            int sumDed = reds.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
-            String players =  team.equals("") ? StringUtils.center(reds.size()+"", 8) : StringUtils.left(reds.size() + " " + team, 8);
-            buffer.append(String.format(" %-8s%8s %7s %6d %8d", players,
+        List<Enemy> thisTeam = enemies.stream().filter(e->team.equals(e.getTeam())).collect(Collectors.toList());
+        if (thisTeam.size() > 0) {
+            int sumDmg = thisTeam.stream().map(Enemy::getDamage).reduce(0, Integer::sum);
+            int sumDps = thisTeam.stream().map(Enemy::getDps).reduce(0, Integer::sum);
+            int sumDwn = thisTeam.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
+            int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
+            String playerText = getPlayerTeamText(thisTeam.size(), team);
+            buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
                     DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                     sumDwn, sumDed));
             buffer.append("\r\n");
         }
-        return reds;
+        return thisTeam;
     }
 
     private static String mapTeamID(int teamID) {
