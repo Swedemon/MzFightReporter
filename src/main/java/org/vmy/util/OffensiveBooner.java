@@ -9,6 +9,9 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
     private int alacrity=0;
     private int quickness=0;
     private int offensiveRating=0;
+    private int downCn;
+    private int downs;
+    private int kills;
 
     public OffensiveBooner(String group) {
         this.group = group;
@@ -18,17 +21,6 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
         this.name = name;
         this.profession = profession;
         this.group = group;
-    }
-
-    public OffensiveBooner(String name, String profession, String group, int might, int fury, int alacrity, int quickness) {
-        this.name = name;
-        this.profession = profession;
-        this.group = group;
-        this.might = might;
-        this.fury = fury;
-        this.alacrity = alacrity;
-        this.quickness = quickness;
-        computeRating();
     }
 
     public void computeRating() {
@@ -119,4 +111,27 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
         this.group = group;
     }
 
+    public int getDownCn() {
+        return downCn;
+    }
+
+    public void setDownCn(int downCn) {
+        this.downCn = downCn;
+    }
+
+    public int getDowns() {
+        return downs;
+    }
+
+    public void setDowns(int downs) {
+        this.downs = downs;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
 }

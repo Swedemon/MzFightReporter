@@ -242,7 +242,7 @@ public class FileWatcher {
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
                                     if (discordOkay)
-                                        discordOkay = sendDiscordUrlMsg(uploadUrl);
+                                        discordOkay = sendDiscordUrlMsg(uploadUrl, report.getEndTime());
                                 }
                             }
 
@@ -304,12 +304,12 @@ public class FileWatcher {
         return true;
     }
 
-    private static boolean sendDiscordUrlMsg(String uploadUrl) {
+    private static boolean sendDiscordUrlMsg(String uploadUrl, String endTime) {
         MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Runnable task = () -> {
             DiscordBot dBot = DiscordBot.getSingletonInstance();
-            dBot.sendReportUrlMessage(uploadUrl);
+            dBot.sendReportUrlMessage(uploadUrl, endTime);
         };
         Future<?> future = executor.submit(task);
         try {

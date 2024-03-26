@@ -27,9 +27,9 @@ public class Healer implements Comparable<Healer> {
     public String toString() {
         return String.format("%-22s",
                 String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(total,1))
-                + String.format("%7s",withSuffix(healing,1))
-                + String.format("%7s",withSuffix(barrier,1));
+                + String.format("%7s",withSuffix(total,total < 1000000 ? 0 : 2))
+                + String.format("%7s",withSuffix(healing,healing < 1000000 ? 0 : 2))
+                + String.format("%7s",withSuffix(barrier,barrier < 1000000 ? 0 : 2));
     }
 
     public static String withSuffix(long count, int decimals) {
