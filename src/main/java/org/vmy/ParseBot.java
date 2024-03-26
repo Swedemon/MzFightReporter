@@ -165,8 +165,9 @@ public class ParseBot {
                 report.getDmgMap().put(name,netTargetDmgList);
 
                 //set player damage
-                DPSer dpser = new DPSer(name, profession, netTargetDmgList);
+                DPSer dpser = new DPSer(name, profession, group, netTargetDmgList);
                 dpser.setOnDowns(downDmgOut);
+
                 dpsers.add(dpser);
                 sumPlayerDmg += dpser.getDamage();
                 battleLength = netTargetDmgList.size();
@@ -291,6 +292,9 @@ public class ParseBot {
                 aggObooner.setFury(grpBooners.stream().map(OffensiveBooner::getFury).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setAlacrity(grpBooners.stream().map(OffensiveBooner::getAlacrity).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setQuickness(grpBooners.stream().map(OffensiveBooner::getQuickness).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setDownCn(dpsers.stream().filter(d -> d.getGroup().equals(grp)).map(DPSer::getOnDowns).reduce(0, Integer::sum));
+                aggObooner.setDowns(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getDownsOut()).reduce(0, Integer::sum));
+                aggObooner.setKills(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getKills()).reduce(0, Integer::sum));
                 aggObooner.computeRating();
                 aggObooners.add(aggObooner);
             }
@@ -434,19 +438,21 @@ public class ParseBot {
 
             if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
                 buffer = new StringBuffer();
-                buffer.append(" # Score KDR Mght Fury Alac Quik" + LF);
-                buffer.append("--- ---  --- ---- ---- ---- ----" + LF);
+                buffer.append(" # Score Mght Fury Alac Quik DownCn Downs Kills" + LF);
+                buffer.append("--- ---  ---- ---- ---- ----  ----   ---   ---" + LF);
                 aggObooners.sort(Comparator.naturalOrder());
                 int count = Math.min(aggObooners.size(), 15);
                 for (OffensiveBooner x : aggObooners.subList(0, count)) {
                     if (x.getOffensiveRating() > 0) {
                         buffer.append(String.format("%2s", x.getGroup())
                                 + String.format("%5s", x.getOffensiveRating())
-                                + String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
-                                + String.format("%4s", x.getMight())
+                                + String.format("%5s", x.getMight())
                                 + String.format("%5s", x.getFury())
                                 + String.format("%5s", x.getAlacrity())
                                 + String.format("%5s", x.getQuickness())
+                                + String.format("%7s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
+                                + String.format("%5s", x.getDowns())
+                                + String.format("%6s", x.getKills())
                                 + LF);
                     }
                 }

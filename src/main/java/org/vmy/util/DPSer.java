@@ -5,13 +5,15 @@ import java.util.List;
 public class DPSer implements Comparable<DPSer> {
     private String name;
     private String profession;
+    private String group;
     private int damage;
     private int dps;
     private int onDowns;
 
-    public DPSer(String name, String profession, List<Object> dmgList) {
+    public DPSer(String name, String profession, String group, List<Object> dmgList) {
         this.name = name;
         this.profession = profession;
+        this.group = group;
         int size = dmgList.size();
         damage = (int) dmgList.get(size - 1);
         int firstDmg = 0;
@@ -64,6 +66,14 @@ public class DPSer implements Comparable<DPSer> {
     public String getProfession() { return profession; }
 
     public void setProfession(String profession) { this.profession = profession; }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
     public int getDamage() { return damage; }
 
