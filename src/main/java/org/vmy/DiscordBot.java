@@ -71,7 +71,7 @@ public class DiscordBot {
         if (p.showEnemySummary && report.getEnemySummary()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage and Down Contribution","```"+report.getDamage()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
         if (p.showCleanses && report.getCleanses()!=null)
@@ -94,11 +94,11 @@ public class DiscordBot {
         if (p.showDefensiveBoons && report.getDbooners()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
         if (p.showOffensiveBoons && report.getObooners()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party (Avg. Might Stacks)","```"+report.getObooners()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party","```"+report.getObooners()+"```"));
         if (p.showDownsKills && report.getDownsKills()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
         if (p.showCCs && report.getCcs()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's and Interrupts (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's & Interrupts (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
         if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1024)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)

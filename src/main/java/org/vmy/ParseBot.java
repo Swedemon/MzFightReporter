@@ -341,7 +341,7 @@ public class ParseBot {
                     if (x.getDamage() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
                 report.setDamage(buffer.toString());
-                System.out.println("Damage and Down Contribution:" + LF + buffer);
+                System.out.println("Damage & Down Contribution:" + LF + buffer);
                 System.out.println();
             }
 
@@ -487,7 +487,7 @@ public class ParseBot {
                     if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
                 report.setCcs(buffer.toString());
-                System.out.println("Outgoing CCs and Interrupts (stuns immobs chills cripples):" + LF + buffer);
+                System.out.println("Outgoing CCs & Interrupts (stuns immobs chills cripples):" + LF + buffer);
                 System.out.println();
             }
 
