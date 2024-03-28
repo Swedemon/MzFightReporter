@@ -69,5 +69,5 @@ Some data points are not provided due to a limitation in the game, arcdps or EI.
 - The maximum possible score for a given party is 1700.
 ### Offensive Boons Score Formula
 - Might is an average number of total stacks during the fight.  Others are a percentage uptime.
-- Score Formula = Might(x10) + Fury(x1) + Alacrity(x2) + Quickness(x2)
+- Score Formula = Might-Stacks(x10) + Fury(x1) + Alacrity(x2) + Quickness(x2)
 - The maximum possible score for a given party is 750.
