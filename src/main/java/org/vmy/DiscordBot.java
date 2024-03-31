@@ -100,7 +100,7 @@ public class DiscordBot {
         if (p.showCCs && report.getCcs()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's & Interrupts (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
         if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1024)+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
 
