@@ -406,7 +406,7 @@ public class ParseBot {
                     if (x.getTotal() > 0)
                         buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
                 report.setHealers(buffer.toString());
-                System.out.println("Heals (arcdps heal addon required):" + LF + buffer);
+                System.out.println("Heals & Barrier (arcdps heal addon required):" + LF + buffer);
                 System.out.println();
             }
 

@@ -79,7 +79,7 @@ public class DiscordBot {
         if (p.showStrips && report.getStrips()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
         if (p.showHeals && report.getHealers()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals (arcdps heal addon required)","```"+report.getHealers()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals & Barrier (arcdps heal addon required)","```"+report.getHealers()+"```"));
         embedBuilder.setTimestamp(Instant.now());
 
         WebhookEmbed embed = embedBuilder.build();
