@@ -64,14 +64,20 @@ public class DiscordBot {
 
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
-        embedBuilder.setThumbnailUrl(p.discordThumbnail);
-        embedBuilder.setDescription("> "+report.getZone()+"\n\n" + (report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Time**: "+report.getEndTime()+"\n" + "**Duration**: "+report.getDuration()+"\n");
+        //embedBuilder.set(p.discordThumbnail);
+        embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
+        String iconUrl = report.getZone().contains("Eternal") ? "https://i.imgur.com/eFMK8D4.png"
+                : report.getZone().contains("Border") ? "https://i.imgur.com/4iKGNuY.png"
+                : report.getZone().contains("Edge") ? "https://i.imgur.com/MFjFSZW.png"
+                : "https://i.imgur.com/qI6u5HG.png";
+        embedBuilder.setAuthor(new WebhookEmbed.EmbedAuthor(report.getZone(), iconUrl, null));
+        embedBuilder.setDescription((report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Time**: "+report.getEndTime()+"\n" + "**Duration**: "+report.getDuration()+"\n");
         if (p.showSquadSummary && report.getSquadSummary()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```"));
         if (p.showEnemySummary && report.getEnemySummary()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage and Down Contribution","```"+report.getDamage()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
         if (p.showCleanses && report.getCleanses()!=null)
@@ -79,7 +85,7 @@ public class DiscordBot {
         if (p.showStrips && report.getStrips()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
         if (p.showHeals && report.getHealers()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals (arcdps heal addon required)","```"+report.getHealers()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals & Barrier (heal addon required)","```"+report.getHealers()+"```"));
         embedBuilder.setTimestamp(Instant.now());
 
         WebhookEmbed embed = embedBuilder.build();
@@ -91,16 +97,17 @@ public class DiscordBot {
 
         embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
+        embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
         if (p.showDefensiveBoons && report.getDbooners()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
         if (p.showOffensiveBoons && report.getObooners()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party (Avg. Might Stacks)","```"+report.getObooners()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party","```"+report.getObooners()+"```"));
         if (p.showDownsKills && report.getDownsKills()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
         if (p.showCCs && report.getCcs()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's and Interrupts (stuns immobs chills cripples)","```"+report.getCcs()+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's (stuns immobs chills cripples) & Interrupts","```"+report.getCcs()+"```"));
         if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1024)+"```"));
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
 

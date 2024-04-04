@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Cleanser implements Comparable<Cleanser> {
     private String name;
     private String profession;
@@ -21,9 +23,8 @@ public class Cleanser implements Comparable<Cleanser> {
     }
 
     public String toString() {
-        return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%,7d",cleanses);
+        return StringUtils.rightPad( StringUtils.left(name, 14), 14) + " " + DPSer.mapProf(profession.substring(0,4))
+                + StringUtils.leftPad(cleanses+"", 5);
     }
 
     public String getName() {

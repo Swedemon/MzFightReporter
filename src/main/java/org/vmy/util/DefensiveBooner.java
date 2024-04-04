@@ -42,9 +42,9 @@ public class DefensiveBooner implements Comparable<DefensiveBooner> {
     }
 
     public int compareTo(DefensiveBooner d) {
-        if (defensiveRating==d.defensiveRating)
+        if (group.equals(d.group))
             return 0;
-        else if (defensiveRating>d.defensiveRating)
+        else if (Integer.parseInt(group) < Integer.parseInt(d.group))
             return -1;
         else
             return 1;
