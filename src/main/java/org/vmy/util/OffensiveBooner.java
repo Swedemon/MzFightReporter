@@ -28,9 +28,9 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
     }
 
     public int compareTo(OffensiveBooner d) {
-        if (offensiveRating==d.offensiveRating)
+        if (group.equals(d.group))
             return 0;
-        else if (offensiveRating>d.offensiveRating)
+        else if (Integer.parseInt(group) < Integer.parseInt(d.group))
             return -1;
         else
             return 1;

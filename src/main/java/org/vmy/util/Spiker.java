@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,10 +57,9 @@ public class Spiker implements Comparable<Spiker> {
     }
 
     public String toString() {
-        return String.format("%-23s",
-                String.format("%.16s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(spike2s,spike2s < 1000000 ? 0 : 2))
-                + String.format("%7s",withSuffix(spike4s,spike4s < 1000000 ? 0 : 2))
+        return StringUtils.rightPad( StringUtils.left(name, 9), 9) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%5s",withSuffix(spike2s,spike2s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
+                + String.format("%5s",withSuffix(spike4s,spike4s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
                 + String.format("%6s",String.format("%s",startTime/60)+":"+String.format("%02d",startTime%60));
     }
 

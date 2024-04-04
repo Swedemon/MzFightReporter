@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Healer implements Comparable<Healer> {
     private String name;
     private String profession;
@@ -25,11 +27,10 @@ public class Healer implements Comparable<Healer> {
     }
 
     public String toString() {
-        return String.format("%-22s",
-                String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(total,total < 1000000 ? 0 : 2))
-                + String.format("%7s",withSuffix(healing,healing < 1000000 ? 0 : 2))
-                + String.format("%7s",withSuffix(barrier,barrier < 1000000 ? 0 : 2));
+        return StringUtils.rightPad( StringUtils.left(name, 7), 7) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%6s",withSuffix(total,total < 1000000 ? 0 : total >= 10000000 ? 1 : 2))
+                + String.format("%6s",withSuffix(healing,healing < 1000000 ? 0 : healing >= 10000000 ? 1 : 2))
+                + String.format("%6s",withSuffix(barrier,barrier < 1000000 ? 0 : barrier >= 10000000 ? 1 : 2));
     }
 
     public static String withSuffix(long count, int decimals) {

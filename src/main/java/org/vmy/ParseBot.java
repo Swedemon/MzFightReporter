@@ -299,242 +299,7 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            System.out.println("Zone: " + report.getZone());
-            System.out.println("Commander: " + report.getCommander());
-            System.out.println("Time: " + report.getEndTime());
-            System.out.println("Duration: " + report.getDuration());
-            System.out.println();
-
-            //write to buffer
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(" Players   Damage    DPS    Downs    Deaths" + LF);
-            buffer.append("--------- --------  -----  -------  --------" + LF);
-            String playerText = getPlayerTeamText(players.length(), team);
-            buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
-                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
-                    totalPlayersDowned, totalPlayersDead));
-            report.setSquadSummary(buffer.toString());
-            System.out.println("Squad Summary:" + LF + buffer);
-            System.out.println();
-
-            buffer = new StringBuffer();
-            buffer.append(" Players   Damage    DPS    Downs    Deaths" + LF);
-            buffer.append("--------- --------  -----  -------  --------" + LF);
-            appendEnemySummary("Red", enemies, buffer);
-            appendEnemySummary("Green", enemies, buffer);
-            appendEnemySummary("Blue", enemies, buffer);
-            appendEnemySummary("", enemies, buffer);
-            String esum = buffer.toString();
-            esum = esum.substring(0, esum.length()-1);
-            report.setEnemySummary(esum);
-            System.out.println("Enemy Summary:" + LF + esum);
-            System.out.println();
-
-            if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                  Damage  DPS  DownCn" + LF);
-                buffer.append("--- ----------------------- ------ ----- ------" + LF);
-                dpsers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = dpsers.size() > 10 ? 10 : dpsers.size();
-                for (DPSer x : dpsers.subList(0, count))
-                    if (x.getDamage() > 0)
-                        buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-                report.setDamage(buffer.toString());
-                System.out.println("Damage & Down Contribution:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (spikers.size()>0) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                   2 sec  4 sec  Time" + LF);
-                buffer.append("--- -----------------------  -----  -----  ----" + LF);
-                spikers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = spikers.size() > 10 ? 10 : spikers.size();
-                for (Spiker x : spikers.subList(0, count))
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-                report.setSpikers(buffer.toString());
-                System.out.println("Spike Damage:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (cleansers.size()>0) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                    Cleanses  CPS" + LF);
-                buffer.append("--- ------------------------- -------- -----" + LF);
-                cleansers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = cleansers.size() > 10 ? 10 : cleansers.size();
-                for (Cleanser x : cleansers.subList(0, count)) {
-                    BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
-                    BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
-                    buffer.append(String.format("%2s", (index++)) + "  " + x
-                            + String.format("%8s", new DecimalFormat("##0.00").format(rate)) + LF);
-                }
-                report.setCleanses(buffer.toString());
-                System.out.println("Cleanses:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (strippers.size()>0) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                     Strips   SPS" + LF);
-                buffer.append("--- ------------------------- -------- -----" + LF);
-                strippers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = strippers.size() > 10 ? 10 : strippers.size();
-                for (Stripper x : strippers.subList(0, count)) {
-                    BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
-                    BigDecimal rate = BigDecimal.valueOf(x.getStrips()).divide(sec, 2, RoundingMode.HALF_UP);
-                    buffer.append(String.format("%2s", (index++)) + "  " + x
-                            + String.format("%8s", new DecimalFormat("##0.00").format(rate)) + LF);
-                }
-                report.setStrips(buffer.toString());
-                System.out.println("Strips:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                 Total  Heals Barrier" + LF);
-                buffer.append("--- ---------------------- ------ ------ ------" + LF);
-                healers.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = healers.size() > 10 ? 10 : healers.size();
-                for (Healer x : healers.subList(0, count))
-                    if (x.getTotal() > 0)
-                        buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-                report.setHealers(buffer.toString());
-                System.out.println("Heals & Barrier (arcdps heal addon required):" + LF + buffer);
-                System.out.println();
-            }
-
-            if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
-                buffer = new StringBuffer();
-                buffer.append(" # Score KDR Stab Aegi Prot Resi Alac Quik Reso" + LF);
-                buffer.append("--- ---  --- ---- ---- ---- ---- ---- ---- ----" + LF);
-                aggDbooners.sort(Comparator.naturalOrder());
-                int count = Math.min(aggDbooners.size(), 15);
-                for (DefensiveBooner x : aggDbooners.subList(0, count)) {
-                    if (x.getDefensiveRating() > 0) {
-                        buffer.append(String.format("%2s", x.getGroup())
-                                + String.format("%5s", x.getDefensiveRating())
-                                + String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
-                                + String.format("%4s", x.getStability())
-                                + String.format("%5s", x.getAegis())
-                                + String.format("%5s", x.getProtection())
-                                + String.format("%5s", x.getResistance())
-                                + String.format("%5s", x.getAlacrity())
-                                + String.format("%5s", x.getQuickness())
-                                + String.format("%5s", x.getResolution())
-                                + LF);
-                    }
-                }
-                report.setDbooners(buffer.toString());
-                System.out.println("Defensive Boon Uptime by Party:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
-                buffer = new StringBuffer();
-                buffer.append(" # Score Mght Fury Alac Quik DownCn Downs Kills" + LF);
-                buffer.append("--- ---  ---- ---- ---- ----  ----   ---   ---" + LF);
-                aggObooners.sort(Comparator.naturalOrder());
-                int count = Math.min(aggObooners.size(), 15);
-                for (OffensiveBooner x : aggObooners.subList(0, count)) {
-                    if (x.getOffensiveRating() > 0) {
-                        buffer.append(String.format("%2s", x.getGroup())
-                                + String.format("%5s", x.getOffensiveRating())
-                                + String.format("%5s", x.getMight())
-                                + String.format("%5s", x.getFury())
-                                + String.format("%5s", x.getAlacrity())
-                                + String.format("%5s", x.getQuickness())
-                                + String.format("%7s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
-                                + String.format("%5s", x.getDowns())
-                                + String.format("%6s", x.getKills())
-                                + LF);
-                    }
-                }
-                report.setObooners(buffer.toString());
-                System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
-                System.out.println();
-            }
-
-            List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
-            if (plist.size()>0) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                   Downs + Kills" + LF);
-                buffer.append("--- ------------------------ -----   -----" + LF);
-                int index = 1;
-                int count = plist.size() > 10 ? 10 : plist.size();
-                for (Player x : plist.subList(0, count))
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-                report.setDownsKills(buffer.toString());
-                System.out.println("Outgoing Downs & Kills:" + LF + buffer);
-                System.out.println();
-            }
-
-            if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
-                buffer = new StringBuffer();
-                buffer.append(" #  Player                       CCs       Ints" + LF);
-                buffer.append("--- ---------------------- --------------- ----" + LF);
-                List<Condier> clist = new ArrayList<>(condiers.values());
-                clist.sort(Comparator.naturalOrder());
-                int index = 1;
-                int count = clist.size() > 10 ? 10 : clist.size();
-                for (Condier x : clist.subList(0, count))
-                    if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
-                        buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-                report.setCcs(buffer.toString());
-                System.out.println("Outgoing CCs & Interrupts (stuns immobs chills cripples):" + LF + buffer);
-                System.out.println();
-            }
-
-            if (enemies.size()>0) {
-                Map<String, Map<String, EnemyBreakdown>> ebdMap = new TreeMap<>();
-                enemies.forEach(e -> {
-                    if (ebdMap.containsKey(e.getTeam())) {
-                        if (ebdMap.get(e.getTeam()).containsKey(e.getProfession())) {
-                            ebdMap.get(e.getTeam()).get(e.getProfession()).addEnemy(e);
-                        } else {
-                            ebdMap.get(e.getTeam()).put(e.getProfession(), new EnemyBreakdown(e));
-                        }
-                    } else {
-                        Map <String, EnemyBreakdown> map = new TreeMap<>();
-                        map.put(e.getProfession(), new EnemyBreakdown(e));
-                        ebdMap.put(e.getTeam(), map);
-                    }
-                });
-                List<String> keys = new ArrayList(ebdMap.keySet());
-                if (!keys.isEmpty()) {
-                    String team1 = keys.get(0);
-                    int count1 = ebdMap.get(team1).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum);
-                    List<EnemyBreakdown> e1 = ebdMap.get(team1).values().stream().sorted().collect(Collectors.toList());
-                    e1 = e1.stream().sorted().collect(Collectors.toList());
-                    int half1 = (int) Math.ceil((double)e1.size() / 2);
-                    String team2 = keys.size() > 1 ? keys.get(1) : null;
-                    int count2 = team2 != null ? ebdMap.get(team2).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum) : 0;
-                    List<EnemyBreakdown> e2 = team2 != null ? ebdMap.get(team2).values().stream().sorted().collect(Collectors.toList()) : new ArrayList<>();
-                    e2 = e2.stream().sorted().collect(Collectors.toList());
-                    int half2 = (int) Math.ceil((double)e2.size() / 2);
-                    buffer = new StringBuffer();
-                    buffer.append(" #  Prof      Dmg       #  Prof      Dmg  \n");
-                    buffer.append("--- -------- ------    --- -------- ------\n");
-                    buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
-                    report.setEnemyBreakdown(buffer.toString());
-                    System.out.println("Enemy Breakdown:" + LF + buffer);
-                    System.out.println();
-                }
-            }
-
-            buffer = new StringBuffer();
-            buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Deaths: %d) | Enemy Players: %d (Dmg: %s, Deaths: %d)",
-                    players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : 2), totalPlayersDead,
-                    enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : 2), countEnemyDeaths));
-            report.setOverview(buffer.toString());
-            System.out.println(buffer);
-            System.out.println();
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, sumPlayerDmg, battleLength, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
 
         } finally {
             is.close();
@@ -543,36 +308,280 @@ public class ParseBot {
         return report;
     }
 
+    private static void buildReport(FightReport report, HashMap<String, Condier> condiers, List<Enemy> enemies, JSONArray players,
+                                    List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
+                                    List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
+                                    HashMap<String, Player> playerMap, HashMap<String, Group> groups,
+                                    int sumPlayerDmg, int battleLength, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
+    {
+        System.out.println("Zone: " + report.getZone());
+        System.out.println("Commander: " + report.getCommander());
+        System.out.println("Time: " + report.getEndTime());
+        System.out.println("Duration: " + report.getDuration());
+        System.out.println();
+
+        //write to buffer
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("Players   Dmg   DPS  Downs Deaths" + LF);
+        buffer.append("-------- ----- ----- -----  -----" + LF);
+        String playerText = getPlayerTeamText(players.length(), team);
+        buffer.append(String.format("%8s%6s%6s%5d%7d", playerText,
+                DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
+                totalPlayersDowned, totalPlayersDead));
+        report.setSquadSummary(buffer.toString());
+        System.out.println("Squad Summary:" + LF + buffer);
+        System.out.println();
+
+        buffer = new StringBuffer();
+        buffer.append("Players   Dmg   DPS  Downs Deaths" + LF);
+        buffer.append("-------- ----- ----- -----  -----" + LF);
+        appendEnemySummary("Red", enemies, buffer);
+        appendEnemySummary("Green", enemies, buffer);
+        appendEnemySummary("Blue", enemies, buffer);
+        appendEnemySummary("", enemies, buffer);
+        String esum = buffer.toString();
+        esum = esum.substring(0, esum.length()-1);
+        report.setEnemySummary(esum);
+        System.out.println("Enemy Summary:" + LF + esum);
+        System.out.println();
+
+        if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player        Dmg   DPS DownCn" + LF);
+            buffer.append("--- ------------ ----- ----- -----" + LF);
+            dpsers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = dpsers.size() > 10 ? 10 : dpsers.size();
+            for (DPSer x : dpsers.subList(0, count))
+                if (x.getDamage() > 0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setDamage(buffer.toString());
+            System.out.println("Damage & Down Contribution:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (spikers.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player         2sec 4sec  Time" + LF);
+            buffer.append("--- -------------- ---- ----  ----" + LF);
+            spikers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = spikers.size() > 10 ? 10 : spikers.size();
+            for (Spiker x : spikers.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setSpikers(buffer.toString());
+            System.out.println("Spike Damage:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (cleansers.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player             Total  CPS" + LF);
+            buffer.append("--- ------------------- ----  ----" + LF);
+            cleansers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = cleansers.size() > 10 ? 10 : cleansers.size();
+            for (Cleanser x : cleansers.subList(0, count)) {
+                BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
+                BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
+                buffer.append(String.format("%2s", (index++)) + "  " + x
+                        + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
+            }
+            report.setCleanses(buffer.toString());
+            System.out.println("Cleanses:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (strippers.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player             Total  SPS" + LF);
+            buffer.append("--- ------------------- ----  ----" + LF);
+            strippers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = strippers.size() > 10 ? 10 : strippers.size();
+            for (Stripper x : strippers.subList(0, count)) {
+                BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
+                BigDecimal rate = BigDecimal.valueOf(x.getStrips()).divide(sec, 2, RoundingMode.HALF_UP);
+                buffer.append(String.format("%2s", (index++)) + "  " + x
+                        + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
+            }
+            report.setStrips(buffer.toString());
+            System.out.println("Strips:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player       Total Heals Barri" + LF);
+            buffer.append("--- ------------ ----- ----- -----" + LF);
+            healers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = healers.size() > 10 ? 10 : healers.size();
+            for (Healer x : healers.subList(0, count))
+                if (x.getTotal() > 0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setHealers(buffer.toString());
+            System.out.println("Heals & Barrier (arcdps heal addon required):" + LF + buffer);
+            System.out.println();
+        }
+
+        if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
+            buffer = new StringBuffer();
+            buffer.append(" # StabAegiProtResiAlacQuikReso" + LF);
+            buffer.append("--- --- --- --- --- --- --- ---" + LF);
+            aggDbooners.sort(Comparator.naturalOrder());
+            int count = Math.min(aggDbooners.size(), 15);
+            for (DefensiveBooner x : aggDbooners.subList(0, count)) {
+                if (x.getDefensiveRating() > 0) {
+                    buffer.append(String.format("%2s", x.getGroup())
+                            //+ String.format("%5s", x.getDefensiveRating())
+                            //+ String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
+                            + String.format("%5s", x.getStability())
+                            + String.format("%4s", x.getAegis())
+                            + String.format("%4s", x.getProtection())
+                            + String.format("%4s", x.getResistance())
+                            + String.format("%4s", x.getAlacrity())
+                            + String.format("%4s", x.getQuickness())
+                            + String.format("%4s", x.getResolution())
+                            + LF);
+                }
+            }
+            report.setDbooners(buffer.toString());
+            System.out.println("Defensive Boon Uptime by Party:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
+            buffer = new StringBuffer();
+            buffer.append(" # MghtFuryAlacQuik" + LF);
+            buffer.append("--- --- --- --- ---" + LF);
+            aggObooners.sort(Comparator.naturalOrder());
+            int count = Math.min(aggObooners.size(), 15);
+            for (OffensiveBooner x : aggObooners.subList(0, count)) {
+                if (x.getOffensiveRating() > 0) {
+                    buffer.append(String.format("%2s", x.getGroup())
+                            //+ String.format("%5s", x.getOffensiveRating())
+                            + String.format("%5s", x.getMight())
+                            + String.format("%4s", x.getFury())
+                            + String.format("%4s", x.getAlacrity())
+                            + String.format("%4s", x.getQuickness())
+                            //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
+                            //+ String.format("%5s", x.getDowns())
+                            //+ String.format("%6s", x.getKills())
+                            + LF);
+                }
+            }
+            report.setObooners(buffer.toString());
+            System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
+            System.out.println();
+        }
+
+        List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
+        if (plist.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player           Downs + Kills" + LF);
+            buffer.append("--- ---------------- -----   -----" + LF);
+            int index = 1;
+            int count = plist.size() > 10 ? 10 : plist.size();
+            for (Player x : plist.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setDownsKills(buffer.toString());
+            System.out.println("Outgoing Downs & Kills:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player             CCs    Ints" + LF);
+            buffer.append("--- -------------- ----------- ---" + LF);
+            List<Condier> clist = new ArrayList<>(condiers.values());
+            clist.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = clist.size() > 10 ? 10 : clist.size();
+            for (Condier x : clist.subList(0, count))
+                if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setCcs(buffer.toString());
+            System.out.println("Outgoing CCs (stuns immobs chills cripples) & Interrupts:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (enemies.size()>0) {
+            Map<String, Map<String, EnemyBreakdown>> ebdMap = new TreeMap<>();
+            enemies.forEach(e -> {
+                if (ebdMap.containsKey(e.getTeam())) {
+                    if (ebdMap.get(e.getTeam()).containsKey(DPSer.mapProf(e.getProfession()))) {
+                        ebdMap.get(e.getTeam()).get(DPSer.mapProf(e.getProfession())).addEnemy(e);
+                    } else {
+                        ebdMap.get(e.getTeam()).put(DPSer.mapProf(e.getProfession()), new EnemyBreakdown(e));
+                    }
+                } else {
+                    Map <String, EnemyBreakdown> map = new TreeMap<>();
+                    map.put(DPSer.mapProf(e.getProfession()), new EnemyBreakdown(e));
+                    ebdMap.put(e.getTeam(), map);
+                }
+            });
+            List<String> keys = new ArrayList(ebdMap.keySet());
+            if (!keys.isEmpty()) {
+                String team1 = keys.get(0);
+                int count1 = ebdMap.get(team1).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum);
+                List<EnemyBreakdown> e1 = ebdMap.get(team1).values().stream().sorted().collect(Collectors.toList());
+                e1 = e1.stream().sorted().collect(Collectors.toList());
+                int half1 = (int) Math.ceil((double)e1.size() / 2);
+                String team2 = keys.size() > 1 ? keys.get(1) : null;
+                int count2 = team2 != null ? ebdMap.get(team2).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum) : 0;
+                List<EnemyBreakdown> e2 = team2 != null ? ebdMap.get(team2).values().stream().sorted().collect(Collectors.toList()) : new ArrayList<>();
+                e2 = e2.stream().sorted().collect(Collectors.toList());
+                int half2 = (int) Math.ceil((double)e2.size() / 2);
+                buffer = new StringBuffer();
+                buffer.append(" #  Prof  Dmg      #  Prof  Dmg").append(LF);
+                buffer.append("--- ---- -----    --- ---- -----").append(LF);
+                buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
+                report.setEnemyBreakdown(buffer.toString());
+                System.out.println("Enemy Breakdown:" + LF + buffer);
+                System.out.println();
+            }
+        }
+
+        buffer = new StringBuffer();
+        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Deaths: %d) | Enemy Players: %d (Dmg: %s, Killed by Squad: %d)",
+                players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDead,
+                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), countEnemyDeaths));
+        report.setOverview(buffer.toString());
+        System.out.println(buffer);
+        System.out.println();
+    }
+
     private static void buildEnemyBreakdown(StringBuffer buffer, String team1, int count1, List<EnemyBreakdown> e1, int half1, String team2, int count2, List<EnemyBreakdown> e2, int half2) {
         for (int i = 0; i*2 < e1.size(); i++) {
             if (i == 0) {
-                buffer.append(">>> " + team1 + ": " + count1).append("\n");
+                buffer.append(">>> " + team1 + ": " + count1).append(LF);
             }
             if (i+ half1 > e1.size())
                 break;
             buffer.append(e1.get(i)).append("    ");
             if (i+ half1 < e1.size())
                 buffer.append(e1.get(i+ half1));
-            buffer.append("\n");
+            buffer.append(LF);
         }
         for (int i = 0; i*2 < e2.size(); i++) {
             if (i == 0) {
-                buffer.append(">>> " + team2 + ": " + count2).append("\n");
+                buffer.append(">>> " + team2 + ": " + count2).append(LF);
             }
             if (i+ half2 > e2.size())
                 break;
             buffer.append(e2.get(i)).append("    ");
             if (i+ half2 < e2.size())
                 buffer.append(e2.get(i+ half2));
-            buffer.append("\n");
+            buffer.append(LF);
             if (i+ half2 >= e2.size())
                 break;
         }
     }
 
     private static String getPlayerTeamText(int numPlayers, String team) {
-        String playerText = StringUtils.isEmpty(team) ? " " + StringUtils.center(String.valueOf(numPlayers), 8)
-                : StringUtils.leftPad(String.valueOf(numPlayers), 3) + " " + StringUtils.rightPad(team, 5);
+        String playerText = StringUtils.isEmpty(team) ? StringUtils.center(String.valueOf(numPlayers), 8)
+                : StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 5);
         return playerText;
     }
 
@@ -585,8 +594,8 @@ public class ParseBot {
             int sumDwn = thisTeam.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
             int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
             String playerText = getPlayerTeamText(thisTeam.size(), team);
-            buffer.append(String.format("%9s%8s %7s %6d %8d", playerText,
-                    DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : 2), DPSer.withSuffix(sumDps, 1),
+            buffer.append(String.format("%8s%6s%6s%5d%7d", playerText,
+                    DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                     sumDwn, sumDed));
             buffer.append("\r\n");
         }

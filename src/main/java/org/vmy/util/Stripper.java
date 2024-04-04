@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Stripper implements Comparable<Stripper> {
     private String name;
     private String profession;
@@ -21,9 +23,8 @@ public class Stripper implements Comparable<Stripper> {
     }
 
     public String toString() {
-        return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%,7d",strips);
+        return StringUtils.rightPad( StringUtils.left(name, 14), 14) + " " + DPSer.mapProf(profession.substring(0,4))
+                + StringUtils.leftPad(strips+"", 5);
     }
 
     public String getName() { return name; }

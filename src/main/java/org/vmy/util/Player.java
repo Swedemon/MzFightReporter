@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Objects;
 
 public class Player implements Comparable<Player> {
@@ -28,9 +30,8 @@ public class Player implements Comparable<Player> {
     }
 
     public String toString() {
-        return String.format("%-25s",
-                String.format("%.18s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%,4d",downsOut) + String.format("     %,3d",kills);
+        return StringUtils.rightPad( StringUtils.left(name, 11), 11) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%,5d",downsOut) + String.format("     %,3d",kills);
     }
 
     public String getName() {

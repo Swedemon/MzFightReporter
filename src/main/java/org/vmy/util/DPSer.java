@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.List;
 
 public class DPSer implements Comparable<DPSer> {
@@ -44,11 +46,87 @@ public class DPSer implements Comparable<DPSer> {
     }
 
     public String toString() {
-        return String.format("%-23s",
-                String.format("%.16s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(damage,damage < 1000000 ? 0 : 2)) + " "
+        return  StringUtils.rightPad( StringUtils.left(name, 7), 7) + " " + mapProf(profession.substring(0,4))
+                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 0 : damage >= 10000000 ? 1 : 2)) + " "
                 + String.format("%5s",withSuffix(dps,1)) + " "
-                + String.format("%6s",withSuffix(onDowns,0));
+                + String.format("%5s",withSuffix(onDowns,0));
+    }
+
+    public static String mapProf(String p) {
+        if (p == null)
+            return "    ";
+        String prof = StringUtils.left(p, 4);
+        if (prof.equals("Drui"))
+            return "DRUI";
+        if (prof.equals("Scra"))
+            return "SCRA";
+        if (prof.equals("Chro"))
+            return "CHRO";
+        if (prof.equals("Drag"))
+            return "DRAG";
+        if (prof.equals("Holo"))
+            return "HOLO";
+        if (prof.equals("Vind"))
+            return "VIND";
+        if (prof.equals("Reap"))
+            return "REAP";
+        if (prof.equals("Bers"))
+            return "ZERK";
+        if (prof.equals("Spel"))
+            return "SPEL";
+        if (prof.equals("Soul"))
+            return "SOUL";
+        if (prof.equals("Mira"))
+            return "MIRA";
+        if (prof.equals("Rene"))
+            return "RENE";
+        if (prof.equals("Will"))
+            return "WILL";
+        if (prof.equals("Spec"))
+            return "SPEC";
+        if (prof.equals("Mesm"))
+            return "MESM";
+        if (prof.equals("Guar"))
+            return "GUAR";
+        if (prof.equals("Weav"))
+            return "WEAV";
+        if (prof.equals("Cata"))
+            return "CATA";
+        if (prof.equals("Virt"))
+            return "VIRT";
+        if (prof.equals("Fire"))
+            return "FIRE";
+        if (prof.equals("Thie"))
+            return "THIE";
+        if (prof.equals("Rang"))
+            return "RANG";
+        if (prof.equals("Dead"))
+            return "DEAD";
+        if (prof.equals("Harb"))
+            return "HARB";
+        if (prof.equals("Unta"))
+            return "UNTA";
+        if (prof.equals("Mech"))
+            return "MECH";
+        if (prof.equals("Engi"))
+            return "ENGI";
+        if (prof.equals("Elem"))
+            return "ELEM";
+        if (prof.equals("Scou"))
+            return "SCOU";
+        if (prof.equals("Dare"))
+            return "DARE";
+        if (prof.equals("Temp"))
+            return "TEMP";
+        if (prof.equals("Hera"))
+            return "HERA";
+        if (prof.equals("Warr"))
+            return "WARR";
+        if (prof.equals("Reve"))
+            return "REVE";
+        if (prof.equals("Necr"))
+            return "NECR";
+        return prof;
     }
 
     public static String withSuffix(long count, int decimals) {

@@ -31,7 +31,7 @@ public class Enemy implements Comparable<Enemy> {
     public String toString() {
         return String.format("%-23s",
                 String.format("%.16s", team + " " + name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%7s",withSuffix(damage,damage < 1000000 ? 0 : 2)) + " "
+                + String.format("%7s",withSuffix(damage,damage < 1000000 ? 0 : damage >= 10000000 ? 1 : 2)) + " "
                 + String.format("%5s",withSuffix(dps,1));
     }
 

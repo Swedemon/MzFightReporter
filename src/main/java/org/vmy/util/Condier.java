@@ -1,5 +1,7 @@
 package org.vmy.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.math.BigDecimal;
 
 public class Condier implements Comparable<Condier> {
@@ -50,13 +52,12 @@ public class Condier implements Comparable<Condier> {
     }
 
     public String toString() {
-        return String.format("%-22s",
-                String.format("%.15s", name).trim() + " (" + profession.substring(0,4) + ")")
-                + String.format("%3s",stunCount) + " "
-                + String.format("%3s",immobCount) + " "
-                + String.format("%3s",chilledCount) + " "
-                + String.format("%3s",crippledCount) + "  "
-                + String.format("%3s",interruptCount);
+        return StringUtils.rightPad( StringUtils.left(name, 9), 9) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%3s",stunCount)
+                + String.format("%3s",immobCount)
+                + String.format("%3s",chilledCount)
+                + String.format("%3s",crippledCount)
+                + String.format("%4s",interruptCount);
     }
 
     public String getName() {
