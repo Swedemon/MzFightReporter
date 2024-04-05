@@ -52,12 +52,12 @@ public class Condier implements Comparable<Condier> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 9), 9) + " " + DPSer.mapProf(profession.substring(0,4))
+        return StringUtils.rightPad( StringUtils.left(name, 10), 10) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%3s",stunCount)
                 + String.format("%3s",immobCount)
                 + String.format("%3s",chilledCount)
                 + String.format("%3s",crippledCount)
-                + String.format("%4s",interruptCount);
+                + String.format("%3s",interruptCount);
     }
 
     public String getName() {
