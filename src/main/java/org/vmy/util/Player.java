@@ -30,8 +30,8 @@ public class Player implements Comparable<Player> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 11), 11) + " " + DPSer.mapProf(profession.substring(0,4))
-                + String.format("%,5d",downsOut) + String.format("     %,3d",kills);
+        return StringUtils.rightPad( StringUtils.left(name, 13), 13) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%,5d",downsOut) + String.format("   %,3d",kills);
     }
 
     public String getName() {

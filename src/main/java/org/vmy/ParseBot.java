@@ -292,6 +292,7 @@ public class ParseBot {
                 aggObooner.setFury(grpBooners.stream().map(OffensiveBooner::getFury).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setAlacrity(grpBooners.stream().map(OffensiveBooner::getAlacrity).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setQuickness(grpBooners.stream().map(OffensiveBooner::getQuickness).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setVigor(grpBooners.stream().map(OffensiveBooner::getVigor).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setDownCn(dpsers.stream().filter(d -> d.getGroup().equals(grp)).map(DPSer::getOnDowns).reduce(0, Integer::sum));
                 aggObooner.setDowns(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getDownsOut()).reduce(0, Integer::sum));
                 aggObooner.setKills(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getKills()).reduce(0, Integer::sum));
@@ -322,10 +323,10 @@ public class ParseBot {
 
         //write to buffer
         StringBuffer buffer = new StringBuffer();
-        buffer.append("Players   Dmg   DPS  Downs Deaths" + LF);
-        buffer.append("-------- ----- ----- -----  -----" + LF);
+        buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
+        buffer.append("--------- ----- ----- -----  -----" + LF);
         String playerText = getPlayerTeamText(players.length(), team);
-        buffer.append(String.format("%8s%6s%6s%5d%7d", playerText,
+        buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
                 DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                 totalPlayersDowned, totalPlayersDead));
         report.setSquadSummary(buffer.toString());
@@ -333,8 +334,8 @@ public class ParseBot {
         System.out.println();
 
         buffer = new StringBuffer();
-        buffer.append("Players   Dmg   DPS  Downs Deaths" + LF);
-        buffer.append("-------- ----- ----- -----  -----" + LF);
+        buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
+        buffer.append("--------- ----- ----- -----  -----" + LF);
         appendEnemySummary("Red", enemies, buffer);
         appendEnemySummary("Green", enemies, buffer);
         appendEnemySummary("Blue", enemies, buffer);
@@ -347,8 +348,8 @@ public class ParseBot {
 
         if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player        Dmg   DPS DownCn" + LF);
-            buffer.append("--- ------------ ----- ----- -----" + LF);
+            buffer.append(" #  Player         Dmg   DPS DownC" + LF);
+            buffer.append("--- ------------- ----- ----- ----" + LF);
             dpsers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = dpsers.size() > 10 ? 10 : dpsers.size();
@@ -425,6 +426,36 @@ public class ParseBot {
             System.out.println();
         }
 
+        if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player              CCs   Ints" + LF);
+            buffer.append("--- --------------- ----------- --" + LF);
+            List<Condier> clist = new ArrayList<>(condiers.values());
+            clist.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = clist.size() > 10 ? 10 : clist.size();
+            for (Condier x : clist.subList(0, count))
+                if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setCcs(buffer.toString());
+            System.out.println("Outgoing CCs (stuns immobs chills cripples) & Interrupts:" + LF + buffer);
+            System.out.println();
+        }
+
+        List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
+        if (plist.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player             Downs Kills" + LF);
+            buffer.append("--- ------------------ ----- -----" + LF);
+            int index = 1;
+            int count = plist.size() > 10 ? 10 : plist.size();
+            for (Player x : plist.subList(0, count))
+                buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setDownsKills(buffer.toString());
+            System.out.println("Outgoing Downs & Kills:" + LF + buffer);
+            System.out.println();
+        }
+
         if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
             buffer = new StringBuffer();
             buffer.append(" # StabAegiProtResiAlacQuikReso" + LF);
@@ -453,8 +484,8 @@ public class ParseBot {
 
         if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" # MghtFuryAlacQuik" + LF);
-            buffer.append("--- --- --- --- ---" + LF);
+            buffer.append(" # MghtFuryAlacQuikVigr" + LF);
+            buffer.append("--- --- --- --- --- ---" + LF);
             aggObooners.sort(Comparator.naturalOrder());
             int count = Math.min(aggObooners.size(), 15);
             for (OffensiveBooner x : aggObooners.subList(0, count)) {
@@ -465,6 +496,7 @@ public class ParseBot {
                             + String.format("%4s", x.getFury())
                             + String.format("%4s", x.getAlacrity())
                             + String.format("%4s", x.getQuickness())
+                            + String.format("%4s", x.getVigor())
                             //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
                             //+ String.format("%5s", x.getDowns())
                             //+ String.format("%6s", x.getKills())
@@ -473,36 +505,6 @@ public class ParseBot {
             }
             report.setObooners(buffer.toString());
             System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
-            System.out.println();
-        }
-
-        List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
-        if (plist.size()>0) {
-            buffer = new StringBuffer();
-            buffer.append(" #  Player           Downs + Kills" + LF);
-            buffer.append("--- ---------------- -----   -----" + LF);
-            int index = 1;
-            int count = plist.size() > 10 ? 10 : plist.size();
-            for (Player x : plist.subList(0, count))
-                buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-            report.setDownsKills(buffer.toString());
-            System.out.println("Outgoing Downs & Kills:" + LF + buffer);
-            System.out.println();
-        }
-
-        if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
-            buffer = new StringBuffer();
-            buffer.append(" #  Player             CCs    Ints" + LF);
-            buffer.append("--- -------------- ----------- ---" + LF);
-            List<Condier> clist = new ArrayList<>(condiers.values());
-            clist.sort(Comparator.naturalOrder());
-            int index = 1;
-            int count = clist.size() > 10 ? 10 : clist.size();
-            for (Condier x : clist.subList(0, count))
-                if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-            report.setCcs(buffer.toString());
-            System.out.println("Outgoing CCs (stuns immobs chills cripples) & Interrupts:" + LF + buffer);
             System.out.println();
         }
 
@@ -534,8 +536,8 @@ public class ParseBot {
                 e2 = e2.stream().sorted().collect(Collectors.toList());
                 int half2 = (int) Math.ceil((double)e2.size() / 2);
                 buffer = new StringBuffer();
-                buffer.append(" #  Prof  Dmg      #  Prof  Dmg").append(LF);
-                buffer.append("--- ---- -----    --- ---- -----").append(LF);
+                buffer.append(" #  Prof  Dmg     #  Prof  Dmg").append(LF);
+                buffer.append("--- ---- -----   --- ---- -----").append(LF);
                 buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
                 report.setEnemyBreakdown(buffer.toString());
                 System.out.println("Enemy Breakdown:" + LF + buffer);
@@ -559,7 +561,7 @@ public class ParseBot {
             }
             if (i+ half1 > e1.size())
                 break;
-            buffer.append(e1.get(i)).append("    ");
+            buffer.append(e1.get(i)).append("   ");
             if (i+ half1 < e1.size())
                 buffer.append(e1.get(i+ half1));
             buffer.append(LF);
@@ -570,7 +572,7 @@ public class ParseBot {
             }
             if (i+ half2 > e2.size())
                 break;
-            buffer.append(e2.get(i)).append("    ");
+            buffer.append(e2.get(i)).append("   ");
             if (i+ half2 < e2.size())
                 buffer.append(e2.get(i+ half2));
             buffer.append(LF);
@@ -580,8 +582,8 @@ public class ParseBot {
     }
 
     private static String getPlayerTeamText(int numPlayers, String team) {
-        String playerText = StringUtils.isEmpty(team) ? StringUtils.center(String.valueOf(numPlayers), 8)
-                : StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 5);
+        String playerText = StringUtils.isEmpty(team) ? StringUtils.center(String.valueOf(numPlayers), 9)
+                : StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 6);
         return playerText;
     }
 
@@ -594,7 +596,7 @@ public class ParseBot {
             int sumDwn = thisTeam.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
             int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
             String playerText = getPlayerTeamText(thisTeam.size(), team);
-            buffer.append(String.format("%8s%6s%6s%5d%7d", playerText,
+            buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
                     DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                     sumDwn, sumDed));
             buffer.append("\r\n");
@@ -712,6 +714,7 @@ public class ParseBot {
                 case 725 : oBooner.setFury(oBooner.getFury() + getBuffGeneration(m)); break;
                 case 30328 : oBooner.setAlacrity(oBooner.getAlacrity() + getBuffGeneration(m)); break;
                 case 1187 : oBooner.setQuickness(oBooner.getQuickness() + getBuffGeneration(m)); break;
+                case 726 : oBooner.setVigor(oBooner.getVigor() + getBuffGeneration(m)); break;
             }
         }
     }
