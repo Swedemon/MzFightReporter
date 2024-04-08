@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.1.9";
+    public static final String appVersion = "4.2.0";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -35,6 +35,9 @@ public class Parameters {
     public int graphPlayerLimit = 20;
     public int maxUploadMegabytes = 15;
     public boolean enableReportUpload = true;
+    public boolean enableDiscordBot = true;
+    public boolean enableTwitchBot = true;
+    public boolean enableDiscordMobileMode = false;
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
     public boolean showDamage = true;
@@ -79,6 +82,9 @@ public class Parameters {
             maxUploadMegabytes = Integer.parseInt(props.getProperty("maxUploadMegabytes", maxUploadMegabytes +""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
             enableReportUpload = Boolean.valueOf(props.getProperty("enableReportUpload", "true"));
+            enableDiscordBot = Boolean.valueOf(props.getProperty("enableDiscordBot", "true"));
+            enableTwitchBot = Boolean.valueOf(props.getProperty("enableTwitchBot", "true"));
+            enableDiscordMobileMode = Boolean.valueOf(props.getProperty("enableDiscordMobileMode", "false"));
             showSquadSummary = Boolean.valueOf(props.getProperty("showSquadSummary", "true"));
             showEnemySummary = Boolean.valueOf(props.getProperty("showEnemySummary", "true"));
             showDamage = Boolean.valueOf(props.getProperty("showDamage", "true"));
@@ -230,6 +236,9 @@ public class Parameters {
                 JCheckBox checkbox = (JCheckBox) o;
                 switch (key) {
                     case "enableReportUpload": checkbox.setSelected(p.enableReportUpload); break;
+                    case "enableDiscordBot": checkbox.setSelected(p.enableDiscordBot); break;
+                    case "enableTwitchBot": checkbox.setSelected(p.enableTwitchBot); break;
+                    case "enableDiscordMobileMode": checkbox.setSelected(p.enableDiscordMobileMode); break;
                     case "showSquadSummary": checkbox.setSelected(p.showSquadSummary); break;
                     case "showEnemySummary": checkbox.setSelected(p.showEnemySummary); break;
                     case "showDamage": checkbox.setSelected(p.showDamage); break;

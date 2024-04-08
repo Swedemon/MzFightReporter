@@ -315,6 +315,10 @@ public class ParseBot {
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
                                     int sumPlayerDmg, int battleLength, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
     {
+        String linePadding = "     ";
+        String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
+        String playerDashes = Parameters.getInstance().enableDiscordMobileMode ? "" : "-----";
+
         System.out.println("Zone: " + report.getZone());
         System.out.println("Commander: " + report.getCommander());
         System.out.println("Time: " + report.getEndTime());
@@ -323,6 +327,7 @@ public class ParseBot {
 
         //write to buffer
         StringBuffer buffer = new StringBuffer();
+        //buffer.append("                        " + linePadding + LF);
         buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
         buffer.append("--------- ----- ----- -----  -----" + LF);
         String playerText = getPlayerTeamText(players.length(), team);
@@ -348,8 +353,8 @@ public class ParseBot {
 
         if (dpsers.stream().anyMatch(d -> d.getDamage()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player         Dmg   DPS DownC" + LF);
-            buffer.append("--- ------------- ----- ----- ----" + LF);
+            buffer.append(" #  Player       " + playerPadding + "  Dmg   DPS DownC" + LF);
+            buffer.append("--- -------------" + playerDashes  + " ----- ----- ----" + LF);
             dpsers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = dpsers.size() > 10 ? 10 : dpsers.size();
@@ -363,8 +368,8 @@ public class ParseBot {
 
         if (spikers.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player         2sec 4sec  Time" + LF);
-            buffer.append("--- -------------- ---- ----  ----" + LF);
+            buffer.append(" #  Player        " + playerPadding + " 2sec 4sec  Time" + LF);
+            buffer.append("--- --------------" + playerDashes  + " ---- ----  ----" + LF);
             spikers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = spikers.size() > 10 ? 10 : spikers.size();
@@ -377,8 +382,8 @@ public class ParseBot {
 
         if (cleansers.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player             Total  CPS" + LF);
-            buffer.append("--- ------------------- ----  ----" + LF);
+            buffer.append(" #  Player             " + playerPadding + "Total  CPS" + LF);
+            buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
             cleansers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = cleansers.size() > 10 ? 10 : cleansers.size();
@@ -395,8 +400,8 @@ public class ParseBot {
 
         if (strippers.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player             Total  SPS" + LF);
-            buffer.append("--- ------------------- ----  ----" + LF);
+            buffer.append(" #  Player             " + playerPadding + "Total  SPS" + LF);
+            buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
             strippers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = strippers.size() > 10 ? 10 : strippers.size();
@@ -413,8 +418,8 @@ public class ParseBot {
 
         if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player       Total Heals Barri" + LF);
-            buffer.append("--- ------------ ----- ----- -----" + LF);
+            buffer.append(" #  Player      " + playerPadding + " Total Heals Barri" + LF);
+            buffer.append("--- ------------" + playerDashes  + " ----- ----- -----" + LF);
             healers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = healers.size() > 10 ? 10 : healers.size();
@@ -428,8 +433,8 @@ public class ParseBot {
 
         if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player              CCs   Ints" + LF);
-            buffer.append("--- --------------- ----------- --" + LF);
+            buffer.append(" #  Player         " + playerPadding + "     CCs   Ints" + LF);
+            buffer.append("--- ---------------" + playerDashes  + " ----------- --" + LF);
             List<Condier> clist = new ArrayList<>(condiers.values());
             clist.sort(Comparator.naturalOrder());
             int index = 1;
@@ -445,8 +450,8 @@ public class ParseBot {
         List<Player> plist = playerMap.values().stream().filter(p -> p.getDownsOut() > 0 || p.getKills() > 0).sorted().collect(Collectors.toList());
         if (plist.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player             Downs Kills" + LF);
-            buffer.append("--- ------------------ ----- -----" + LF);
+            buffer.append(" #  Player            " + playerPadding + " Downs Kills" + LF);
+            buffer.append("--- ------------------" + playerDashes  + " ----- -----" + LF);
             int index = 1;
             int count = plist.size() > 10 ? 10 : plist.size();
             for (Player x : plist.subList(0, count))
@@ -458,24 +463,47 @@ public class ParseBot {
 
         if (aggDbooners.stream().anyMatch(d -> d.getDefensiveRating()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" # StabAegiProtResiAlacQuikReso" + LF);
-            buffer.append("--- --- --- --- --- --- --- ---" + LF);
-            aggDbooners.sort(Comparator.naturalOrder());
-            int count = Math.min(aggDbooners.size(), 15);
-            for (DefensiveBooner x : aggDbooners.subList(0, count)) {
-                if (x.getDefensiveRating() > 0) {
-                    buffer.append(String.format("%2s", x.getGroup())
-                            //+ String.format("%5s", x.getDefensiveRating())
-                            //+ String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
-                            + String.format("%5s", x.getStability())
-                            + String.format("%4s", x.getAegis())
-                            + String.format("%4s", x.getProtection())
-                            + String.format("%4s", x.getResistance())
-                            + String.format("%4s", x.getAlacrity())
-                            + String.format("%4s", x.getQuickness())
-                            + String.format("%4s", x.getResolution())
-                            + LF);
+            if (Parameters.getInstance().enableDiscordMobileMode) {
+                buffer.append(" # StabAegiProtResiResoAlacQuik" + LF);
+                buffer.append("--- --- --- --- --- --- --- ---" + LF);
+                aggDbooners.sort(Comparator.naturalOrder());
+                int count = Math.min(aggDbooners.size(), 15);
+                for (DefensiveBooner x : aggDbooners.subList(0, count)) {
+                    if (x.getDefensiveRating() > 0) {
+                        buffer.append(String.format("%2s", x.getGroup())
+                                //+ String.format("%5s", x.getDefensiveRating())
+                                //+ String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
+                                + String.format("%5s", x.getStability())
+                                + String.format("%4s", x.getAegis())
+                                + String.format("%4s", x.getProtection())
+                                + String.format("%4s", x.getResistance())
+                                + String.format("%4s", x.getResolution())
+                                + String.format("%4s", x.getAlacrity())
+                                + String.format("%4s", x.getQuickness())
+                                + LF);
+                    }
                 }
+            } else {
+                buffer.append(" # Stab Aegi Prot Resi Reso Alac Quik" + LF);
+                buffer.append("--- ---  ---  ---  ---  ---  ---  ---" + LF);
+                aggDbooners.sort(Comparator.naturalOrder());
+                int count = Math.min(aggDbooners.size(), 15);
+                for (DefensiveBooner x : aggDbooners.subList(0, count)) {
+                    if (x.getDefensiveRating() > 0) {
+                        buffer.append(String.format("%2s", x.getGroup())
+                                //+ String.format("%5s", x.getDefensiveRating())
+                                //+ String.format("%5s", groups.get(x.getGroup()).getKills() + "/" + groups.get(x.getGroup()).getDeaths())
+                                + String.format("%5s", x.getStability())
+                                + String.format("%5s", x.getAegis())
+                                + String.format("%5s", x.getProtection())
+                                + String.format("%5s", x.getResistance())
+                                + String.format("%5s", x.getResolution())
+                                + String.format("%5s", x.getAlacrity())
+                                + String.format("%5s", x.getQuickness())
+                                + LF);
+                    }
+                }
+
             }
             report.setDbooners(buffer.toString());
             System.out.println("Defensive Boon Uptime by Party:" + LF + buffer);
@@ -484,24 +512,47 @@ public class ParseBot {
 
         if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" # MghtFuryAlacQuikVigr" + LF);
-            buffer.append("--- --- --- --- --- ---" + LF);
-            aggObooners.sort(Comparator.naturalOrder());
-            int count = Math.min(aggObooners.size(), 15);
-            for (OffensiveBooner x : aggObooners.subList(0, count)) {
-                if (x.getOffensiveRating() > 0) {
-                    buffer.append(String.format("%2s", x.getGroup())
-                            //+ String.format("%5s", x.getOffensiveRating())
-                            + String.format("%5s", x.getMight())
-                            + String.format("%4s", x.getFury())
-                            + String.format("%4s", x.getAlacrity())
-                            + String.format("%4s", x.getQuickness())
-                            + String.format("%4s", x.getVigor())
-                            //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
-                            //+ String.format("%5s", x.getDowns())
-                            //+ String.format("%6s", x.getKills())
-                            + LF);
+            if (Parameters.getInstance().enableDiscordMobileMode) {
+                buffer.append(" # MghtFuryVigrAlacQuik" + LF);
+                buffer.append("--- --- --- --- --- ---" + LF);
+                aggObooners.sort(Comparator.naturalOrder());
+                int count = Math.min(aggObooners.size(), 15);
+                for (OffensiveBooner x : aggObooners.subList(0, count)) {
+                    if (x.getOffensiveRating() > 0) {
+                        buffer.append(String.format("%2s", x.getGroup())
+                                //+ String.format("%5s", x.getOffensiveRating())
+                                + String.format("%5s", x.getMight())
+                                + String.format("%4s", x.getFury())
+                                + String.format("%4s", x.getVigor())
+                                + String.format("%4s", x.getAlacrity())
+                                + String.format("%4s", x.getQuickness())
+                                //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
+                                //+ String.format("%5s", x.getDowns())
+                                //+ String.format("%6s", x.getKills())
+                                + LF);
+                    }
                 }
+            } else {
+                buffer.append(" # Mght Fury Vigr Alac Quik" + LF);
+                buffer.append("--- ---  ---  ---  ---  ---" + LF);
+                aggObooners.sort(Comparator.naturalOrder());
+                int count = Math.min(aggObooners.size(), 15);
+                for (OffensiveBooner x : aggObooners.subList(0, count)) {
+                    if (x.getOffensiveRating() > 0) {
+                        buffer.append(String.format("%2s", x.getGroup())
+                                //+ String.format("%5s", x.getOffensiveRating())
+                                + String.format("%5s", x.getMight())
+                                + String.format("%5s", x.getFury())
+                                + String.format("%5s", x.getVigor())
+                                + String.format("%5s", x.getAlacrity())
+                                + String.format("%5s", x.getQuickness())
+                                //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
+                                //+ String.format("%5s", x.getDowns())
+                                //+ String.format("%6s", x.getKills())
+                                + LF);
+                    }
+                }
+
             }
             report.setObooners(buffer.toString());
             System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
