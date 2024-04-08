@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 public class Healer implements Comparable<Healer> {
     private String name;
@@ -27,7 +28,8 @@ public class Healer implements Comparable<Healer> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 7), 7) + " " + DPSer.mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 7 : 12;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%6s",withSuffix(total,total < 1000000 ? 0 : total >= 10000000 ? 1 : 2))
                 + String.format("%6s",withSuffix(healing,healing < 1000000 ? 0 : healing >= 10000000 ? 1 : 2))
                 + String.format("%6s",withSuffix(barrier,barrier < 1000000 ? 0 : barrier >= 10000000 ? 1 : 2));

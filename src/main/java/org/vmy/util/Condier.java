@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 import java.math.BigDecimal;
 
@@ -52,7 +53,8 @@ public class Condier implements Comparable<Condier> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 10), 10) + " " + DPSer.mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 10 : 15;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%3s",stunCount)
                 + String.format("%3s",immobCount)
                 + String.format("%3s",chilledCount)

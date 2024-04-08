@@ -153,11 +153,12 @@ public class FileWatcher {
                             if (report==null) {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
-                                if (!StringUtils.isEmpty(p.discordWebhook)) {
+                                if (!StringUtils.isEmpty(p.discordWebhook) && p.enableDiscordBot) {
                                     discordOkay = sendDiscordMsg(report);
                                 }
                                 if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
-                                    sendTwitchMsg(report);
+                                    if (p.enableTwitchBot)
+                                        sendTwitchMsg(report);
                                 }
                                 MainFrame.statusLabel.setText("Status: Finished " + f.getName());
                             }
@@ -241,7 +242,7 @@ public class FileWatcher {
                                     System.setOut(new PrintStream(MainFrame.reportStream));
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
-                                    if (discordOkay)
+                                    if (discordOkay && p.enableDiscordBot)
                                         discordOkay = sendDiscordUrlMsg(uploadUrl, report.getEndTime());
                                 }
                             }
@@ -262,7 +263,7 @@ public class FileWatcher {
 
                                     //call discordbot on graph
                                     if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.discordWebhook)) {
-                                        if (discordOkay)
+                                        if (discordOkay && p.enableDiscordBot)
                                             sendDiscordGraphMsg();
                                     }
                                 }
@@ -443,6 +444,8 @@ public class FileWatcher {
 
         if (p.discordWebhook==null || p.discordWebhook.length()==0) {
             System.out.println("*** WARNING ***: Discord webhook is not yet defined in the Settings!\r\n");
+        } else if (!p.enableDiscordBot) {
+            System.out.println("*** WARNING ***: Discord messaging is set to disabled in the Settings!\r\n");
         }
 
         new FileWatcher().run();

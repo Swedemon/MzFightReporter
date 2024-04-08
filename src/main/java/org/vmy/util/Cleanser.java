@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 public class Cleanser implements Comparable<Cleanser> {
     private String name;
@@ -23,8 +24,9 @@ public class Cleanser implements Comparable<Cleanser> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 14), 14) + " " + DPSer.mapProf(profession.substring(0,4))
-                + StringUtils.leftPad(cleanses+"", 5);
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 14 : 19;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
+                + StringUtils.leftPad(String.valueOf(cleanses), 5);
     }
 
     public String getName() {

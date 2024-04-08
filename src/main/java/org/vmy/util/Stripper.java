@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 public class Stripper implements Comparable<Stripper> {
     private String name;
@@ -23,7 +24,8 @@ public class Stripper implements Comparable<Stripper> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 14), 14) + " " + DPSer.mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 14 : 19;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + StringUtils.leftPad(strips+"", 5);
     }
 

@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 import java.util.Objects;
 
@@ -30,7 +31,8 @@ public class Player implements Comparable<Player> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 13), 13) + " " + DPSer.mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 13 : 18;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%,5d",downsOut) + String.format("   %,3d",kills);
     }
 

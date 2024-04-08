@@ -70,6 +70,9 @@ public class MainFrame {
         JPanel settingsCheckboxPanel = new JPanel();
         settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
         buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", p.enableReportUpload);
+        buildCheckBox(settingsCheckboxPanel, "enableDiscordBot", "Enable Discord Bot", p.enableDiscordBot);
+        buildCheckBox(settingsCheckboxPanel, "enableTwitchBot", "Enable Twitch Upload", p.enableTwitchBot);
+        buildCheckBox(settingsCheckboxPanel, "enableDiscordMobileMode", "Enable Discord Mobile Mode", p.enableDiscordMobileMode);
         buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", p.showSquadSummary);
         buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", p.showEnemySummary);
         buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", p.showDamage);

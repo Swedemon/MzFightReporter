@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,8 @@ public class Spiker implements Comparable<Spiker> {
     }
 
     public String toString() {
-        return StringUtils.rightPad( StringUtils.left(name, 9), 9) + " " + DPSer.mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 9 : 14;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%5s",withSuffix(spike2s,spike2s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
                 + String.format("%5s",withSuffix(spike4s,spike4s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
                 + String.format("%6s",String.format("%s",startTime/60)+":"+String.format("%02d",startTime%60));

@@ -1,6 +1,7 @@
 package org.vmy.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.vmy.Parameters;
 
 import java.util.List;
 
@@ -46,7 +47,8 @@ public class DPSer implements Comparable<DPSer> {
     }
 
     public String toString() {
-        return  StringUtils.rightPad( StringUtils.left(name, 8), 8) + " " + mapProf(profession.substring(0,4))
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 8 : 13;
+        return  StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + mapProf(profession.substring(0,4))
                 + String.format("%6s",withSuffix(damage,damage < 1000000 ? 0 : damage >= 10000000 ? 1 : 2)) + " "
                 + String.format("%5s",withSuffix(dps,1)) + " "
                 + String.format("%4s",withSuffix(onDowns,0));
