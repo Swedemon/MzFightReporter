@@ -10,7 +10,7 @@
    - Enemy Breakdown
    - Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
-- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
+- **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.  Also shout-outs to Jahar from PvD, Jay and Hack from Apex/EA and Perish_VS on Twitch!
 - **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com) Feel free to send feedback.
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
