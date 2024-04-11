@@ -11,7 +11,7 @@
    - Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.  Also shout-outs to Jahar from PvD, Jay from Apex and Perish_VS on Twitch!
-- **Author:** Swedemon.4670 [Contact](mailto:zergcollision@gmail.com) Feel free to send feedback.
+- **Author:** Swedemon.4670 [Support Discord](https://discord.gg/5JfZ3qpW3Q)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (< 5 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
