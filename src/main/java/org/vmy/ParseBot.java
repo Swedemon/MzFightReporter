@@ -293,6 +293,7 @@ public class ParseBot {
                 aggObooner.setAlacrity(grpBooners.stream().map(OffensiveBooner::getAlacrity).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setQuickness(grpBooners.stream().map(OffensiveBooner::getQuickness).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setVigor(grpBooners.stream().map(OffensiveBooner::getVigor).reduce(0, Integer::sum) / grpSize / 1000);
+                aggObooner.setSwiftness(grpBooners.stream().map(OffensiveBooner::getSwiftness).reduce(0, Integer::sum) / grpSize / 1000);
                 aggObooner.setDownCn(dpsers.stream().filter(d -> d.getGroup().equals(grp)).map(DPSer::getOnDowns).reduce(0, Integer::sum));
                 aggObooner.setDowns(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getDownsOut()).reduce(0, Integer::sum));
                 aggObooner.setKills(grpBooners.stream().map(ob -> playerMap.get(ob.getName()).getKills()).reduce(0, Integer::sum));
@@ -328,19 +329,33 @@ public class ParseBot {
         //write to buffer
         StringBuffer buffer = new StringBuffer();
         //buffer.append("                        " + linePadding + LF);
-        buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
-        buffer.append("--------- ----- ----- -----  -----" + LF);
-        String playerText = getPlayerTeamText(players.length(), team);
-        buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
-                DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
-                totalPlayersDowned, totalPlayersDead));
+        if (Parameters.getInstance().enableDiscordMobileMode) {
+            buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
+            buffer.append("--------- ----- ----- -----  -----" + LF);
+            String playerText = getPlayerTeamText(players.length(), team);
+            buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
+                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
+                    totalPlayersDowned, totalPlayersDead));
+        } else {
+            buffer.append(" Players   Damage   DPS   Downs  Deaths" + LF);
+            buffer.append("---------- ------  ----- ------- ------" + LF);
+            String playerText = getPlayerTeamText(players.length(), team);
+            buffer.append(String.format("%9s%7s%7s%6d%7d", playerText,
+                    DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
+                    totalPlayersDowned, totalPlayersDead));
+        }
         report.setSquadSummary(buffer.toString());
         System.out.println("Squad Summary:" + LF + buffer);
         System.out.println();
 
         buffer = new StringBuffer();
-        buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
-        buffer.append("--------- ----- ----- -----  -----" + LF);
+        if (Parameters.getInstance().enableDiscordMobileMode) {
+            buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
+            buffer.append("--------- ----- ----- -----  -----" + LF);
+        } else {
+            buffer.append(" Players   Damage   DPS   Downs  Deaths" + LF);
+            buffer.append("---------- ------  ----- ------- ------" + LF);
+        }
         appendEnemySummary("Red", enemies, buffer);
         appendEnemySummary("Green", enemies, buffer);
         appendEnemySummary("Blue", enemies, buffer);
@@ -427,7 +442,7 @@ public class ParseBot {
                 if (x.getTotal() > 0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
             report.setHealers(buffer.toString());
-            System.out.println("Heals & Barrier (arcdps heal addon required):" + LF + buffer);
+            System.out.println("Heals & Barrier (heal addon required):" + LF + buffer);
             System.out.println();
         }
 
@@ -513,8 +528,8 @@ public class ParseBot {
         if (aggObooners.stream().anyMatch(d -> d.getOffensiveRating()>0)) {
             buffer = new StringBuffer();
             if (Parameters.getInstance().enableDiscordMobileMode) {
-                buffer.append(" # MghtFuryVigrAlacQuik" + LF);
-                buffer.append("--- --- --- --- --- ---" + LF);
+                buffer.append(" # MghtFuryVigrSwifAlacQuik" + LF);
+                buffer.append("--- --- --- --- --- --- ---" + LF);
                 aggObooners.sort(Comparator.naturalOrder());
                 int count = Math.min(aggObooners.size(), 15);
                 for (OffensiveBooner x : aggObooners.subList(0, count)) {
@@ -524,6 +539,7 @@ public class ParseBot {
                                 + String.format("%5s", x.getMight())
                                 + String.format("%4s", x.getFury())
                                 + String.format("%4s", x.getVigor())
+                                + String.format("%4s", x.getSwiftness())
                                 + String.format("%4s", x.getAlacrity())
                                 + String.format("%4s", x.getQuickness())
                                 //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
@@ -533,8 +549,8 @@ public class ParseBot {
                     }
                 }
             } else {
-                buffer.append(" # Mght Fury Vigr Alac Quik" + LF);
-                buffer.append("--- ---  ---  ---  ---  ---" + LF);
+                buffer.append(" # Mght Fury Vigr Swif Alac Quik" + LF);
+                buffer.append("--- ---  ---  ---  ---  ---  ---" + LF);
                 aggObooners.sort(Comparator.naturalOrder());
                 int count = Math.min(aggObooners.size(), 15);
                 for (OffensiveBooner x : aggObooners.subList(0, count)) {
@@ -544,6 +560,7 @@ public class ParseBot {
                                 + String.format("%5s", x.getMight())
                                 + String.format("%5s", x.getFury())
                                 + String.format("%5s", x.getVigor())
+                                + String.format("%5s", x.getSwiftness())
                                 + String.format("%5s", x.getAlacrity())
                                 + String.format("%5s", x.getQuickness())
                                 //+ String.format("%8s", DPSer.withSuffix(x.getDownCn(), x.getDownCn() < 1000000 ? 0 : 2))
@@ -634,7 +651,7 @@ public class ParseBot {
 
     private static String getPlayerTeamText(int numPlayers, String team) {
         String playerText = StringUtils.isEmpty(team) ? StringUtils.center(String.valueOf(numPlayers), 9)
-                : StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 6);
+                : StringUtils.leftPad(String.valueOf(numPlayers), Parameters.getInstance().enableDiscordMobileMode ? 2 : 3) + " " + StringUtils.rightPad(team, 6);
         return playerText;
     }
 
@@ -647,9 +664,15 @@ public class ParseBot {
             int sumDwn = thisTeam.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
             int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
             String playerText = getPlayerTeamText(thisTeam.size(), team);
-            buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
-                    DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
-                    sumDwn, sumDed));
+            if (Parameters.getInstance().enableDiscordMobileMode) {
+                buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
+                        DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
+                        sumDwn, sumDed));
+            } else {
+                buffer.append(String.format("%9s%7s%7s%6d%7d", playerText,
+                        DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
+                        sumDwn, sumDed));
+            }
             buffer.append("\r\n");
         }
         return thisTeam;
@@ -766,6 +789,7 @@ public class ParseBot {
                 case 30328 : oBooner.setAlacrity(oBooner.getAlacrity() + getBuffGeneration(m)); break;
                 case 1187 : oBooner.setQuickness(oBooner.getQuickness() + getBuffGeneration(m)); break;
                 case 726 : oBooner.setVigor(oBooner.getVigor() + getBuffGeneration(m)); break;
+                case 719 : oBooner.setSwiftness(oBooner.getSwiftness() + getBuffGeneration(m)); break;
             }
         }
     }
