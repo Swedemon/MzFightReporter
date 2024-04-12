@@ -153,6 +153,7 @@ public class FileWatcher {
                             if (report==null) {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
+                                System.out.println(report.getOverview());
                                 if (!StringUtils.isEmpty(p.discordWebhook) && p.enableDiscordBot) {
                                     discordOkay = sendDiscordMsg(report);
                                 }

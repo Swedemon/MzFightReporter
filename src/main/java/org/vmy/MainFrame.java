@@ -43,6 +43,7 @@ public class MainFrame {
         consoleStream = new TextAreaOutputStream(consoleArea, consoleScroll);
         consoleArea.append("Welcome to MzFightReporter v" + Parameters.appVersion);
         consoleArea.append("\r\nHosted at https://github.com/Swedemon/MzFightReporter");
+        consoleArea.append("\r\nSupport Discord at https://discord.gg/5JfZ3qpW3Q");
         consoleArea.append("\r\n\r\nClick on the Settings tab to apply changes.\r\n\r\n");
 
         //report logs panel
@@ -145,7 +146,8 @@ public class MainFrame {
         aboutPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         aboutPanel.add(Box.createHorizontalGlue());
         aboutPanel.add(new JLabel("MzFightReporter v" + Parameters.appVersion));
-        aboutPanel.add(buildURLButton("https://github.com/Swedemon/MzFightReporter", "Website"));
+        aboutPanel.add(buildURLButton("https://github.com/Swedemon/MzFightReporter", "App Website"));
+        aboutPanel.add(buildURLButton("https://discord.gg/5JfZ3qpW3Q", "Support Discord"));
 
         //add tab panels
         tabbedPane.addTab("Console", consolePanel);
@@ -236,8 +238,8 @@ public class MainFrame {
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("MzFightReporter v" + Parameters.appVersion);
-        frame.setSize(900, 700);
-        frame.setLocation(200, 100);
+        frame.setSize(960, 700);
+        frame.setLocation(200, 50);
         //frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage("mztray.png"));

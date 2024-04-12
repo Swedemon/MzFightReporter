@@ -9,6 +9,7 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
     private int alacrity=0;
     private int quickness=0;
     private int vigor;
+    private int swiftness;
     private int offensiveRating=0;
     private int downCn;
     private int downs;
@@ -110,6 +111,14 @@ public class OffensiveBooner implements Comparable<OffensiveBooner> {
 
     public void setVigor(int vigor) {
         this.vigor = vigor;
+    }
+
+    public int getSwiftness() {
+        return swiftness;
+    }
+
+    public void setSwiftness(int swiftness) {
+        this.swiftness = swiftness;
     }
 
     public String getGroup() {
