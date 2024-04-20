@@ -82,10 +82,10 @@ public class DiscordBot {
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
-        if (p.showCleanses && report.getCleanses()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         if (p.showStrips && report.getStrips()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
+        if (p.showCleanses && report.getCleanses()!=null)
+            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         if (p.showHeals && report.getHealers()!=null)
             embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals & Barrier (heal addon required)","```"+report.getHealers()+"```"));
         embedBuilder.setTimestamp(Instant.now());

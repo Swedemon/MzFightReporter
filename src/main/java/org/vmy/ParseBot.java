@@ -301,7 +301,7 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, sumPlayerDmg, battleLength, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
 
         } finally {
             is.close();
@@ -314,9 +314,9 @@ public class ParseBot {
                                     List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
                                     List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
-                                    int sumPlayerDmg, int battleLength, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
+                                    int sumPlayerDmg, int battleLength, int countEnemyDowns, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
     {
-        String linePadding = "     ";
+        BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
         String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
         String playerDashes = Parameters.getInstance().enableDiscordMobileMode ? "" : "-----";
 
@@ -395,24 +395,6 @@ public class ParseBot {
             System.out.println();
         }
 
-        if (cleansers.size()>0) {
-            buffer = new StringBuffer();
-            buffer.append(" #  Player             " + playerPadding + "Total  CPS" + LF);
-            buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
-            cleansers.sort(Comparator.naturalOrder());
-            int index = 1;
-            int count = cleansers.size() > 10 ? 10 : cleansers.size();
-            for (Cleanser x : cleansers.subList(0, count)) {
-                BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
-                BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
-                buffer.append(String.format("%2s", (index++)) + "  " + x
-                        + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
-            }
-            report.setCleanses(buffer.toString());
-            System.out.println("Cleanses:" + LF + buffer);
-            System.out.println();
-        }
-
         if (strippers.size()>0) {
             buffer = new StringBuffer();
             buffer.append(" #  Player             " + playerPadding + "Total  SPS" + LF);
@@ -421,7 +403,6 @@ public class ParseBot {
             int index = 1;
             int count = strippers.size() > 10 ? 10 : strippers.size();
             for (Stripper x : strippers.subList(0, count)) {
-                BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
                 BigDecimal rate = BigDecimal.valueOf(x.getStrips()).divide(sec, 2, RoundingMode.HALF_UP);
                 buffer.append(String.format("%2s", (index++)) + "  " + x
                         + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
@@ -431,16 +412,47 @@ public class ParseBot {
             System.out.println();
         }
 
+        if (cleansers.size()>0) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player             " + playerPadding + "Total  CPS" + LF);
+            buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
+            cleansers.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = cleansers.size() > 10 ? 10 : cleansers.size();
+            for (Cleanser x : cleansers.subList(0, count)) {
+                BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
+                buffer.append(String.format("%2s", (index++)) + "  " + x
+                        + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
+            }
+            report.setCleanses(buffer.toString());
+            System.out.println("Cleanses:" + LF + buffer);
+            System.out.println();
+        }
+
         if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player      " + playerPadding + " Total Heals Barri" + LF);
-            buffer.append("--- ------------" + playerDashes  + " ----- ----- -----" + LF);
-            healers.sort(Comparator.naturalOrder());
+            buffer.append(" #  Player            " + playerPadding + " Heals  HPS" + LF);
+            buffer.append("--- ------------------" + playerDashes  + " ----- -----" + LF);
+            healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getHealing(), o1.getHealing())).collect(Collectors.toList());
             int index = 1;
-            int count = healers.size() > 10 ? 10 : healers.size();
+            int count = Math.min(healers.size(), 5);
             for (Healer x : healers.subList(0, count))
-                if (x.getTotal() > 0)
-                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+                if (x.getHealing() > 0) {
+                    String hps = DPSer.withSuffix(x.getHealing() / battleLength, 1);
+                    buffer.append(String.format("%2s", (index++)) + "  " + x.toHealerString()
+                            + String.format("%6s", hps) + LF);
+                }
+            buffer.append(LF);
+            buffer.append(" #  Player            " + playerPadding + "Barrier BPS" + LF);
+            buffer.append("--- ------------------" + playerDashes  + " ----- -----" + LF);
+            healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getBarrier(), o1.getBarrier())).collect(Collectors.toList());
+            index = 1;
+            for (Healer x : healers.subList(0, count))
+                if (x.getBarrier() > 0) {
+                    String hps = DPSer.withSuffix(x.getBarrier() / battleLength, 1);
+                    buffer.append(String.format("%2s", (index++)) + "  " + x.toBarrierString()
+                            + String.format("%6s", hps) + LF);
+                }
             report.setHealers(buffer.toString());
             System.out.println("Heals & Barrier (heal addon required):" + LF + buffer);
             System.out.println();
@@ -614,9 +626,9 @@ public class ParseBot {
         }
 
         buffer = new StringBuffer();
-        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Deaths: %d) | Enemy Players: %d (Dmg: %s, Killed by Squad: %d)",
-                players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDead,
-                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), countEnemyDeaths));
+        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) | Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
+                players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
+                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), countEnemyDowns, countEnemyDeaths));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
