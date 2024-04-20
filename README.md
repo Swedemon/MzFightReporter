@@ -53,7 +53,7 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 - Note: To disable the twitch bot deselect twitch in the settings and apply.
 ## Sneak Peek
 <p align="center"><img src="https://i.imgur.com/S8roK1G.png"/></p>
-<p align="center"><img height="100" src="https://i.imgur.com/kFKqXaP.png"/></p>
+<p align="center"><img height="100" src="https://i.imgur.com/F9LDo1h.png"/></p>
 
 ## About the Data
 ### Limitations
