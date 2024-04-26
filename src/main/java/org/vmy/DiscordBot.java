@@ -9,7 +9,8 @@ import org.vmy.util.FightReport;
 import java.awt.Color;
 import java.io.File;
 import java.io.PrintStream;
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiscordBot {
 
@@ -72,23 +73,48 @@ public class DiscordBot {
                 : report.getZone().startsWith("Red") ? "https://i.imgur.com/hIq5RuB.png"
                 : report.getZone().contains("Edge") ? "https://i.imgur.com/MFjFSZW.png"
                 : "https://i.imgur.com/B0iKe5d.png"; //guild hall
-        embedBuilder.setAuthor(new WebhookEmbed.EmbedAuthor(report.getZone(), iconUrl, null));
+        embedBuilder.setAuthor(new WebhookEmbed.EmbedAuthor(report.getZone(), iconUrl, "https://github.com/Swedemon/MzFightReporter"));
+        if (!StringUtils.isEmpty(report.getUrl()))
+            embedBuilder.setTitle(new WebhookEmbed.EmbedTitle("Full Report", report.getUrl()));
         embedBuilder.setDescription((report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Time**: "+report.getEndTime()+"\n" + "**Duration**: "+report.getDuration()+"\n");
+
+        //build embed field list
+        List<WebhookEmbed.EmbedField> embedFields = new ArrayList<>();
         if (p.showSquadSummary && report.getSquadSummary()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```"));
         if (p.showEnemySummary && report.getEnemySummary()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
         if (p.showSpikeDmg && report.getSpikers()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
         if (p.showStrips && report.getStrips()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
         if (p.showCleanses && report.getCleanses()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Cleanses","```"+report.getCleanses()+"```"));
         if (p.showHeals && report.getHealers()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Heals & Barrier (heal addon required)","```"+report.getHealers()+"```"));
-        embedBuilder.setTimestamp(Instant.now());
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Heals & Barrier (heal addon required)","```"+report.getHealers()+"```"));
+        if (p.showCCs && report.getCcs()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Outgoing CC's (stuns immobs chills cripples) & Interrupts","```"+report.getCcs()+"```"));
+        if (p.showDownsKills && report.getDownsKills()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
+        if (p.showDefensiveBoons && report.getDbooners()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
+        if (p.showOffensiveBoons && report.getObooners()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party","```"+report.getObooners()+"```"));
+        if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
+        if (p.showQuickReport && report.getOverview()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
+        if (!StringUtils.isEmpty(report.getUrl()))
+            embedFields.add(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports upload failed]":"[Full Report]("+url+")"));
+
+        if (embedFields.size() > 8)
+            for (int i=0; i < 8; i++)
+                embedBuilder.addField(embedFields.get(i));
+        else {
+            embedFields.forEach(embedBuilder::addField);
+        }
 
         WebhookEmbed embed = embedBuilder.build();
         if (client != null) {
@@ -97,27 +123,21 @@ public class DiscordBot {
             throw new RuntimeException("Unable to connect to the provided Discord webhook.");
         }
 
-        embedBuilder = new WebhookEmbedBuilder();
-        embedBuilder.setColor(Color.CYAN.getAlpha());
-        embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
-        if (p.showCCs && report.getCcs()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing CC's (stuns immobs chills cripples) & Interrupts","```"+report.getCcs()+"```"));
-        if (p.showDownsKills && report.getDownsKills()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
-        if (p.showDefensiveBoons && report.getDbooners()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
-        if (p.showOffensiveBoons && report.getObooners()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party","```"+report.getObooners()+"```"));
-        if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
-        if (p.showQuickReport && report.getOverview()!=null)
-            embedBuilder.addField(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
+        if (embedFields.size() > 8) {
 
-        embed = embedBuilder.build();
-        if (client != null) {
-            client.send(embed);
-        } else {
-            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+            embedBuilder = new WebhookEmbedBuilder();
+            embedBuilder.setColor(Color.CYAN.getAlpha());
+            embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
+
+            for (int i=8; i < embedFields.size(); i++)
+                embedBuilder.addField(embedFields.get(i));
+
+            embed = embedBuilder.build();
+            if (client != null) {
+                client.send(embed);
+            } else {
+                throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+            }
         }
 
         System.out.println("Discord fight report msg sent.");
@@ -127,7 +147,7 @@ public class DiscordBot {
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
 
-        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report (" + endTime + ")]("+url+")"));
+        embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report]("+url+")"));
 
         WebhookEmbed embed = embedBuilder.build();
         if (client != null) {

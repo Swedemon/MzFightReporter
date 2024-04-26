@@ -3,6 +3,7 @@ package org.vmy;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.vmy.util.FightReport;
 
 import java.io.*;
@@ -150,6 +151,7 @@ public class FileWatcher {
                             //call discordbot and twitchbot on main fight report
                             boolean discordOkay = true;
                             FightReport report = FightReport.readReportFile();
+                            report.setUrl(fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
                             if (report==null) {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
@@ -165,78 +167,8 @@ public class FileWatcher {
                             }
 
                             //upload
-                            if (fileMegabytes >= p.maxUploadMegabytes) {
-                                System.out.println("Skipping upload. File size exceeds max defined in the Settings (" + p.maxUploadMegabytes + "MB).");
-                            } else if (p.enableReportUpload) {
-                                String uploadUrl = "";
-                                for (int k = 0; k < 2; k++) {
-                                    startTime = System.currentTimeMillis();
-                                    String uploadRespText = "";
-                                    try {
-                                        System.out.println("Invoking Upload...");
-                                        MainFrame.statusLabel.setText("Status: Invoking Upload");
-                                        ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
-                                                ".\\curl\\bin\\curl.exe",
-                                                "--max-time", Integer.toString(uploadWaitTime),
-                                                "--request", "POST", p.activeUploadPostUrl,
-                                                "-H", "\"Transfer-Encoding: chunked\"",
-                                                "-H", "\"Connection: keep-alive\"",
-                                                "-H", "\"Accept-Encoding: identity\"",
-                                                "-H", "\"Cookie: userToken=" + p.uploadToken + "\"",
-                                                //"-H", "\"Content-Length: " + f.length()+"\"",
-                                                //"--limit-rate", "5M",
-                                                "--form", "json=1", "--form", "detailedwvw=true",
-                                                "--form", "\"file=@" + fullFilePath + "\"")
-                                                .redirectError(new File("uploadStats.txt"));
-                                        pb0.directory(new File(p.homeDir));
-                                        Process p0 = pb0.start();
-                                        try (BufferedReader reader =
-                                                     new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
-                                            StringBuilder builder = new StringBuilder();
-                                            String line = null;
-                                            while ((line = reader.readLine()) != null) {
-                                                builder.append(line);
-                                                builder.append("\r\n");
-                                            }
-                                            uploadRespText = builder.toString();
-                                        }
-                                        int baseIndex = uploadRespText.indexOf("permalink");
-                                        if (baseIndex < 0) {
-                                            FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
-                                            System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
-                                        } else {
-                                            int startIndex = uploadRespText.indexOf("http", baseIndex);
-                                            int endIndex = uploadRespText.indexOf("\"", startIndex);
-                                            uploadUrl = uploadRespText.substring(startIndex, endIndex).replace("\\", "");
-                                            System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p0.exitValue());
-                                            System.out.println("URL = " + uploadUrl);
-                                        }
-                                    } catch (Exception e) {
-                                        System.out.println("Upload failed: " + e.getMessage());
-                                        FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
-                                    }
-
-                                    if (uploadUrl.length() > 0)
-                                        break; //break on success
-
-                                    //handle failure
-                                    int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
-                                    //if quick failure then change URL
-                                    if (seconds < 10) {
-                                        p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
-                                        System.out.println("Changing URL to " + p.activeUploadPostUrl + "...");
-                                    }
-                                    //if long failure
-                                    else if (k == 0 && seconds > 60) {
-                                        if (fileMegabytes < 20) {
-                                            System.out.println("Giving the poor report server a 60s break...");
-                                            Thread.sleep(60000L);
-                                        } else {
-                                            System.out.println("Giving the poor report server a 120s break...");
-                                            Thread.sleep(120000L);
-                                        }
-                                    }
-                                }
+                            if (p.largeUploadsAfterParse && fileMegabytes >= p.largeUploadMegabytes) {
+                                String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
 
                                 //call discordbot on report URL
                                 if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
@@ -287,6 +219,91 @@ public class FileWatcher {
             if (dotCount > 0 && dotCount % 150 == 0)
                 System.out.println();
         }
+    }
+
+    @NotNull
+    private static String processUpload(Parameters p, String fullFilePath, int fileMegabytes, int uploadWaitTime) throws IOException, InterruptedException {
+
+        if (!p.enableReportUpload) {
+            return "";
+        }
+
+        if (fileMegabytes >= p.maxUploadMegabytes) {
+            System.out.println("Skipping upload. File size exceeds max defined in the Settings (" + p.maxUploadMegabytes + "MB).");
+            return "";
+        }
+
+        String uploadUrl = "";
+        long startTime;
+        for (int k = 0; k < 2; k++) {
+            startTime = System.currentTimeMillis();
+            String uploadRespText = "";
+            try {
+                System.out.println("Invoking Upload...");
+                MainFrame.statusLabel.setText("Status: Invoking Upload");
+                ProcessBuilder pb0 = new ProcessBuilder("cmd", "/c", "start", "/b", "/low", "/affinity", "1",
+                        ".\\curl\\bin\\curl.exe",
+                        "--max-time", Integer.toString(uploadWaitTime),
+                        "--request", "POST", p.activeUploadPostUrl,
+                        "-H", "\"Transfer-Encoding: chunked\"",
+                        "-H", "\"Connection: keep-alive\"",
+                        "-H", "\"Accept-Encoding: identity\"",
+                        "-H", "\"Cookie: userToken=" + p.uploadToken + "\"",
+                        //"-H", "\"Content-Length: " + f.length()+"\"",
+                        //"--limit-rate", "5M",
+                        "--form", "json=1", "--form", "detailedwvw=true",
+                        "--form", "\"file=@" + fullFilePath + "\"")
+                        .redirectError(new File("uploadStats.txt"));
+                pb0.directory(new File(p.homeDir));
+                Process p0 = pb0.start();
+                try (BufferedReader reader =
+                             new BufferedReader(new InputStreamReader(p0.getInputStream()))) {
+                    StringBuilder builder = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                        builder.append("\r\n");
+                    }
+                    uploadRespText = builder.toString();
+                }
+                int baseIndex = uploadRespText.indexOf("permalink");
+                if (baseIndex < 0) {
+                    FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
+                    System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
+                } else {
+                    int startIndex = uploadRespText.indexOf("http", baseIndex);
+                    int endIndex = uploadRespText.indexOf("\"", startIndex);
+                    uploadUrl = uploadRespText.substring(startIndex, endIndex).replace("\\", "");
+                    System.out.println("Upload Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p0.exitValue());
+                    System.out.println("URL = " + uploadUrl);
+                }
+            } catch (Exception e) {
+                System.out.println("Upload failed: " + e.getMessage());
+                FileUtils.writeStringToFile(new File("uploadLog.txt"), uploadRespText, "UTF-8");
+            }
+
+            if (uploadUrl.length() > 0)
+                break; //break on success
+
+            //handle failure
+            int seconds = ((int) ((System.currentTimeMillis() - startTime) / 1000));
+            //if quick failure then change URL
+            if (seconds < 10) {
+                p.activeUploadPostUrl = p.activeUploadPostUrl.equals(p.uploadPostUrl) ? p.uploadPostAltUrl : p.uploadPostUrl;
+                System.out.println("Changing URL to " + p.activeUploadPostUrl + "...");
+            }
+            //if long failure
+            else if (k == 0 && seconds > 60) {
+                if (fileMegabytes < 20) {
+                    System.out.println("Giving the poor report server a 60s break...");
+                    Thread.sleep(60000L);
+                } else {
+                    System.out.println("Giving the poor report server a 120s break...");
+                    Thread.sleep(120000L);
+                }
+            }
+        }
+        return uploadUrl;
     }
 
     private static boolean sendDiscordMsg(FightReport report) {

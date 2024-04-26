@@ -328,7 +328,6 @@ public class ParseBot {
 
         //write to buffer
         StringBuffer buffer = new StringBuffer();
-        //buffer.append("                        " + linePadding + LF);
         if (Parameters.getInstance().enableDiscordMobileMode) {
             buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
             buffer.append("--------- ----- ----- -----  -----" + LF);
@@ -662,9 +661,17 @@ public class ParseBot {
     }
 
     private static String getPlayerTeamText(int numPlayers, String team) {
-        String playerText = StringUtils.isEmpty(team) ? StringUtils.center(String.valueOf(numPlayers), 9)
-                : StringUtils.leftPad(String.valueOf(numPlayers), Parameters.getInstance().enableDiscordMobileMode ? 2 : 3) + " " + StringUtils.rightPad(team, 6);
-        return playerText;
+        if (StringUtils.isEmpty(team)) {
+            if (Parameters.getInstance().enableDiscordMobileMode)
+                return " " + StringUtils.center(String.valueOf(numPlayers), 8);
+            else
+                return " " + StringUtils.center(String.valueOf(numPlayers), 9);
+        } else {
+            if (Parameters.getInstance().enableDiscordMobileMode)
+                return StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 6);
+            else
+                return StringUtils.leftPad(String.valueOf(numPlayers), 3) + " " + StringUtils.rightPad(team, 6);
+        }
     }
 
     @NotNull
