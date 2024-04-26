@@ -106,8 +106,6 @@ public class DiscordBot {
             embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Quick Report","```"+report.getOverview()+"```"));
-        if (!StringUtils.isEmpty(report.getUrl()))
-            embedFields.add(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports upload failed]":"[Full Report]("+url+")"));
 
         if (embedFields.size() > 8)
             for (int i=0; i < 8; i++)
