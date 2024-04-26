@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.3";
+    public static final String appVersion = "4.2.4";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -34,6 +34,7 @@ public class Parameters {
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
     public int maxUploadMegabytes = 15;
+    public int largeUploadMegabytes = 8;
     public boolean enableReportUpload = true;
     public boolean enableDiscordBot = true;
     public boolean enableTwitchBot = true;
@@ -52,6 +53,7 @@ public class Parameters {
     public boolean showEnemyBreakdown = true;
     public boolean showQuickReport = true;
     public boolean showDamageGraph = true;
+    public boolean largeUploadsAfterParse = false;
     public boolean minimizeToTray = false;
     public boolean startMinimized = false;
 
@@ -99,6 +101,7 @@ public class Parameters {
             showEnemyBreakdown = Boolean.valueOf(props.getProperty("showEnemyBreakdown", "true"));
             showQuickReport = Boolean.valueOf(props.getProperty("showQuickReport", "true"));
             showDamageGraph = Boolean.valueOf(props.getProperty("showDamageGraph", "true"));
+            largeUploadsAfterParse = Boolean.valueOf(props.getProperty("largeUploadsAfterParse", "true"));
             minimizeToTray = Boolean.valueOf(props.getProperty("minimizeToTray", "false"));
             startMinimized = Boolean.valueOf(props.getProperty("startMinimized", "false"));
         } catch (Exception e) {
@@ -253,6 +256,7 @@ public class Parameters {
                     case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
                     case "showQuickReport": checkbox.setSelected(p.showQuickReport); break;
                     case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
+                    case "largeUploadsAfterParse": checkbox.setSelected(p.largeUploadsAfterParse); break;
                     case "minimizeToTray": checkbox.setSelected(p.minimizeToTray); break;
                     case "startMinimized": checkbox.setSelected(p.startMinimized); break;
                     default:

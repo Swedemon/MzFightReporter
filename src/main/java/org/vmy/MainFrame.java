@@ -1,6 +1,7 @@
 package org.vmy;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.vmy.util.TextAreaOutputStream;
 
 import javax.swing.*;
@@ -70,10 +71,11 @@ public class MainFrame {
         settingsParentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         JPanel settingsCheckboxPanel = new JPanel();
         settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
-        buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", p.enableReportUpload);
         buildCheckBox(settingsCheckboxPanel, "enableDiscordBot", "Enable Discord Bot", p.enableDiscordBot);
         buildCheckBox(settingsCheckboxPanel, "enableTwitchBot", "Enable Twitch Upload", p.enableTwitchBot);
-        buildCheckBox(settingsCheckboxPanel, "enableDiscordMobileMode", "Enable Discord Mobile Mode", p.enableDiscordMobileMode);
+        buildCheckBox(settingsCheckboxPanel, "enableDiscordMobileMode", "Enable Compressed Mobile Mode", p.enableDiscordMobileMode);
+        buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", p.enableReportUpload);
+        buildCheckBox(settingsCheckboxPanel, "largeUploadsAfterParse", "Large Uploads Process Later", p.largeUploadsAfterParse);
         buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", p.showSquadSummary);
         buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", p.showEnemySummary);
         buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", p.showDamage);
@@ -89,17 +91,17 @@ public class MainFrame {
         buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
         buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);
         buildCheckBox(settingsCheckboxPanel, "startMinimized", "Start Minimized", p.startMinimized);
-        buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (Requires restart)", p.minimizeToTray);
+        buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (requires restart)", p.minimizeToTray);
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
         settingsTextFieldPanel.setPreferredSize(new Dimension(300,200));
-        buildTextField(settingsTextFieldPanel, "customLogFolder", "Custom Log Folder", p.customLogFolder, 12, false);
-        buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
+        //buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook", p.discordWebhook, 50, true);
         buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
         buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
         buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), 2, false);
+        buildTextField(settingsTextFieldPanel, "customLogFolder", "Custom Log Folder", p.customLogFolder, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
         settingsParentPanel.add(settingsCheckboxPanel);
@@ -193,7 +195,7 @@ public class MainFrame {
         textField.setMinimumSize(new Dimension(70, 20));
         textField.setMaximumSize(new Dimension(70, 20));
         c.gridx = 200;
-        if (property.equals("twitchBotToken") || property.equals("discordWebhook"))
+        if (property.equals("twitchBotToken") && !StringUtils.isEmpty(value))
             textField.setBackground(Color.black);
         addMouseOver(textField);
         panel.add(textField, c);
@@ -238,7 +240,7 @@ public class MainFrame {
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("MzFightReporter v" + Parameters.appVersion);
-        frame.setSize(960, 700);
+        frame.setSize(1120, 700);
         frame.setLocation(200, 50);
         //frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
