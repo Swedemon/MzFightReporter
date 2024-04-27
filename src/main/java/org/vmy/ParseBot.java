@@ -42,6 +42,7 @@ public class ParseBot {
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<>();
             List<Enemy> enemies = new ArrayList<>();
+            int sumEnemyDmg = 0;
             for (int i = 1; i < targets.length(); i++) {
                 JSONObject currTarget = targets.getJSONObject(i);
                 String name = currTarget.getString("name");
@@ -57,6 +58,7 @@ public class ParseBot {
                     int down = currTarget.getJSONArray("defenses").getJSONObject(0).getInt("downCount");
                     int dead = currTarget.getJSONArray("defenses").getJSONObject(0).getInt("deadCount");
                     enemies.add(new Enemy(name, profession, team, damage, dps, down, dead));
+                    sumEnemyDmg += damage;
                 }
             }
 
@@ -77,7 +79,6 @@ public class ParseBot {
             int battleLength = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
-            int sumEnemyDmg = 0;
             String team = null;
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
@@ -127,10 +128,6 @@ public class ParseBot {
                     downDmgOut = map.get("downContribution");
                     condiers.put(name, c);
                 }
-
-                //defenses
-                JSONObject playerDefenses = currPlayer.getJSONArray("defenses").getJSONObject(0);
-                sumEnemyDmg += playerDefenses.getBigInteger("damageTaken").intValue();
 
                 //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
