@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.5";
+    public static final String appVersion = "4.2.6";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -55,6 +55,7 @@ public class Parameters {
     public boolean showDamageGraph = true;
     public boolean largeUploadsAfterParse = false;
     public boolean minimizeToTray = false;
+    public boolean closeToTray = false;
     public boolean startMinimized = false;
 
     private static Parameters instance = null;
@@ -103,6 +104,7 @@ public class Parameters {
             showDamageGraph = Boolean.valueOf(props.getProperty("showDamageGraph", "true"));
             largeUploadsAfterParse = Boolean.valueOf(props.getProperty("largeUploadsAfterParse", "true"));
             minimizeToTray = Boolean.valueOf(props.getProperty("minimizeToTray", "false"));
+            closeToTray = Boolean.valueOf(props.getProperty("closeToTray", "false"));
             startMinimized = Boolean.valueOf(props.getProperty("startMinimized", "false"));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
@@ -258,6 +260,7 @@ public class Parameters {
                     case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
                     case "largeUploadsAfterParse": checkbox.setSelected(p.largeUploadsAfterParse); break;
                     case "minimizeToTray": checkbox.setSelected(p.minimizeToTray); break;
+                    case "closeToTray": checkbox.setSelected(p.closeToTray); break;
                     case "startMinimized": checkbox.setSelected(p.startMinimized); break;
                     default:
                 }
