@@ -102,6 +102,8 @@ public class DiscordBot {
             embedFields.add(new WebhookEmbed.EmbedField(false,"Defensive Boon Uptime by Party","```"+report.getDbooners()+"```"));
         if (p.showOffensiveBoons && report.getObooners()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Offensive Boon Uptime by Party","```"+report.getObooners()+"```"));
+        if (p.showTopEnemySkills && report.getEnemySkillDmg()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Top Damage By Skill","```"+ StringUtils.left(report.getEnemySkillDmg(), 1018)+"```"));
         if (p.showEnemyBreakdown && report.getEnemyBreakdown()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Breakdown","```"+ StringUtils.left(report.getEnemyBreakdown(), 1018)+"```"));
         if (p.showQuickReport && report.getOverview()!=null)

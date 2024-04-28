@@ -38,9 +38,14 @@ public class ParseBot {
                 healExts.forEach(jo -> healUsers.put(String.valueOf(jo), ""));
             } catch (Exception ignored) {}
 
+            //skillMap
+            JSONObject skillMap = jsonTop.getJSONObject("skillMap");
+            JSONObject buffMap = jsonTop.getJSONObject("buffMap");
+
             //targets
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<>();
+            HashMap<String, Integer> enemyDmgBySkill = new HashMap<>();
             List<Enemy> enemies = new ArrayList<>();
             int sumEnemyDmg = 0;
             for (int i = 1; i < targets.length(); i++) {
@@ -59,6 +64,26 @@ public class ParseBot {
                     int dead = currTarget.getJSONArray("defenses").getJSONObject(0).getInt("deadCount");
                     enemies.add(new Enemy(name, profession, team, damage, dps, down, dead));
                     sumEnemyDmg += damage;
+                }
+                if (!currTarget.isNull("totalDamageDist")) {
+                    JSONArray dmgDist = currTarget.getJSONArray("totalDamageDist").getJSONArray(0);
+                    for (int j=0; j < dmgDist.length(); j++) {
+                        JSONObject obj = dmgDist.getJSONObject(j);
+                        Integer ddid = obj.getInt("id");
+                        String sname = ""+ddid;
+                        if (skillMap.has("s"+ddid)) {
+                            JSONObject oname = skillMap.getJSONObject("s" + ddid);
+                            sname = (String) oname.get("name");
+                        } else if (buffMap.has("b"+ddid)) {
+                            JSONObject oname = buffMap.getJSONObject("b" + ddid);
+                            sname = (String) oname.get("name");
+                        }
+                        if (enemyDmgBySkill.containsKey(sname)) {
+                            enemyDmgBySkill.put(sname, enemyDmgBySkill.get(sname) + obj.getInt("totalDamage"));
+                        } else {
+                            enemyDmgBySkill.put(sname, obj.getInt("totalDamage"));
+                        }
+                    }
                 }
             }
 
@@ -298,7 +323,7 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
 
         } finally {
             is.close();
@@ -311,7 +336,7 @@ public class ParseBot {
                                     List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
                                     List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
-                                    int sumPlayerDmg, int battleLength, int countEnemyDowns, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
+                                    HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
     {
         BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
         String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
@@ -368,7 +393,7 @@ public class ParseBot {
             buffer.append("--- -------------" + playerDashes  + " ----- ----- ----" + LF);
             dpsers.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = dpsers.size() > 10 ? 10 : dpsers.size();
+            int count = Math.min(dpsers.size(), 10);
             for (DPSer x : dpsers.subList(0, count))
                 if (x.getDamage() > 0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
@@ -383,7 +408,7 @@ public class ParseBot {
             buffer.append("--- --------------" + playerDashes  + " ---- ----  ----" + LF);
             spikers.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = spikers.size() > 10 ? 10 : spikers.size();
+            int count = Math.min(spikers.size(), 10);
             for (Spiker x : spikers.subList(0, count))
                 buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
             report.setSpikers(buffer.toString());
@@ -397,7 +422,7 @@ public class ParseBot {
             buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
             strippers.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = strippers.size() > 10 ? 10 : strippers.size();
+            int count = Math.min(strippers.size(), 10);
             for (Stripper x : strippers.subList(0, count)) {
                 BigDecimal rate = BigDecimal.valueOf(x.getStrips()).divide(sec, 2, RoundingMode.HALF_UP);
                 buffer.append(String.format("%2s", (index++)) + "  " + x
@@ -414,7 +439,7 @@ public class ParseBot {
             buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
             cleansers.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = cleansers.size() > 10 ? 10 : cleansers.size();
+            int count = Math.min(cleansers.size(), 10);
             for (Cleanser x : cleansers.subList(0, count)) {
                 BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
                 buffer.append(String.format("%2s", (index++)) + "  " + x
@@ -461,7 +486,7 @@ public class ParseBot {
             List<Condier> clist = new ArrayList<>(condiers.values());
             clist.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = clist.size() > 10 ? 10 : clist.size();
+            int count = Math.min(clist.size(), 10);
             for (Condier x : clist.subList(0, count))
                 if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
@@ -476,7 +501,7 @@ public class ParseBot {
             buffer.append(" #  Player            " + playerPadding + " Downs Kills" + LF);
             buffer.append("--- ------------------" + playerDashes  + " ----- -----" + LF);
             int index = 1;
-            int count = plist.size() > 10 ? 10 : plist.size();
+            int count = Math.min(plist.size(), 10);
             for (Player x : plist.subList(0, count))
                 buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
             report.setDownsKills(buffer.toString());
@@ -526,7 +551,6 @@ public class ParseBot {
                                 + LF);
                     }
                 }
-
             }
             report.setDbooners(buffer.toString());
             System.out.println("Defensive Boon Uptime by Party:" + LF + buffer);
@@ -581,6 +605,27 @@ public class ParseBot {
             }
             report.setObooners(buffer.toString());
             System.out.println("Offensive Boon Uptime by Party:" + LF + buffer);
+            System.out.println();
+        }
+
+        if (enemyDmgBySkill.size() > 0) {
+            buffer = new StringBuffer();
+            List<Map.Entry<String, Integer>> u = enemyDmgBySkill.entrySet().stream()
+                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .limit(10).collect(Collectors.toList());
+            buffer.append(" #  Skill                  Dmg" + LF);
+            buffer.append("--- --------------------- ------" + LF);
+            for (int z=0; z < u.size(); z++) {
+                Map.Entry<String, Integer> x = u.get(z);
+                if (x.getValue() > 0) {
+                    buffer.append(String.format("%2s", z + 1) + "  "
+                            + String.format("%-20s", x.getKey())
+                            + String.format("%8s", DPSer.withSuffix(x.getValue(), x.getValue() < 1000000 ? 0 : x.getValue() >= 10000000 ? 1 : 2))
+                            + LF);
+                }
+            }
+            report.setEnemySkillDmg(buffer.toString());
+            System.out.println("Enemy Top Damage Skills:" + LF + buffer);
             System.out.println();
         }
 

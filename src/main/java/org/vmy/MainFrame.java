@@ -87,6 +87,7 @@ public class MainFrame {
         buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", p.showHeals);
         buildCheckBox(settingsCheckboxPanel, "showDownsKills", "Show Outgoing Downs & Kills", p.showDownsKills);
         buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", p.showCCs);
+        buildCheckBox(settingsCheckboxPanel, "showTopEnemySkills", "Show Top Enemy Skills", p.showTopEnemySkills);
         buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", p.showEnemyBreakdown);
         buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
         buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);

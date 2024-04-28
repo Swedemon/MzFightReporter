@@ -50,6 +50,7 @@ public class Parameters {
     public boolean showHeals = true;
     public boolean showDownsKills = true;
     public boolean showCCs = true;
+    public boolean showTopEnemySkills = true;
     public boolean showEnemyBreakdown = true;
     public boolean showQuickReport = true;
     public boolean showDamageGraph = true;
@@ -99,6 +100,7 @@ public class Parameters {
             showDownsKills = Boolean.valueOf(props.getProperty("showDownsKills", "true"));
             showCCs = Boolean.valueOf(props.getProperty("showCCs", "true"));
             showHeals = Boolean.valueOf(props.getProperty("showHeals", "true"));
+            showTopEnemySkills = Boolean.valueOf(props.getProperty("showTopEnemySkills", "true"));
             showEnemyBreakdown = Boolean.valueOf(props.getProperty("showEnemyBreakdown", "true"));
             showQuickReport = Boolean.valueOf(props.getProperty("showQuickReport", "true"));
             showDamageGraph = Boolean.valueOf(props.getProperty("showDamageGraph", "true"));
@@ -255,6 +257,7 @@ public class Parameters {
                     case "showDownsKills": checkbox.setSelected(p.showDownsKills); break;
                     case "showCCs": checkbox.setSelected(p.showCCs); break;
                     case "showHeals": checkbox.setSelected(p.showHeals); break;
+                    case "showTopEnemySkills": checkbox.setSelected(p.showTopEnemySkills); break;
                     case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
                     case "showQuickReport": checkbox.setSelected(p.showQuickReport); break;
                     case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
