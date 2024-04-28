@@ -151,7 +151,7 @@ public class FileWatcher {
                             //call discordbot and twitchbot on main fight report
                             boolean discordOkay = true;
                             FightReport report = FightReport.readReportFile();
-                            report.setUrl(fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
+                            report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
                             if (report==null) {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {

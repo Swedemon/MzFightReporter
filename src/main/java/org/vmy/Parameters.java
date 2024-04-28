@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.4";
+    public static final String appVersion = "4.2.6";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -50,11 +50,13 @@ public class Parameters {
     public boolean showHeals = true;
     public boolean showDownsKills = true;
     public boolean showCCs = true;
+    public boolean showTopEnemySkills = true;
     public boolean showEnemyBreakdown = true;
     public boolean showQuickReport = true;
     public boolean showDamageGraph = true;
     public boolean largeUploadsAfterParse = false;
     public boolean minimizeToTray = false;
+    public boolean closeToTray = false;
     public boolean startMinimized = false;
 
     private static Parameters instance = null;
@@ -98,11 +100,13 @@ public class Parameters {
             showDownsKills = Boolean.valueOf(props.getProperty("showDownsKills", "true"));
             showCCs = Boolean.valueOf(props.getProperty("showCCs", "true"));
             showHeals = Boolean.valueOf(props.getProperty("showHeals", "true"));
+            showTopEnemySkills = Boolean.valueOf(props.getProperty("showTopEnemySkills", "true"));
             showEnemyBreakdown = Boolean.valueOf(props.getProperty("showEnemyBreakdown", "true"));
             showQuickReport = Boolean.valueOf(props.getProperty("showQuickReport", "true"));
             showDamageGraph = Boolean.valueOf(props.getProperty("showDamageGraph", "true"));
             largeUploadsAfterParse = Boolean.valueOf(props.getProperty("largeUploadsAfterParse", "true"));
             minimizeToTray = Boolean.valueOf(props.getProperty("minimizeToTray", "false"));
+            closeToTray = Boolean.valueOf(props.getProperty("closeToTray", "false"));
             startMinimized = Boolean.valueOf(props.getProperty("startMinimized", "false"));
         } catch (Exception e) {
             System.out.println("Warning: Unable to read config.properties.  Using default values.");
@@ -253,11 +257,13 @@ public class Parameters {
                     case "showDownsKills": checkbox.setSelected(p.showDownsKills); break;
                     case "showCCs": checkbox.setSelected(p.showCCs); break;
                     case "showHeals": checkbox.setSelected(p.showHeals); break;
+                    case "showTopEnemySkills": checkbox.setSelected(p.showTopEnemySkills); break;
                     case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
                     case "showQuickReport": checkbox.setSelected(p.showQuickReport); break;
                     case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
                     case "largeUploadsAfterParse": checkbox.setSelected(p.largeUploadsAfterParse); break;
                     case "minimizeToTray": checkbox.setSelected(p.minimizeToTray); break;
+                    case "closeToTray": checkbox.setSelected(p.closeToTray); break;
                     case "startMinimized": checkbox.setSelected(p.startMinimized); break;
                     default:
                 }

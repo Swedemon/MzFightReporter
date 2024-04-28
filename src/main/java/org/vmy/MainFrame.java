@@ -87,11 +87,13 @@ public class MainFrame {
         buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", p.showHeals);
         buildCheckBox(settingsCheckboxPanel, "showDownsKills", "Show Outgoing Downs & Kills", p.showDownsKills);
         buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", p.showCCs);
+        buildCheckBox(settingsCheckboxPanel, "showTopEnemySkills", "Show Top Enemy Skills", p.showTopEnemySkills);
         buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", p.showEnemyBreakdown);
         buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
         buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);
         buildCheckBox(settingsCheckboxPanel, "startMinimized", "Start Minimized", p.startMinimized);
         buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (requires restart)", p.minimizeToTray);
+        buildCheckBox(settingsCheckboxPanel, "closeToTray", "Close to System Tray (requires restart)", p.closeToTray);
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
@@ -246,7 +248,7 @@ public class MainFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage("mztray.png"));
 
-        if (Parameters.getInstance().minimizeToTray) {
+        if (Parameters.getInstance().minimizeToTray || Parameters.getInstance().closeToTray) {
             TrayIcon trayIcon;
             if (SystemTray.isSupported()) {
                 // create a popup menu
@@ -276,6 +278,21 @@ public class MainFrame {
                 // set the TrayIcon properties
                 trayIcon.addActionListener(viewListener);
 
+                if (Parameters.getInstance().closeToTray) {
+                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    frame.addWindowListener(new WindowAdapter() {
+                        public void windowClosing(WindowEvent e) {
+                            try {
+                                frame.setState(Frame.ICONIFIED);
+                                tray.add(trayIcon);
+                                frame.setVisible(false);
+                            } catch (AWTException ex) {
+                                System.out.println("Unable to add to system tray...");
+                            }
+                        }
+                    });
+                }
+
                 frame.addWindowStateListener(e -> {
                     if (e.getNewState() == ICONIFIED) {
                         try {
@@ -285,7 +302,7 @@ public class MainFrame {
                             System.out.println("Unable to add to system tray...");
                         }
                     }
-                    if (e.getNewState() == 7) {
+                    if (Parameters.getInstance().minimizeToTray && e.getNewState() == 7) {
                         try {
                             tray.add(trayIcon);
                             frame.setVisible(false);
