@@ -14,7 +14,7 @@
 - **Developer:** Swedemon.4670 aka Mazz
 - **Support Discord:** https://discord.gg/5JfZ3qpW3Q
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
-## Setup Instructions (< 5 minutes)
+## Setup Instructions (5 - 10 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
    - To unzip right click the downloaded file and select 'Extract All...'
 1. Start the application by going into the extracted folder and double clicking the 'MzFightReporter' batch file.
@@ -59,7 +59,6 @@ Setup is complete! Eligible fights will send reports to the UI and your discord 
 ### Limitations
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Friendly players**: Data on players contributing but not in squad at this time is not possible.  If a fight shows 20v50 then take this with a bulk shipment of salt.
-- **Defensive Boons**:  Does not consider whether boons such as stab were wasted so a higher rating is not always better.  However, this rating does show someone was at least actively pressing the buttons that matter.
-- **Healing**:  Only players using the Heal Addon with Live Sharing enabled will be accurately represented.
+- **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
 - **Outgoing CC's**: There is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. Also, outgoing CC durations are not considered.  However, interrupts are included which gives some indication of all effective CC's.
-- **Long Fights**: Fights exceeding ~15 minutes run the risk of not reporting and/or not uploading.
+- **Long Fights**: Fights exceeding ~15 minutes run the risk of not reporting and/or not uploading.  Settings exist to manage the maximum upload size.
