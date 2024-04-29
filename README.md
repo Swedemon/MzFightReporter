@@ -27,7 +27,7 @@
    1. Under the 'LOGGING' tab check the wvw option: SAVE (AFTER SQUAD COMBAT)
    1. Observe the other settings such as 'MINIMUM ENEMY PLAYERS': recommended is 10 // less for havoc.
    <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
-Setup is complete! Eligible fights will send reports to the UI and your discord channel while this program is running.
+Setup is complete! Eligible fights will send reports to your discord channel while this program is running.
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
 ## Create a Discord Webhook
 1. In your Discord create a channel then right click it and choose 'Edit Channel'.
