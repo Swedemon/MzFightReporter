@@ -13,7 +13,7 @@
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.  Also shout-outs to Jahar from PvD, Jay from Apex and Perish_VS on Twitch!
 - **Support Discord:** https://discord.gg/5JfZ3qpW3Q
 - **Developer:** Swedemon.4670 aka Mazz
-- **Like the program?**  [Buy Mazz a coffee :)](https://ko-fi.com/mzfightreporter)
+- **Like the program?**  [Buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (5 - 10 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
