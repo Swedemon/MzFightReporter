@@ -97,13 +97,18 @@ public class MainFrame {
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
-        settingsTextFieldPanel.setPreferredSize(new Dimension(300,200));
+        settingsTextFieldPanel.setPreferredSize(new Dimension(300,300));
         //buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
-        buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook", p.discordWebhook, 50, true);
+        buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook #1", p.discordWebhook, 50, true);
+        buildTextField(settingsTextFieldPanel, "discordWebhook2", "Discord Webhook #2", p.discordWebhook2, 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhook3", "Discord Webhook #3", p.discordWebhook3, 50, false);
+        buildWebhookSelection(settingsTextFieldPanel, p.activeDiscordWebhook);
+        buildSpacer(settingsTextFieldPanel);
         buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
         buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
         buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), 2, false);
-        buildTextField(settingsTextFieldPanel, "customLogFolder", "Custom Log Folder", p.customLogFolder, 12, false);
+        buildTextField(settingsTextFieldPanel, "defaultLogFolder", "ArcDps Log Folder #1", p.defaultLogFolder, 12, false);
+        buildTextField(settingsTextFieldPanel, "customLogFolder", "ArcDps Log Folder #2", p.customLogFolder, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
         buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
         settingsParentPanel.add(settingsCheckboxPanel);
@@ -163,6 +168,13 @@ public class MainFrame {
         pane.setBackground(BGCOLOR);
     }
 
+    private static void buildSpacer(JPanel settingsTextFieldPanel) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 100;
+        settingsTextFieldPanel.add(new JLabel(""), c);
+        settingsTextFieldPanel.add(new JLabel(""), c);
+    }
+
     private static void setColors(JComponent component) {
         component.setBackground(BGCOLOR);
         component.setForeground(FGCOLOR);
@@ -176,6 +188,22 @@ public class MainFrame {
         addMouseOver(checkbox);
         jPanel.add(checkbox);
         settingsMap.put(property, checkbox);
+    }
+
+    private static void buildWebhookSelection(JPanel panel, int value) {
+        GridBagConstraints c = new GridBagConstraints();
+        JLabel jLabel = new JLabel("Active Discord Webhook #");
+        //jLabel.setToolTipText("Select the active");
+        jLabel.setSize(50, 20);
+        jLabel.setPreferredSize(new Dimension(50, 20));
+        jLabel.setMinimumSize(new Dimension(50, 20));
+        jLabel.setMaximumSize(new Dimension(50, 20));
+        c.gridx = 100;
+        panel.add(jLabel, c);
+        JComboBox jComboBox = new JComboBox(new String[]{"1", "2", "3"});
+        jComboBox.setSelectedIndex(value-1);
+        panel.add(jComboBox);
+        settingsMap.put("activeDiscordWebhook", jComboBox);
     }
 
     private static void buildTextField(JPanel panel, String property, String label, String value, int columns, boolean isBold) {

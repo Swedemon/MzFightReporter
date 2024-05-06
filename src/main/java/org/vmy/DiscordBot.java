@@ -49,7 +49,7 @@ public class DiscordBot {
     }
 
     public void buildSession() {
-        url = Parameters.getInstance().discordWebhook;
+        url = Parameters.getInstance().getCurrentDiscordWebhook();
         int indexOfThreadId = url.indexOf("?thread_id=");
         if (indexOfThreadId > 0) {
             String sThreadId = url.substring(indexOfThreadId + 11);

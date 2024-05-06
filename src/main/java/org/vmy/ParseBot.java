@@ -619,8 +619,8 @@ public class ParseBot {
                 Map.Entry<String, Integer> x = u.get(z);
                 if (x.getValue() > 0) {
                     buffer.append(String.format("%2s", z + 1) + "  "
-                            + String.format("%-20s", x.getKey())
-                            + String.format("%8s", DPSer.withSuffix(x.getValue(), x.getValue() < 1000000 ? 0 : x.getValue() >= 10000000 ? 1 : 2))
+                            + String.format("%-21s", StringUtils.left(x.getKey(), 21))
+                            + String.format("%7s", DPSer.withSuffix(x.getValue(), x.getValue() < 1000000 ? 0 : x.getValue() >= 10000000 ? 1 : 2))
                             + LF);
                 }
             }

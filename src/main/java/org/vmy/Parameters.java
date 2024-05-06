@@ -11,18 +11,21 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.6";
+    public static final String appVersion = "4.2.7";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-04-21";
+    public String gw2EIDir = "\\GW2EI-2024-05-06";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
     public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
+    public int activeDiscordWebhook = 1;
     public String discordWebhook = "";
+    public String discordWebhook2 = "";
+    public String discordWebhook3 = "";
     public String twitchChannelName = "";
     public String twitchBotToken = "";
     public String jarName = "MzApp-Latest.jar";
@@ -77,9 +80,13 @@ public class Parameters {
             //set properties
             gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
             curlExe = homeDir + "\\curl\\bin\\curl.exe";
+            defaultLogFolder = props.getProperty("defaultLogFolder", defaultLogFolder);
             customLogFolder = props.getProperty("customLogFolder");
             discordThumbnail = props.getProperty("discordThumbnail",discordThumbnail);
+            activeDiscordWebhook = Integer.parseInt(props.getProperty("activeDiscordWebhook",activeDiscordWebhook+""));
             discordWebhook = props.getProperty("discordWebhook",discordWebhook);
+            discordWebhook2 = props.getProperty("discordWebhook2",discordWebhook2);
+            discordWebhook3 = props.getProperty("discordWebhook3",discordWebhook3);
             twitchChannelName = props.getProperty("twitchChannelName",twitchChannelName);
             twitchBotToken = props.getProperty("twitchBotToken",twitchBotToken);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
@@ -121,6 +128,8 @@ public class Parameters {
             //System.out.println(key + ", " + text);
             if (o instanceof JCheckBox)
                 continue; //ignore checkbox validation
+            if (o instanceof JComboBox)
+                continue; //ignore combobox validation
             String text = ((JTextField) o).getText();
             switch (key) {
                 case "customLogFolder":
@@ -147,7 +156,19 @@ public class Parameters {
                     if (StringUtils.isEmpty(text))
                         break;
                     else if (!text.toLowerCase().startsWith("http"))
-                        errorContent += "- Discord Webhook is not a valid webhook URL.\r\n";
+                        errorContent += "- Discord Webhook #1 is not a valid webhook URL.\r\n";
+                    break;
+                case "discordWebhook2":
+                    if (StringUtils.isEmpty(text))
+                        break;
+                    else if (!text.toLowerCase().startsWith("http"))
+                        errorContent += "- Discord Webhook #2 is not a valid webhook URL.\r\n";
+                    break;
+                case "discordWebhook3":
+                    if (StringUtils.isEmpty(text))
+                        break;
+                    else if (!text.toLowerCase().startsWith("http"))
+                        errorContent += "- Discord Webhook #3 is not a valid webhook URL.\r\n";
                     break;
                 case "graphPlayerLimit":
                     if (StringUtils.isEmpty(text)) {
@@ -208,6 +229,11 @@ public class Parameters {
                     System.out.println(key + " = " + ((JCheckBox) o).isSelected());
                     props.setProperty(key, String.valueOf(((JCheckBox) o).isSelected()));
                 }
+                else if (o instanceof JComboBox) {
+                    System.out.println(key + " = " + (((JComboBox) o).getSelectedIndex()) + 1);
+                    int currIndex = ((JComboBox)o).getSelectedIndex() + 1;
+                    props.setProperty("activeDiscordWebhook", currIndex+"");
+                }
                 else if (o instanceof JTextField) {
                     String text = ((JTextField)o).getText();
                     if ((key.equals("discordWebhook") || key.equals("twitchBotToken")) && text.length() > 0)
@@ -226,7 +252,7 @@ public class Parameters {
         }
 
         try {
-            if (discordWebhook != null && !discordWebhook.isEmpty())
+            if (!StringUtils.isEmpty(getCurrentDiscordWebhook()))
                 DiscordBot.getSingletonInstance().buildSession(); //in case webhook changed
         } catch (Exception e) {
             System.out.println("Warning: Unable to establish Discord webhook connection.");
@@ -242,37 +268,89 @@ public class Parameters {
             if (o instanceof JCheckBox) {
                 JCheckBox checkbox = (JCheckBox) o;
                 switch (key) {
-                    case "enableReportUpload": checkbox.setSelected(p.enableReportUpload); break;
-                    case "enableDiscordBot": checkbox.setSelected(p.enableDiscordBot); break;
-                    case "enableTwitchBot": checkbox.setSelected(p.enableTwitchBot); break;
-                    case "enableDiscordMobileMode": checkbox.setSelected(p.enableDiscordMobileMode); break;
-                    case "showSquadSummary": checkbox.setSelected(p.showSquadSummary); break;
-                    case "showEnemySummary": checkbox.setSelected(p.showEnemySummary); break;
-                    case "showDamage": checkbox.setSelected(p.showDamage); break;
-                    case "showSpikeDmg": checkbox.setSelected(p.showSpikeDmg); break;
-                    case "showCleanses": checkbox.setSelected(p.showCleanses); break;
-                    case "showStrips": checkbox.setSelected(p.showStrips); break;
-                    case "showDefensiveBoons": checkbox.setSelected(p.showDefensiveBoons); break;
-                    case "showOffensiveBoons": checkbox.setSelected(p.showOffensiveBoons); break;
-                    case "showDownsKills": checkbox.setSelected(p.showDownsKills); break;
-                    case "showCCs": checkbox.setSelected(p.showCCs); break;
-                    case "showHeals": checkbox.setSelected(p.showHeals); break;
-                    case "showTopEnemySkills": checkbox.setSelected(p.showTopEnemySkills); break;
-                    case "showEnemyBreakdown": checkbox.setSelected(p.showEnemyBreakdown); break;
-                    case "showQuickReport": checkbox.setSelected(p.showQuickReport); break;
-                    case "showDamageGraph": checkbox.setSelected(p.showDamageGraph); break;
-                    case "largeUploadsAfterParse": checkbox.setSelected(p.largeUploadsAfterParse); break;
-                    case "minimizeToTray": checkbox.setSelected(p.minimizeToTray); break;
-                    case "closeToTray": checkbox.setSelected(p.closeToTray); break;
-                    case "startMinimized": checkbox.setSelected(p.startMinimized); break;
+                    case "enableReportUpload":
+                        checkbox.setSelected(p.enableReportUpload);
+                        break;
+                    case "enableDiscordBot":
+                        checkbox.setSelected(p.enableDiscordBot);
+                        break;
+                    case "enableTwitchBot":
+                        checkbox.setSelected(p.enableTwitchBot);
+                        break;
+                    case "enableDiscordMobileMode":
+                        checkbox.setSelected(p.enableDiscordMobileMode);
+                        break;
+                    case "showSquadSummary":
+                        checkbox.setSelected(p.showSquadSummary);
+                        break;
+                    case "showEnemySummary":
+                        checkbox.setSelected(p.showEnemySummary);
+                        break;
+                    case "showDamage":
+                        checkbox.setSelected(p.showDamage);
+                        break;
+                    case "showSpikeDmg":
+                        checkbox.setSelected(p.showSpikeDmg);
+                        break;
+                    case "showCleanses":
+                        checkbox.setSelected(p.showCleanses);
+                        break;
+                    case "showStrips":
+                        checkbox.setSelected(p.showStrips);
+                        break;
+                    case "showDefensiveBoons":
+                        checkbox.setSelected(p.showDefensiveBoons);
+                        break;
+                    case "showOffensiveBoons":
+                        checkbox.setSelected(p.showOffensiveBoons);
+                        break;
+                    case "showDownsKills":
+                        checkbox.setSelected(p.showDownsKills);
+                        break;
+                    case "showCCs":
+                        checkbox.setSelected(p.showCCs);
+                        break;
+                    case "showHeals":
+                        checkbox.setSelected(p.showHeals);
+                        break;
+                    case "showTopEnemySkills":
+                        checkbox.setSelected(p.showTopEnemySkills);
+                        break;
+                    case "showEnemyBreakdown":
+                        checkbox.setSelected(p.showEnemyBreakdown);
+                        break;
+                    case "showQuickReport":
+                        checkbox.setSelected(p.showQuickReport);
+                        break;
+                    case "showDamageGraph":
+                        checkbox.setSelected(p.showDamageGraph);
+                        break;
+                    case "largeUploadsAfterParse":
+                        checkbox.setSelected(p.largeUploadsAfterParse);
+                        break;
+                    case "minimizeToTray":
+                        checkbox.setSelected(p.minimizeToTray);
+                        break;
+                    case "closeToTray":
+                        checkbox.setSelected(p.closeToTray);
+                        break;
+                    case "startMinimized":
+                        checkbox.setSelected(p.startMinimized);
+                        break;
                     default:
                 }
+            } else if (o instanceof JComboBox) {
+                JComboBox jComboBox = (JComboBox) o;
+                jComboBox.setSelectedIndex(p.activeDiscordWebhook - 1);
             } else {
                 JTextField jTextField = (JTextField) o;
                 switch (key) {
+                    case "defaultLogFolder": jTextField.setText(p.defaultLogFolder); jTextField.setCaretPosition(0); break;
                     case "customLogFolder": jTextField.setText(p.customLogFolder); jTextField.setCaretPosition(0); break;
                     case "discordThumbnail": jTextField.setText(p.discordThumbnail); jTextField.setCaretPosition(0); break;
                     case "discordWebhook": jTextField.setText(p.discordWebhook); jTextField.setCaretPosition(0); break;
+                    case "discordWebhook2": jTextField.setText(p.discordWebhook2); jTextField.setCaretPosition(0); break;
+                    case "discordWebhook3": jTextField.setText(p.discordWebhook3); jTextField.setCaretPosition(0); break;
                     case "graphPlayerLimit": jTextField.setText(String.valueOf(p.graphPlayerLimit)); jTextField.setCaretPosition(0); break;
                     case "maxParseMemory": jTextField.setText(String.valueOf(p.maxParseMemory)); jTextField.setCaretPosition(0); break;
                     case "twitchBotToken": jTextField.setText(p.twitchBotToken); jTextField.setCaretPosition(0); break;
@@ -284,5 +362,13 @@ public class Parameters {
         }
         System.out.println("\nSettings reset.");
         MainFrame.statusLabel.setText("Status: Settings reset");
+    }
+
+    public String getCurrentDiscordWebhook() {
+        if (activeDiscordWebhook == 2)
+            return discordWebhook2;
+        if (activeDiscordWebhook == 3)
+            return discordWebhook3;
+        return discordWebhook;
     }
 }
