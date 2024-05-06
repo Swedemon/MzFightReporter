@@ -236,7 +236,7 @@ public class Parameters {
                 }
                 else if (o instanceof JTextField) {
                     String text = ((JTextField)o).getText();
-                    if ((key.equals("discordWebhook") || key.equals("twitchBotToken")) && text.length() > 0)
+                    if ((key.startsWith("discordWebhook") || key.equals("twitchBotToken")) && text.length() > 0)
                         System.out.println(key + " = (" + text.length() + " characters)");
                     else
                         System.out.println(key + " = " + text);
