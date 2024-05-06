@@ -53,13 +53,9 @@ public class FileWatcher {
         File defaultFolder = new File(p.defaultLogFolder);
 
         //loop to await folder detection
-        System.out.println("\r\nParent folders configured to monitor ArcDps log files:");
-        if (p.customLogFolder!=null && p.customLogFolder.length()>0)
-            System.out.println("   > " + folder.getAbsolutePath());
-        System.out.println("   > " + defaultFolder.getAbsolutePath());
+        System.out.println("\r\nMonitoring new ArcDps log files in the folders defined in the Settings.");
         while (true) {
             if (folder.exists() || defaultFolder.exists()) {
-                System.out.println();
                 break;
             }
             Thread.sleep(10000L);
@@ -68,8 +64,6 @@ public class FileWatcher {
 
         List<File> listOfFiles = listLogFiles();
         listOfFiles.forEach(f -> fileMap.put(f.getAbsolutePath(),f));
-
-        System.out.println("Monitoring ArcDps log files.");
 
         //continuous file monitor loop
         int dotCount = 0;
@@ -156,7 +150,7 @@ public class FileWatcher {
                                 System.out.println("ERROR: FightReport file not available.");
                             } else {
                                 System.out.println(report.getOverview());
-                                if (!StringUtils.isEmpty(p.discordWebhook) && p.enableDiscordBot) {
+                                if (!StringUtils.isEmpty(p.getCurrentDiscordWebhook()) && p.enableDiscordBot) {
                                     discordOkay = sendDiscordMsg(report);
                                 }
                                 if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
@@ -171,7 +165,7 @@ public class FileWatcher {
                                 String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
 
                                 //call discordbot on report URL
-                                if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.discordWebhook)) {
+                                if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
                                     System.setOut(new PrintStream(MainFrame.reportStream));
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
@@ -195,7 +189,7 @@ public class FileWatcher {
                                     System.out.println("Graphing Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p3.exitValue());
 
                                     //call discordbot on graph
-                                    if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.discordWebhook)) {
+                                    if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
                                         if (discordOkay && p.enableDiscordBot)
                                             sendDiscordGraphMsg();
                                     }
@@ -460,7 +454,7 @@ public class FileWatcher {
 
         p.homeDir = System.getProperty("user.dir");
 
-        if (p.discordWebhook==null || p.discordWebhook.length()==0) {
+        if (!StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
             System.out.println("*** WARNING ***: Discord webhook is not yet defined in the Settings!\r\n");
         } else if (!p.enableDiscordBot) {
             System.out.println("*** WARNING ***: Discord messaging is set to disabled in the Settings!\r\n");
