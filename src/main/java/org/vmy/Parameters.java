@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.7";
+    public static final String appVersion = "4.2.8";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -26,6 +26,9 @@ public class Parameters {
     public String discordWebhook = "";
     public String discordWebhook2 = "";
     public String discordWebhook3 = "";
+    public String discordWebhookLabel = "Default";
+    public String discordWebhookLabel2 = "Secondary";
+    public String discordWebhookLabel3 = "Tertiary";
     public String twitchChannelName = "";
     public String twitchBotToken = "";
     public String jarName = "MzApp-Latest.jar";
@@ -236,7 +239,7 @@ public class Parameters {
                 }
                 else if (o instanceof JTextField) {
                     String text = ((JTextField)o).getText();
-                    if ((key.equals("discordWebhook") || key.equals("twitchBotToken")) && text.length() > 0)
+                    if ((key.startsWith("discordWebhook") || key.contains("LogFolder") || key.equals("twitchBotToken")) && text.length() > 0)
                         System.out.println(key + " = (" + text.length() + " characters)");
                     else
                         System.out.println(key + " = " + text);
@@ -351,6 +354,9 @@ public class Parameters {
                     case "discordWebhook": jTextField.setText(p.discordWebhook); jTextField.setCaretPosition(0); break;
                     case "discordWebhook2": jTextField.setText(p.discordWebhook2); jTextField.setCaretPosition(0); break;
                     case "discordWebhook3": jTextField.setText(p.discordWebhook3); jTextField.setCaretPosition(0); break;
+                    case "discordWebhookLabel":  jTextField.setText(p.discordWebhookLabel); jTextField.setCaretPosition(0); break;
+                    case "discordWebhookLabel2": jTextField.setText(p.discordWebhookLabel2); jTextField.setCaretPosition(0); break;
+                    case "discordWebhookLabel3": jTextField.setText(p.discordWebhookLabel3); jTextField.setCaretPosition(0); break;
                     case "graphPlayerLimit": jTextField.setText(String.valueOf(p.graphPlayerLimit)); jTextField.setCaretPosition(0); break;
                     case "maxParseMemory": jTextField.setText(String.valueOf(p.maxParseMemory)); jTextField.setCaretPosition(0); break;
                     case "twitchBotToken": jTextField.setText(p.twitchBotToken); jTextField.setCaretPosition(0); break;

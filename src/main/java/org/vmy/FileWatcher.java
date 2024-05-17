@@ -454,7 +454,7 @@ public class FileWatcher {
 
         p.homeDir = System.getProperty("user.dir");
 
-        if (!StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
+        if (StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
             System.out.println("*** WARNING ***: Discord webhook is not yet defined in the Settings!\r\n");
         } else if (!p.enableDiscordBot) {
             System.out.println("*** WARNING ***: Discord messaging is set to disabled in the Settings!\r\n");
