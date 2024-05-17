@@ -97,11 +97,14 @@ public class MainFrame {
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
-        settingsTextFieldPanel.setPreferredSize(new Dimension(300,300));
+        settingsTextFieldPanel.setPreferredSize(new Dimension(300,400));
         //buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook #1", p.discordWebhook, 50, true);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel", "Label Discord #1", p.discordWebhookLabel, 50, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook2", "Discord Webhook #2", p.discordWebhook2, 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel2", "Label Discord #2", p.discordWebhookLabel2, 50, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook3", "Discord Webhook #3", p.discordWebhook3, 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel3", "Label Discord #3", p.discordWebhookLabel3, 50, false);
         buildWebhookSelection(settingsTextFieldPanel, p.activeDiscordWebhook);
         buildSpacer(settingsTextFieldPanel);
         buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
@@ -198,6 +201,7 @@ public class MainFrame {
         jLabel.setPreferredSize(new Dimension(50, 20));
         jLabel.setMinimumSize(new Dimension(50, 20));
         jLabel.setMaximumSize(new Dimension(50, 20));
+        jLabel.setFont(new Font(jLabel.getFont().getFontName(), Font.BOLD, jLabel.getFont().getSize()));
         c.gridx = 100;
         panel.add(jLabel, c);
         JComboBox jComboBox = new JComboBox(new String[]{"1", "2", "3"});
