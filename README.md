@@ -1,4 +1,14 @@
 # MzFightReporter (Guild Wars 2 WvW)
+## Table of Contents
+- [Overview](#overview)
+- [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
+- [Troubleshooting](#troubleshooting)
+- [Create a Discord Webhook](#create-a-discord-webhook)
+- [Enable Healing Stats](#enable-healing-stats)
+- [Twitch Bot Instructions](#twitch-bot-instructions)
+- [Sneak Peek](#sneak-peek)
+- [About the Data](#about-the-data)
+## Overview
 - **Description:** Monitor live [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a Discord channel and optionally a Twitch channel.  This program is open source. The provided data includes:
    - Squad Summary, Enemy Summary
    - Player Damage, Down Contribution, Spike Damage
