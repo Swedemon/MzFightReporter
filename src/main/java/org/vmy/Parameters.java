@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.8";
+    public static final String appVersion = "4.2.9";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
@@ -90,6 +90,9 @@ public class Parameters {
             discordWebhook = props.getProperty("discordWebhook",discordWebhook);
             discordWebhook2 = props.getProperty("discordWebhook2",discordWebhook2);
             discordWebhook3 = props.getProperty("discordWebhook3",discordWebhook3);
+            discordWebhookLabel = props.getProperty("discordWebhookLabel",discordWebhookLabel);
+            discordWebhookLabel2 = props.getProperty("discordWebhookLabel2",discordWebhookLabel2);
+            discordWebhookLabel3 = props.getProperty("discordWebhookLabel3",discordWebhookLabel3);
             twitchChannelName = props.getProperty("twitchChannelName",twitchChannelName);
             twitchBotToken = props.getProperty("twitchBotToken",twitchBotToken);
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
@@ -239,7 +242,8 @@ public class Parameters {
                 }
                 else if (o instanceof JTextField) {
                     String text = ((JTextField)o).getText();
-                    if ((key.startsWith("discordWebhook") || key.contains("LogFolder") || key.equals("twitchBotToken")) && text.length() > 0)
+                    if (!key.startsWith("discordWebhookLabel") && text.length() > 0
+                            && (key.startsWith("discordWebhook") || key.endsWith("LogFolder") || key.equals("twitchBotToken")))
                         System.out.println(key + " = (" + text.length() + " characters)");
                     else
                         System.out.println(key + " = " + text);
