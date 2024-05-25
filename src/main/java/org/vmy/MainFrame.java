@@ -204,7 +204,7 @@ public class MainFrame {
         jLabel.setFont(new Font(jLabel.getFont().getFontName(), Font.BOLD, jLabel.getFont().getSize()));
         c.gridx = 100;
         panel.add(jLabel, c);
-        JComboBox jComboBox = new JComboBox(new String[]{"1", "2", "3"});
+        JComboBox jComboBox = new JComboBox(new String[]{"1", "2", "3", "1 and 2", "1 and 3", "2 and 3", "1, 2 and 3", "None"});
         jComboBox.setSelectedIndex(value-1);
         panel.add(jComboBox);
         settingsMap.put("activeDiscordWebhook", jComboBox);

@@ -336,8 +336,11 @@ public class ParseBot {
                                     List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
                                     List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
-                                    HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns, int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
+                                    HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns,
+                                    int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
     {
+        boolean existsEmptyTeams = enemies.stream().anyMatch(e -> e.getTeam().equals(""));
+
         BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
         String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
         String playerDashes = Parameters.getInstance().enableDiscordMobileMode ? "" : "-----";
@@ -377,10 +380,15 @@ public class ParseBot {
             buffer.append(" Players   Damage   DPS   Downs  Deaths" + LF);
             buffer.append("---------- ------  ----- ------- ------" + LF);
         }
-        appendEnemySummary("Red", enemies, buffer);
-        appendEnemySummary("Green", enemies, buffer);
-        appendEnemySummary("Blue", enemies, buffer);
-        appendEnemySummary("", enemies, buffer);
+        String teamCountSummary = buildTeamCountSummary(enemies);
+        if (!existsEmptyTeams) {
+            appendEnemySummary("Red", enemies, buffer);
+            appendEnemySummary("Green", enemies, buffer);
+            appendEnemySummary("Blue", enemies, buffer);
+        } else {
+            enemies.forEach(e -> e.setTeam(""));
+            appendEnemySummary("", enemies, buffer);
+        }
         String esum = buffer.toString();
         esum = esum.substring(0, esum.length()-1);
         report.setEnemySummary(esum);
@@ -644,7 +652,7 @@ public class ParseBot {
                     ebdMap.put(e.getTeam(), map);
                 }
             });
-            List<String> keys = new ArrayList(ebdMap.keySet());
+            List<String> keys = new ArrayList<>(ebdMap.keySet());
             if (!keys.isEmpty()) {
                 String team1 = keys.get(0);
                 int count1 = ebdMap.get(team1).values().stream().map(EnemyBreakdown::getCount).reduce(0, Integer::sum);
@@ -660,6 +668,8 @@ public class ParseBot {
                 buffer.append(" #  Prof  Dmg     #  Prof  Dmg").append(LF);
                 buffer.append("--- ---- -----   --- ---- -----").append(LF);
                 buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
+                if (existsEmptyTeams)
+                    buffer.append((Parameters.getInstance().enableDiscordMobileMode ? "" : "--> ") + teamCountSummary.trim() + LF);
                 report.setEnemyBreakdown(buffer.toString());
                 System.out.println("Enemy Breakdown:" + LF + buffer);
                 System.out.println();
@@ -675,10 +685,27 @@ public class ParseBot {
         System.out.println();
     }
 
+    private static String buildTeamCountSummary(List<Enemy> enemies) {
+        int redCount = (int) enemies.stream().filter(e -> e.getTeam().equals("Red")).count();
+        int blueCount = (int) enemies.stream().filter(e -> e.getTeam().equals("Blue")).count();
+        int greenCount = (int) enemies.stream().filter(e -> e.getTeam().equals("Green")).count();
+        int unknownCount = (int) enemies.stream().filter(e -> e.getTeam().equals("")).count();
+        return (redCount > 0 ? " Red: " + redCount : " ")
+                + (blueCount > 0 ? " Blue: " + blueCount : "")
+                + (greenCount > 0 ? " Green: " + greenCount : "")
+                + (unknownCount > 0 ? " Unknown: " + unknownCount : "");
+    }
+
     private static void buildEnemyBreakdown(StringBuffer buffer, String team1, int count1, List<EnemyBreakdown> e1, int half1, String team2, int count2, List<EnemyBreakdown> e2, int half2) {
+        boolean isSingleTeam = team2 == null;
         for (int i = 0; i*2 < e1.size(); i++) {
             if (i == 0) {
-                buffer.append(">>> " + team1 + ": " + count1).append(LF);
+                if (isSingleTeam && StringUtils.isEmpty(team1))
+                    buffer.append(">>> Total: " + count1).append(LF);
+                else if (StringUtils.isEmpty(team1))
+                    buffer.append(">>> Team unknown: " + count1).append(LF);
+                else
+                    buffer.append(">>> " + team1 + ": " + count1).append(LF);
             }
             if (i+ half1 > e1.size())
                 break;
@@ -689,7 +716,10 @@ public class ParseBot {
         }
         for (int i = 0; i*2 < e2.size(); i++) {
             if (i == 0) {
-                buffer.append(">>> " + team2 + ": " + count2).append(LF);
+                if (StringUtils.isEmpty(team2))
+                    buffer.append(">>> Team unknown: " + count2).append(LF);
+                else
+                    buffer.append(">>> " + team2 + ": " + count2).append(LF);
             }
             if (i+ half2 > e2.size())
                 break;
@@ -705,9 +735,9 @@ public class ParseBot {
     private static String getPlayerTeamText(int numPlayers, String team) {
         if (StringUtils.isEmpty(team)) {
             if (Parameters.getInstance().enableDiscordMobileMode)
-                return " " + StringUtils.center(String.valueOf(numPlayers), 8);
+                return StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad("Total", 6);
             else
-                return " " + StringUtils.center(String.valueOf(numPlayers), 9);
+                return StringUtils.leftPad(String.valueOf(numPlayers), 3) + " " + StringUtils.rightPad("Total", 6);
         } else {
             if (Parameters.getInstance().enableDiscordMobileMode)
                 return StringUtils.leftPad(String.valueOf(numPlayers), 2) + " " + StringUtils.rightPad(team, 6);
@@ -716,7 +746,6 @@ public class ParseBot {
         }
     }
 
-    @NotNull
     private static List<Enemy> appendEnemySummary(String team, List<Enemy> enemies, StringBuffer buffer) {
         List<Enemy> thisTeam = enemies.stream().filter(e->team.equals(e.getTeam())).collect(Collectors.toList());
         if (thisTeam.size() > 0) {
