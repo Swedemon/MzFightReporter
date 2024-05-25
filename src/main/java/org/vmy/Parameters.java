@@ -6,23 +6,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.*;
+import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.2.9";
+    public static final String appVersion = "4.3.0";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-05-06";
+    public String gw2EIDir = "\\GW2EI-2024-05-22";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
     public String discordThumbnail = "https://i.imgur.com/KKddNgl.png";
-    public int activeDiscordWebhook = 1;
+    public int activeDiscordWebhook = 1; //1=1 2=2 3=3 4=1,2 5=1,3 6=2,3 7=1,2,3
     public String discordWebhook = "";
     public String discordWebhook2 = "";
     public String discordWebhook3 = "";
@@ -259,8 +259,8 @@ public class Parameters {
         }
 
         try {
-            if (!StringUtils.isEmpty(getCurrentDiscordWebhook()))
-                DiscordBot.getSingletonInstance().buildSession(); //in case webhook changed
+            if (!getCurrentDiscordWebhooks().isEmpty())
+                DiscordBot.getSingletonInstance().buildSessions(); //in case webhook changed
         } catch (Exception e) {
             System.out.println("Warning: Unable to establish Discord webhook connection.");
         }
@@ -374,11 +374,21 @@ public class Parameters {
         MainFrame.statusLabel.setText("Status: Settings reset");
     }
 
-    public String getCurrentDiscordWebhook() {
+    public List<String> getCurrentDiscordWebhooks() {
         if (activeDiscordWebhook == 2)
-            return discordWebhook2;
+            return Arrays.asList(discordWebhook2);
         if (activeDiscordWebhook == 3)
-            return discordWebhook3;
-        return discordWebhook;
+            return Arrays.asList(discordWebhook3);
+        if (activeDiscordWebhook == 4)
+            return Arrays.asList(discordWebhook, discordWebhook2);
+        if (activeDiscordWebhook == 5)
+            return Arrays.asList(discordWebhook, discordWebhook3);
+        if (activeDiscordWebhook == 6)
+            return Arrays.asList(discordWebhook2, discordWebhook3);
+        if (activeDiscordWebhook == 7)
+            return Arrays.asList(discordWebhook, discordWebhook2, discordWebhook3);
+        if (activeDiscordWebhook == 8 || StringUtils.isEmpty(discordWebhook))
+            return new ArrayList<>();
+        return Arrays.asList(discordWebhook);
     }
 }

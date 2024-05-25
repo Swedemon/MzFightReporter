@@ -15,8 +15,6 @@ import java.util.List;
 public class DiscordBot {
 
     private static DiscordBot singleton;
-    private static String url = "";
-    private static String threadId = "";
 
     public static DiscordBot getSingletonInstance() {
         if (singleton == null)
@@ -26,41 +24,46 @@ public class DiscordBot {
 
     private DiscordBot() {
         try {
-            openSession();
+            openSessions();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
     }
 
-    private WebhookClient client = null;
+    private final List<WebhookClient> clients = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-        DiscordBot bot = new DiscordBot().openSession();
+        DiscordBot bot = new DiscordBot().openSessions();
         bot.sendMainMessage(new FightReport());
-        bot.client.close();
+        bot.clients.forEach(WebhookClient::close);
     }
 
-    private DiscordBot openSession()
-    {
-        if (client == null) {
-            buildSession();
+    private DiscordBot openSessions() {
+        if (clients.isEmpty()) {
+            buildSessions();
         }
         return this;
     }
 
-    public void buildSession() {
-        url = Parameters.getInstance().getCurrentDiscordWebhook();
-        int indexOfThreadId = url.indexOf("?thread_id=");
-        if (indexOfThreadId > 0) {
-            String sThreadId = url.substring(indexOfThreadId + 11);
-            url = url.substring(0, indexOfThreadId);
-            client = WebhookClient.withUrl(url).onThread(Long.parseLong(sThreadId));
-        } else {
-            client = WebhookClient.withUrl(url);
+    public void buildSessions() {
+        List<String> urls = Parameters.getInstance().getCurrentDiscordWebhooks();
+        clients.clear();
+        for (String url : urls) {
+            int indexOfThreadId = url.indexOf("?thread_id=");
+            if (indexOfThreadId > 0) {
+                String sThreadId = url.substring(indexOfThreadId + 11);
+                url = url.substring(0, indexOfThreadId);
+                clients.add(WebhookClient.withUrl(url).onThread(Long.parseLong(sThreadId)));
+            } else {
+                clients.add(WebhookClient.withUrl(url));
+            }
         }
     }
 
     protected void sendMainMessage(FightReport report) {
+        if (clients.isEmpty())
+            return;
+
         Parameters p = Parameters.getInstance();
 
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
@@ -117,10 +120,9 @@ public class DiscordBot {
         }
 
         WebhookEmbed embed = embedBuilder.build();
-        if (client != null) {
+        for (WebhookClient client : clients) {
             client.send(embed);
-        } else {
-            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+            try{ Thread.sleep(1000); } catch(Exception ignored) {}
         }
 
         if (embedFields.size() > 8) {
@@ -133,52 +135,62 @@ public class DiscordBot {
                 embedBuilder.addField(embedFields.get(i));
 
             embed = embedBuilder.build();
-            if (client != null) {
+            for (WebhookClient client : clients) {
                 client.send(embed);
-            } else {
-                throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+                try{ Thread.sleep(1000); } catch(Exception ignored) {}
             }
         }
 
         System.out.println("Discord fight report msg sent.");
     }
 
-    protected void sendReportUrlMessage(String url, String endTime) {
+    protected void sendReportUrlMessage(String url) {
+        if (clients.isEmpty())
+            return;
+
         WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         embedBuilder.setColor(Color.CYAN.getAlpha());
 
         embedBuilder.addField(new WebhookEmbed.EmbedField(true,"\u200b",StringUtils.isEmpty(url)?"[DPSReports using EI: Upload process failed]":"[Full Report]("+url+")"));
 
         WebhookEmbed embed = embedBuilder.build();
-        if (client != null) {
+        for (WebhookClient client : clients) {
             client.send(embed);
-            System.out.println("Discord URL msg sent.");
-        } else {
-            throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+            try{ Thread.sleep(1000); } catch(Exception ignored) {}
         }
+
+        System.out.println("Discord URL msg sent.");
     }
 
     protected void sendGraphMessage() {
+        if (clients.isEmpty())
+            return;
+
         Parameters p = Parameters.getInstance();
 
         File graphImage = new File(p.homeDir + File.separator + "fightreport.png");
         if (graphImage.exists() && p.graphPlayerLimit > 0 && p.showDamageGraph) {
-            if (client != null) {
+
+            for (WebhookClient client : clients) {
                 client.send(graphImage);
-                System.out.println("Discord graph msg sent.");
-            } else {
-                throw new RuntimeException("Unable to connect to the provided Discord webhook.");
+                try{ Thread.sleep(1000); } catch(Exception ignored) {}
             }
+
+            System.out.println("Discord graph msg sent.");
         }
     }
 
-    public void finalize() { if (client!=null) client.close(); }
+    protected void finalize() {
+        if (!clients.isEmpty()) {
+            clients.forEach(WebhookClient::close);
+        }
+    }
 
     //hide needless errors via class block
     {
         PrintStream filterOut = new PrintStream(System.err) {
             public void println(String l) {
-                if (!l.startsWith("SLF4J")) {
+                if (l != null && !l.startsWith("SLF4J")) {
                     super.println(l);
                 }
             }

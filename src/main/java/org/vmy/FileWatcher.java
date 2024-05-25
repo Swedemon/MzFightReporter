@@ -146,31 +146,27 @@ public class FileWatcher {
                             boolean discordOkay = true;
                             FightReport report = FightReport.readReportFile();
                             report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
-                            if (report==null) {
-                                System.out.println("ERROR: FightReport file not available.");
-                            } else {
-                                System.out.println(report.getOverview());
-                                if (!StringUtils.isEmpty(p.getCurrentDiscordWebhook()) && p.enableDiscordBot) {
-                                    discordOkay = sendDiscordMsg(report);
-                                }
-                                if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
-                                    if (p.enableTwitchBot)
-                                        sendTwitchMsg(report);
-                                }
-                                MainFrame.statusLabel.setText("Status: Finished " + f.getName());
+                            System.out.println(report.getOverview());
+                            if (!p.getCurrentDiscordWebhooks().isEmpty() && p.enableDiscordBot) {
+                                discordOkay = sendDiscordMsg(report);
                             }
+                            if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
+                                if (p.enableTwitchBot)
+                                    sendTwitchMsg(report);
+                            }
+                            MainFrame.statusLabel.setText("Status: Finished " + f.getName());
 
                             //upload
                             if (p.largeUploadsAfterParse && fileMegabytes >= p.largeUploadMegabytes) {
                                 String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
 
                                 //call discordbot on report URL
-                                if (!StringUtils.isEmpty(uploadUrl) && !StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
+                                if (!StringUtils.isEmpty(uploadUrl) && !p.getCurrentDiscordWebhooks().isEmpty()) {
                                     System.setOut(new PrintStream(MainFrame.reportStream));
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
                                     if (discordOkay && p.enableDiscordBot)
-                                        discordOkay = sendDiscordUrlMsg(uploadUrl, report.getEndTime());
+                                        discordOkay = sendDiscordUrlMsg(uploadUrl);
                                 }
                             }
 
@@ -189,7 +185,7 @@ public class FileWatcher {
                                     System.out.println("Graphing Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p3.exitValue());
 
                                     //call discordbot on graph
-                                    if (p3.exitValue() == 0 && !StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
+                                    if (p3.exitValue() == 0 && !p.getCurrentDiscordWebhooks().isEmpty()) {
                                         if (discordOkay && p.enableDiscordBot)
                                             sendDiscordGraphMsg();
                                     }
@@ -317,12 +313,12 @@ public class FileWatcher {
         return true;
     }
 
-    private static boolean sendDiscordUrlMsg(String uploadUrl, String endTime) {
+    private static boolean sendDiscordUrlMsg(String uploadUrl) {
         MainFrame.statusLabel.setText("Status: Sending Report URL to Discord");
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Runnable task = () -> {
             DiscordBot dBot = DiscordBot.getSingletonInstance();
-            dBot.sendReportUrlMessage(uploadUrl, endTime);
+            dBot.sendReportUrlMessage(uploadUrl);
         };
         Future<?> future = executor.submit(task);
         try {
@@ -454,7 +450,7 @@ public class FileWatcher {
 
         p.homeDir = System.getProperty("user.dir");
 
-        if (StringUtils.isEmpty(p.getCurrentDiscordWebhook())) {
+        if (p.getCurrentDiscordWebhooks().isEmpty()) {
             System.out.println("*** WARNING ***: Discord webhook is not yet defined in the Settings!\r\n");
         } else if (!p.enableDiscordBot) {
             System.out.println("*** WARNING ***: Discord messaging is set to disabled in the Settings!\r\n");
