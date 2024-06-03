@@ -53,9 +53,9 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
    <p align="center"><img height="260" src="https://i.imgur.com/1WKwOuz.png"/>
 ## Enable Healing Stats
 1. Install the ArcDps healing stats addon:  [click here for instructions](https://github.com/Krappa322/arcdps_healing_stats#readme)
-1. In the ArcDps options (alt-shift-t) under 'Extensions' choose the 'healing_stats' tab then check 'log healing' and 'enable live sharing'.
+1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).  Under 'Extensions' tab choose the 'healing_stats' then check 'log healing' and 'enable live sharing'.
    - Note: To view the in-game heal window check the 'peers outgoing' option.
-   - Note: Healing stats does contribute to larger arcdps logs and therefore it is more resource intensive.
+   - Note: Healing stats does contribute to larger arcdps logs therefore it is more resource intensive.
    <p align="center"><img height="260" src="https://i.imgur.com/IK1L1JM.png"/></p>
 ## Twitch Bot Instructions
 1. Create and login to a new account at https://www.twitch.tv to represent your bot.  Optionally, you can use your existing twitch account.
