@@ -412,7 +412,7 @@ public class ParseBot {
 
         if (spikers.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player        " + playerPadding + " 2sec 4sec  Time" + LF);
+            buffer.append(" #  Player        " + playerPadding + " 4sec 2sec  Time" + LF);
             buffer.append("--- --------------" + playerDashes  + " ---- ----  ----" + LF);
             spikers.sort(Comparator.naturalOrder());
             int index = 1;
