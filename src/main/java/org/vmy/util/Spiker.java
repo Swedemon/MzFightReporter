@@ -5,6 +5,7 @@ import org.vmy.Parameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,44 +25,58 @@ public class Spiker implements Comparable<Spiker> {
     }
 
     public static void computeTop10(String name, String profession, List<Spiker> top10, List<Object> dmgList) {
-        List<Spiker> sList = new ArrayList<Spiker>();
-        for (int q=0; q < dmgList.size(); q++) {
-            int before2s = q>1?(int)dmgList.get(q-2):q>0?(int)dmgList.get(q-1):0;
-            int after2s = (int)dmgList.get(q);
-            int dmg2s = after2s - before2s;
-            //int before4s = q>2?(int)dmgList.get(q-3):q>1?(int)dmgList.get(q-2):q>0?(int)dmgList.get(q-1):0;
-            int after4s = q+2<dmgList.size()?(int)dmgList.get(q+2):q+1<dmgList.size()?(int)dmgList.get(q+1):(int)dmgList.get(q);
-            int dmg4s = after4s - before2s;
-            if (q > 0) {
-                Spiker prevSpike = sList.get(q-1);
-                if (prevSpike.getSpike2s() < dmg2s)
-                    prevSpike.setSpike2s(0); //omit by setting to zero
-                else
-                    dmg2s = 0; //omit current
+        List<Spiker> sList = new ArrayList<>();
+        HashMap<Integer, Spiker> sMap = new HashMap<>();
+        for (int q=4; q < dmgList.size(); q++) {
+            int dmg4s = (int)dmgList.get(q) - (int)dmgList.get(q-4);
+            int dmg2s = 0;
+            for (int x=q-4; x<q-1; x++) {
+                int dmg2sNext = (int)dmgList.get(x+2) - (int)dmgList.get(x);
+                if (dmg2sNext > dmg2s)
+                    dmg2s = dmg2sNext;
             }
-            sList.add(new Spiker(name, profession, q, dmg2s, dmg4s));
+            Spiker spiker = new Spiker(name, profession, q-4, dmg2s, dmg4s);
+            sList.add(spiker);
+            sMap.put(q-4, spiker);
         }
-        sList = sList.stream().filter(sp -> sp.getSpike2s()>0).collect(Collectors.toList());
+        Collections.sort(sList);
+        for (int x=0; x < sList.size(); x++) {
+            if (sList.get(x).getSpike4s() > 0) {
+                int q = sList.get(x).getStartTime();
+                if (sMap.containsKey(q+1))
+                    sMap.get(q+1).setSpike4s(0);
+                if (sMap.containsKey(q+2))
+                    sMap.get(q+2).setSpike4s(0);
+                if (sMap.containsKey(q+3))
+                    sMap.get(q+3).setSpike4s(0);
+                if (sMap.containsKey(q-1))
+                    sMap.get(q-1).setSpike4s(0);
+                if (sMap.containsKey(q-2))
+                    sMap.get(q-2).setSpike4s(0);
+                if (sMap.containsKey(q-3))
+                    sMap.get(q-3).setSpike4s(0);
+            }
+        }
+        sList = sList.stream().filter(sp -> sp.getSpike4s()>0).collect(Collectors.toList());
         sList.addAll(top10);
         Collections.sort(sList);
         top10.clear();
-        top10.addAll(sList.subList(0, sList.size() < 10 ? sList.size() : 10));
+        top10.addAll(sList.subList(0, Math.min(sList.size(), 10)));
     }
 
     public int compareTo(Spiker d) {
-        if (spike2s==d.spike2s)
-            return 0;
-        else if (spike2s>d.spike2s)
-            return -1;
+        if (spike4s==d.spike4s) {
+            return -Integer.compare(spike2s, d.spike2s);
+        }
         else
-            return 1;
+            return -Integer.compare(spike4s, d.spike4s);
     }
 
     public String toString() {
         int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 9 : 14;
         return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%5s",withSuffix(spike4s,spike4s < 1000000 ? 0 : spike4s >= 10000000 ? 1 : 2))
                 + String.format("%5s",withSuffix(spike2s,spike2s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
-                + String.format("%5s",withSuffix(spike4s,spike4s < 1000000 ? 0 : spike2s >= 10000000 ? 1 : 2))
                 + String.format("%6s",String.format("%s",startTime/60)+":"+String.format("%02d",startTime%60));
     }
 
