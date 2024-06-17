@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.3.2";
+    public static final String appVersion = "4.3.3";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
