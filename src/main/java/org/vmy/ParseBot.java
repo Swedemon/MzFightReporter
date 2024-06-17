@@ -243,6 +243,9 @@ public class ParseBot {
             report.setDuration(jsonTop.getString("duration"));
             report.setDurationMS(jsonTop.getInt("durationMS"));
             report.setCommander("n/a".equals(commander)?null:commander); //EI bug in json output
+            report.setArcVersion(jsonTop.getString("arcVersion"));
+            report.setEiVersion(jsonTop.getString("eliteInsightsVersion"));
+            report.setRecordedBy(jsonTop.getString("recordedAccountBy"));
             JSONArray uploadLinks = jsonTop.getJSONArray("uploadLinks");
             if (jsonTop.has("uploadLinks"))
                 report.setUrl(jsonTop.getJSONArray("uploadLinks").getString(0));

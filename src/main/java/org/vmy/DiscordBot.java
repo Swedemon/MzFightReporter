@@ -66,22 +66,34 @@ public class DiscordBot {
 
         Parameters p = Parameters.getInstance();
 
-        WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
-        embedBuilder.setColor(Color.CYAN.getAlpha());
-        //embedBuilder.set(p.discordThumbnail);
-        embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
+        WebhookEmbedBuilder embedBuilderIntro = new WebhookEmbedBuilder();
+        embedBuilderIntro.setColor(Color.CYAN.getAlpha());
+        embedBuilderIntro.setThumbnailUrl(p.discordThumbnail);
+        embedBuilderIntro.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
         String iconUrl = report.getZone().startsWith("Eternal") ? "https://i.imgur.com/eFMK8D4.png"
                 : report.getZone().startsWith("Green") ? "https://i.imgur.com/vyO4yKd.png"
                 : report.getZone().startsWith("Blue") ? "https://i.imgur.com/xlg6JZp.png"
                 : report.getZone().startsWith("Red") ? "https://i.imgur.com/hIq5RuB.png"
                 : report.getZone().contains("Edge") ? "https://i.imgur.com/MFjFSZW.png"
                 : "https://i.imgur.com/B0iKe5d.png"; //guild hall
-        embedBuilder.setAuthor(new WebhookEmbed.EmbedAuthor(report.getZone(), iconUrl, "https://github.com/Swedemon/MzFightReporter"));
+        embedBuilderIntro.setAuthor(new WebhookEmbed.EmbedAuthor(report.getZone(), iconUrl, "https://github.com/Swedemon/MzFightReporter"));
         if (!StringUtils.isEmpty(report.getUrl()))
-            embedBuilder.setTitle(new WebhookEmbed.EmbedTitle("Full Report", report.getUrl()));
-        embedBuilder.setDescription((report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"") + "**Time**: "+report.getEndTime()+"\n" + "**Duration**: "+report.getDuration()+"\n");
+            embedBuilderIntro.setTitle(new WebhookEmbed.EmbedTitle("Full Report", report.getUrl()));
+        embedBuilderIntro.setDescription((report.getCommander()!=null?"**Commander**: "+report.getCommander()+"\n":"")
+                + "**Time**: "+report.getEndTime()+"\n"
+                + "**Duration**: "+report.getDuration()+"\n"
+                + "**Recorded By**: "+report.getRecordedBy()+"\n"
+                + "**ArcDps version**: "+report.getArcVersion()+"\n"
+                + "**Elite Insights version**: "+report.getEiVersion()+"\n");
+
+        WebhookEmbed embed = embedBuilderIntro.build();
+        for (WebhookClient client : clients) {
+            client.send(embed);
+            try{ Thread.sleep(1000); } catch(Exception ignored) {}
+        }
 
         //build embed field list
+        WebhookEmbedBuilder embedBuilder = new WebhookEmbedBuilder();
         List<WebhookEmbed.EmbedField> embedFields = new ArrayList<>();
         if (p.showSquadSummary && report.getSquadSummary()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Squad Summary","```"+report.getSquadSummary()+"```"));
@@ -118,8 +130,10 @@ public class DiscordBot {
         else {
             embedFields.forEach(embedBuilder::addField);
         }
+        embedBuilder.setColor(Color.CYAN.getAlpha());
+        embedBuilder.setImageUrl("https://i.stack.imgur.com/Fzh0w.png");
 
-        WebhookEmbed embed = embedBuilder.build();
+        embed = embedBuilder.build();
         for (WebhookClient client : clients) {
             client.send(embed);
             try{ Thread.sleep(1000); } catch(Exception ignored) {}
