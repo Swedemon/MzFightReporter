@@ -108,6 +108,8 @@ public class ParseBot {
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
+                if (currPlayer.has("notInSquad") && currPlayer.getBoolean("notInSquad"))
+                    continue;
                 String name = currPlayer.getString("name");
                 String profession = currPlayer.getString("profession");
                 String group = ""+currPlayer.getInt("group");
@@ -343,6 +345,8 @@ public class ParseBot {
                                     int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
     {
         boolean existsEmptyTeams = enemies.stream().anyMatch(e -> e.getTeam().equals(""));
+        int enemyDowns = enemies.stream().mapToInt(Enemy::getDowns).sum();
+        int enemyDeaths = enemies.stream().mapToInt(Enemy::getDeaths).sum();
 
         BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
         String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
@@ -682,7 +686,7 @@ public class ParseBot {
         buffer = new StringBuffer();
         buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) | Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
                 players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
-                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), countEnemyDowns, countEnemyDeaths));
+                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), enemyDowns, enemyDeaths));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
