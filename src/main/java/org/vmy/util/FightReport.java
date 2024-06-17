@@ -28,6 +28,9 @@ public class FightReport implements Serializable {
     private String healers;
     private String url;
     private String endTime;
+    private String arcVersion;
+    private String eiVersion;
+    private String recordedBy;
     private HashMap<String, List<Object>> dmgMap = new HashMap<>();
 
     public static FightReport readReportFile() throws Exception {
@@ -213,5 +216,29 @@ public class FightReport implements Serializable {
 
     public void setHealers(String healers) {
         this.healers = healers;
+    }
+
+    public String getArcVersion() {
+        return arcVersion;
+    }
+
+    public void setArcVersion(String arcVersion) {
+        this.arcVersion = arcVersion;
+    }
+
+    public String getEiVersion() {
+        return eiVersion;
+    }
+
+    public void setEiVersion(String eiVersion) {
+        this.eiVersion = eiVersion;
+    }
+
+    public String getRecordedBy() {
+        return recordedBy;
+    }
+
+    public void setRecordedBy(String recordedBy) {
+        this.recordedBy = recordedBy;
     }
 }

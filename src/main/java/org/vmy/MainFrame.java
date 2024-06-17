@@ -98,7 +98,6 @@ public class MainFrame {
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
         settingsTextFieldPanel.setPreferredSize(new Dimension(300,400));
-        //buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook #1", p.discordWebhook, 50, true);
         buildTextField(settingsTextFieldPanel, "discordWebhookLabel", "Label Discord #1", p.discordWebhookLabel, 50, false);
         buildTextField(settingsTextFieldPanel, "discordWebhook2", "Discord Webhook #2", p.discordWebhook2, 50, false);
@@ -107,6 +106,7 @@ public class MainFrame {
         buildTextField(settingsTextFieldPanel, "discordWebhookLabel3", "Label Discord #3", p.discordWebhookLabel3, 50, false);
         buildWebhookSelection(settingsTextFieldPanel, p.activeDiscordWebhook);
         buildSpacer(settingsTextFieldPanel);
+        buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
         buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
         buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
         buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), 2, false);
@@ -229,7 +229,8 @@ public class MainFrame {
         textField.setMinimumSize(new Dimension(70, 20));
         textField.setMaximumSize(new Dimension(70, 20));
         c.gridx = 200;
-        if (property.equals("twitchBotToken") && !StringUtils.isEmpty(value))
+        if ((property.equals("twitchBotToken") || property.equals("defaultLogFolder") || property.equals("customLogFolder"))
+                && !StringUtils.isEmpty(value))
             textField.setBackground(Color.black);
         addMouseOver(textField);
         panel.add(textField, c);
