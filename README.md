@@ -1,4 +1,5 @@
 # MzFightReporter (Guild Wars 2 WvW)
+![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)
 ## Table of Contents
 - [Overview](#overview)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
@@ -26,7 +27,7 @@
 - **Like the program?**  [Buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (5 - 10 minutes)
-1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` ([releases](https://github.com/Swedemon/MzFightReporter/releases)) ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total).
+1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` at [releases](https://github.com/Swedemon/MzFightReporter/releases).
    - To unzip right click the downloaded file and select 'Extract All...'
 1. Start the application by going into the extracted folder and double clicking the 'MzFightReporter' batch file.
    - Note: If windows gives a warning message you can click on 'More Info' then 'Run Anyways'.
