@@ -2,7 +2,6 @@ package org.vmy;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.vmy.util.*;
@@ -104,12 +103,16 @@ public class ParseBot {
             int battleLength = 0;
             int countEnemyDowns = 0;
             int countEnemyDeaths = 0;
+            int countNonSquadPlayers = 0;
             String team = null;
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
-                if (currPlayer.has("notInSquad") && currPlayer.getBoolean("notInSquad"))
+                boolean notInSquad = currPlayer.getBoolean("notInSquad");
+                if (currPlayer.has("notInSquad") && currPlayer.getBoolean("notInSquad")) {
+                    countNonSquadPlayers++;
                     continue;
+                }
                 String name = currPlayer.getString("name");
                 String profession = currPlayer.getString("profession");
                 String group = ""+currPlayer.getInt("group");
@@ -328,7 +331,7 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned);
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned, countNonSquadPlayers);
 
         } finally {
             is.close();
@@ -342,7 +345,7 @@ public class ParseBot {
                                     List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
                                     HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns,
-                                    int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned)
+                                    int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned, int countNonSquadPlayers)
     {
         boolean existsEmptyTeams = enemies.stream().anyMatch(e -> e.getTeam().equals(""));
         int enemyDowns = enemies.stream().mapToInt(Enemy::getDowns).sum();
@@ -363,17 +366,27 @@ public class ParseBot {
         if (Parameters.getInstance().enableDiscordMobileMode) {
             buffer.append("Players    Dmg   DPS  Downs Deaths" + LF);
             buffer.append("--------- ----- ----- -----  -----" + LF);
-            String playerText = getPlayerTeamText(players.length(), team);
+            String playerText = getPlayerTeamText(players.length() - countNonSquadPlayers, team);
             buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
+            if (countNonSquadPlayers > 0)
+                buffer.append(LF +
+                        StringUtils.leftPad(String.valueOf(countNonSquadPlayers),
+                            Parameters.getInstance().enableDiscordMobileMode ? 2 : 3)
+                        + (StringUtils.isEmpty(team) ? "" : " " + team) + " Friendlies");
         } else {
             buffer.append(" Players   Damage   DPS   Downs  Deaths" + LF);
             buffer.append("---------- ------  ----- ------- ------" + LF);
-            String playerText = getPlayerTeamText(players.length(), team);
+            String playerText = getPlayerTeamText(players.length() - countNonSquadPlayers, team);
             buffer.append(String.format("%9s%7s%7s%6d%7d", playerText,
                     DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumPlayerDmg / battleLength, 1),
                     totalPlayersDowned, totalPlayersDead));
+            if (countNonSquadPlayers > 0)
+                buffer.append(LF +
+                        StringUtils.leftPad(String.valueOf(countNonSquadPlayers),
+                                Parameters.getInstance().enableDiscordMobileMode ? 2 : 3)
+                        + (StringUtils.isEmpty(team) ? "" : " " + team) + " Friendlies");
         }
         report.setSquadSummary(buffer.toString());
         System.out.println("Squad Summary:" + LF + buffer);
@@ -685,7 +698,7 @@ public class ParseBot {
 
         buffer = new StringBuffer();
         buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) | Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
-                players.length(), DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
+                players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
                 enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), enemyDowns, enemyDeaths));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
