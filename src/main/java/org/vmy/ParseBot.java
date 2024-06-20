@@ -697,9 +697,9 @@ public class ParseBot {
         }
 
         buffer = new StringBuffer();
-        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) | Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
+        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) %s| Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
-                enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), enemyDowns, enemyDeaths));
+                countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+" Friendlies " : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), enemyDowns, enemyDeaths));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
