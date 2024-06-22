@@ -219,19 +219,25 @@ public class ParseBot {
                 int healing = 0;
                 if (!currPlayer.isNull("extHealingStats")) {
                     JSONObject ehObject = currPlayer.getJSONObject("extHealingStats");
-                    if(!ehObject.isNull("outgoingHealing")) {
-                        JSONArray ohArray = ehObject.getJSONArray("outgoingHealing");
-                        JSONObject ohObj = (JSONObject) ohArray.get(0);
-                        healing = ohObj.getInt("healing");
+                    if(!ehObject.isNull("outgoingHealingAllies")) {
+                        JSONArray ohArray = ehObject.getJSONArray("outgoingHealingAllies");
+                        for (int q=0; q<ohArray.length(); q++) {
+                            JSONArray ihArray = ohArray.getJSONArray(q);
+                            JSONObject healObj = (JSONObject) ihArray.get(0);
+                            healing += healObj.getInt("healing");
+                        }
                     }
                 }
                 int barrier = 0;
                 if (!currPlayer.isNull("extBarrierStats")) {
                     JSONObject ehObject = currPlayer.getJSONObject("extBarrierStats");
-                    if(!ehObject.isNull("outgoingBarrier")) {
-                        JSONArray ohArray = ehObject.getJSONArray("outgoingBarrier");
-                        JSONObject ohObj = (JSONObject) ohArray.get(0);
-                        barrier = ohObj.getInt("barrier");
+                    if(!ehObject.isNull("outgoingBarrierAllies")) {
+                        JSONArray ohArray = ehObject.getJSONArray("outgoingBarrierAllies");
+                        for (int q=0; q<ohArray.length(); q++) {
+                            JSONArray ihArray = ohArray.getJSONArray(q);
+                            JSONObject healObj = (JSONObject) ihArray.get(0);
+                            barrier += healObj.getInt("barrier");
+                        }
                     }
                 }
                 if (healUsers.isEmpty() || healUsers.containsKey(name)) {

@@ -49,6 +49,8 @@ public class FileWatcher {
             }
         }
 
+        System.out.println("\nActive Discord Webhook: " + p.getCurrentDiscordWebhookLabel());
+
         File folder = new File(p.customLogFolder);
         File defaultFolder = new File(p.defaultLogFolder);
 
