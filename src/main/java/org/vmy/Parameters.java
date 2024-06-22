@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.3.5";
+    public static final String appVersion = "4.3.6";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-06-16";
+    public String gw2EIDir = "\\GW2EI-2024-06-19";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
@@ -390,5 +390,23 @@ public class Parameters {
         if (activeDiscordWebhook == 8 || StringUtils.isEmpty(discordWebhook))
             return new ArrayList<>();
         return Arrays.asList(discordWebhook);
+    }
+
+    public String getCurrentDiscordWebhookLabel() {
+        if (activeDiscordWebhook == 2)
+            return discordWebhookLabel2;
+        if (activeDiscordWebhook == 3)
+            return discordWebhookLabel3;
+        if (activeDiscordWebhook == 4)
+            return discordWebhookLabel + " and " + discordWebhookLabel2;
+        if (activeDiscordWebhook == 5)
+            return discordWebhookLabel + " and " + discordWebhookLabel3;
+        if (activeDiscordWebhook == 6)
+            return discordWebhookLabel2 + " and " + discordWebhookLabel3;
+        if (activeDiscordWebhook == 7)
+            return discordWebhookLabel + " and " + discordWebhookLabel2 +" and "+ discordWebhookLabel3;
+        if (activeDiscordWebhook == 8 || StringUtils.isEmpty(discordWebhook))
+            return "Not defined.";
+        return discordWebhookLabel;
     }
 }
