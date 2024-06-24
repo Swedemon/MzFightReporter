@@ -13,6 +13,7 @@ public class Player implements Comparable<Player> {
     private int deaths=0;
     private int downsOut=0;
     private int downsIn=0;
+    private int downContribution=0;
 
     public Player(String name, String profession, String group) {
         this.name = name;
@@ -90,5 +91,17 @@ public class Player implements Comparable<Player> {
 
     public void setDownsIn(int downsIn) {
         this.downsIn = downsIn;
+    }
+
+    public int getDownContribution() {
+        return downContribution;
+    }
+
+    public void setDownContribution(int downContribution) {
+        this.downContribution = downContribution;
+    }
+
+    public void addDownContribution(int downContribution) {
+        this.downContribution += downContribution;
     }
 }
