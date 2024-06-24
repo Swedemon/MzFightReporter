@@ -247,6 +247,42 @@ public class ParseBot {
                 }
             }
 
+            //down contribution
+            for (int t = 1; t < targets.length(); t++) {
+                JSONObject target = targets.getJSONObject(t);
+                String enemyName = target.getString("name");
+                //if (target.getJSONArray("defenses").getJSONObject(0).getInt("downCount") > 0) { //or deadCount
+                int endState = 0;
+                int startState = 0;
+                JSONArray healthPercents = target.getJSONArray("healthPercents");
+                for (int h = 0; h < healthPercents.length(); h++) {
+                    JSONArray hpNode = healthPercents.getJSONArray(h);
+                    int hp = hpNode.getInt(1);
+                    if (hp >= 90) {
+                        startState = hpNode.getInt(0)/1000;
+                    }
+                    if (hp == 0) {
+                        endState = hpNode.getInt(0)/1000;
+                        //loop players to collect dmg to target in this window
+                        for (int p = 0; p < players.length(); p++) {
+                            JSONObject player = players.getJSONObject(p);
+                            String playerName = player.getString("name");
+                            JSONArray targetDamage1S = player.getJSONArray("targetDamage1S");
+                            int startDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(startState);
+                            int endDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(endState);
+                            int downContribution = endDmg - startDmg;
+                            if (downContribution > 0) {
+                                playerMap.get(playerName).addDownContribution(downContribution);
+                                //System.out.println("reset " + playerName + " " + enemyName + " " + startDmg + " " + endDmg + " = " + downContribution);
+                            }
+                        }
+                        //reset start state (if revived and continues)
+                        startState = endState;
+                    }
+                }
+            }
+            dpsers.forEach(d -> d.setOnDowns(playerMap.get(d.getName()).getDownContribution()));
+
             //basic info
             String zone = jsonTop.getString("fightName");
             zone = zone.indexOf(" - ") > 0 ? zone.substring(zone.indexOf(" - ") + 3) : zone;
