@@ -8,8 +8,9 @@ public class Enemy implements Comparable<Enemy> {
     private int dps;
     private int downs;
     private int deaths;
+    private boolean hasSquadActivity = false;
 
-    public Enemy(String name, String profession, String team, int damage, int dps, int downs, int deaths) {
+    public Enemy(String name, String profession, String team, int damage, int dps, int downs, int deaths, boolean hasSquadActivity) {
         this.name = name;
         this.profession = profession;
         this.team = team;
@@ -17,6 +18,7 @@ public class Enemy implements Comparable<Enemy> {
         this.dps = dps;
         this.downs = downs;
         this.deaths = deaths;
+        this.hasSquadActivity = hasSquadActivity;
     }
 
     public int compareTo(Enemy d) {
@@ -89,5 +91,13 @@ public class Enemy implements Comparable<Enemy> {
 
     public void setDeaths(int deaths) {
         this.deaths = deaths;
+    }
+
+    public boolean isHasSquadActivity() {
+        return hasSquadActivity;
+    }
+
+    public void setHasSquadActivity(boolean hasSquadActivity) {
+        this.hasSquadActivity = hasSquadActivity;
     }
 }
