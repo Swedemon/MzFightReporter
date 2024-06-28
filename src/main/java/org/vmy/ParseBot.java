@@ -45,6 +45,7 @@ public class ParseBot {
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<>();
             HashMap<String, Integer> enemyDmgBySkill = new HashMap<>();
+            HashMap<String, Set<String>> enemyInteracts = new HashMap<>();
             List<Enemy> enemies = new ArrayList<>();
             int sumEnemyDmg = 0;
             for (int i = 1; i < targets.length(); i++) {
@@ -52,16 +53,25 @@ public class ParseBot {
                 String name = currTarget.getString("name");
                 String profession = name != null && name.indexOf(" ") > 0 ? name.substring(0, name.indexOf(" ")) : null;
                 String team = currTarget.isNull("teamID") ? "" : mapTeamID(currTarget.getInt("teamID"));
+                boolean hasSquadActivity = false;
                 if (!currTarget.isNull("buffs")) {
                     JSONArray bArray = currTarget.getJSONArray("buffs");
                     populateCondierBuffs(condiers, bArray);
+                    for (Object o : bArray) {
+                        ((JSONObject) o).getJSONArray("buffData");
+                        Map<String, Object> genMap = ((JSONObject) o).getJSONArray("buffData").getJSONObject(0).getJSONObject("generated").toMap();
+                        if (genMap.values().stream().anyMatch(v -> !Objects.equals(v, BigDecimal.ZERO))) {
+                            hasSquadActivity = true;
+                            break;
+                        }
+                    }
                 }
                 if (!currTarget.isNull("dpsAll")) {
                     int damage = currTarget.getJSONArray("dpsAll").getJSONObject(0).getInt("damage");
                     int dps = currTarget.getJSONArray("dpsAll").getJSONObject(0).getInt("dps");
                     int down = currTarget.getJSONArray("defenses").getJSONObject(0).getInt("downCount");
                     int dead = currTarget.getJSONArray("defenses").getJSONObject(0).getInt("deadCount");
-                    enemies.add(new Enemy(name, profession, team, damage, dps, down, dead));
+                    enemies.add(new Enemy(name, profession, team, damage, dps, down, dead, hasSquadActivity));
                     sumEnemyDmg += damage;
                 }
                 if (!currTarget.isNull("totalDamageDist")) {
@@ -108,7 +118,6 @@ public class ParseBot {
             String commander = null;
             for (int i = 0; i < players.length(); i++) {
                 JSONObject currPlayer = players.getJSONObject(i);
-                boolean notInSquad = currPlayer.getBoolean("notInSquad");
                 if (currPlayer.has("notInSquad") && currPlayer.getBoolean("notInSquad")) {
                     countNonSquadPlayers++;
                     continue;
@@ -252,33 +261,46 @@ public class ParseBot {
                 JSONObject target = targets.getJSONObject(t);
                 String enemyName = target.getString("name");
                 //if (target.getJSONArray("defenses").getJSONObject(0).getInt("downCount") > 0) { //or deadCount
-                int endState = 0;
-                int startState = 0;
+                int deadTime = 0;
+                int downTime = 0;
+                int startTime = 0;
                 JSONArray healthPercents = target.getJSONArray("healthPercents");
-                for (int h = 0; h < healthPercents.length(); h++) {
+                for (int h = healthPercents.length()-1; h > 0; h--) {
                     JSONArray hpNode = healthPercents.getJSONArray(h);
                     int hp = hpNode.getInt(1);
-                    if (hp >= 90) {
-                        startState = hpNode.getInt(0)/1000;
-                    }
+                    int time = (int) hpNode.getInt(0) / 1000;
                     if (hp == 0) {
-                        endState = hpNode.getInt(0)/1000;
+                        deadTime = time;
+                        downTime = 0;
+                        startTime = 0;
+                    } else if (time < deadTime && hp == 75) {
+                        downTime = time;
+                        //System.out.println(">>downTime " + hpNode.getInt(0) + " deadTime " + deadTime);
+                    } else if (time < deadTime && hp >= 90) {
+                        startTime = time;
+                        //System.out.println("startTime " + hpNode.getInt(0) + " downTime " + downTime + " deadTime " + deadTime);
                         //loop players to collect dmg to target in this window
                         for (int p = 0; p < players.length(); p++) {
                             JSONObject player = players.getJSONObject(p);
                             String playerName = player.getString("name");
                             JSONArray targetDamage1S = player.getJSONArray("targetDamage1S");
-                            int startDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(startState);
-                            int endDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(endState);
+                            int startDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(startTime);
+                            int downedDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(downTime);
+                            int endDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(deadTime);
                             int downContribution = endDmg - startDmg;
                             if (downContribution > 0) {
                                 playerMap.get(playerName).addDownContribution(downContribution);
-                                //System.out.println("reset " + playerName + " " + enemyName + " " + startDmg + " " + endDmg + " = " + downContribution);
+                                //System.out.println("    reset " + playerName + " " + enemyName + " " + startDmg + " " + endDmg + " = " + downContribution);
                             }
                         }
+                        //System.out.println("  " + enemyName + " time " + time + " hp " + hp);
                         //reset start state (if revived and continues)
-                        startState = endState;
+                        startTime = 0;
+                        downTime = 0;
+                        deadTime = 0;
                     }
+                    //if (deadTime > 0)
+                        //System.out.println("  " + enemyName + " time " + hpNode.getInt(0) + " hp " + hpNode.getInt(1));
                 }
             }
             dpsers.forEach(d -> d.setOnDowns(playerMap.get(d.getName()).getDownContribution()));
@@ -390,8 +412,6 @@ public class ParseBot {
                                     int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned, int countNonSquadPlayers)
     {
         boolean existsEmptyTeams = enemies.stream().anyMatch(e -> e.getTeam().equals(""));
-        int enemyDowns = enemies.stream().mapToInt(Enemy::getDowns).sum();
-        int enemyDeaths = enemies.stream().mapToInt(Enemy::getDeaths).sum();
 
         BigDecimal sec = BigDecimal.valueOf(report.getDurationMS() / 1000);
         String playerPadding = Parameters.getInstance().enableDiscordMobileMode ? "" : "     ";
@@ -739,9 +759,14 @@ public class ParseBot {
         }
 
         buffer = new StringBuffer();
-        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Downs: %d, Deaths: %d) %s| Enemy Players: %d (Dmg: %s, Downs: %d, Deaths: %d)",
+        int enemyDowns = enemies.stream().mapToInt(Enemy::getDowns).sum();
+        int enemyDeaths = enemies.stream().mapToInt(Enemy::getDeaths).sum();
+        int sumSquadDwn = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDowns).reduce(0, Integer::sum);
+        int sumSquadDed = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
+        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d%s)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
-                countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+" Friendlies " : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2), enemyDowns, enemyDeaths));
+                countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+" Friendlies " : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
+                enemyDowns, enemyDeaths,  enemyDowns!=sumSquadDwn || enemyDeaths!=sumSquadDed ? ", Credit Squad: "+sumSquadDwn+"/"+sumSquadDed : ""));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
@@ -815,17 +840,23 @@ public class ParseBot {
             int sumDps = thisTeam.stream().map(Enemy::getDps).reduce(0, Integer::sum);
             int sumDwn = thisTeam.stream().map(Enemy::getDowns).reduce(0, Integer::sum);
             int sumDed = thisTeam.stream().map(Enemy::getDeaths).reduce(0, Integer::sum);
+            int sumSquadDwn = thisTeam.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDowns).reduce(0, Integer::sum);
+            int sumSquadDed = thisTeam.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
             String playerText = getPlayerTeamText(thisTeam.size(), team);
             if (Parameters.getInstance().enableDiscordMobileMode) {
                 buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
                         DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                         sumDwn, sumDed));
+                if (sumDwn != sumSquadDwn || sumDed != sumSquadDed)
+                    buffer.append(String.format(LF + "         Credit Squad:%4d%7d", sumSquadDwn, sumSquadDed));
             } else {
                 buffer.append(String.format("%9s%7s%7s%6d%7d", playerText,
                         DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                         sumDwn, sumDed));
+                if (sumDwn != sumSquadDwn || sumDed != sumSquadDed)
+                    buffer.append(String.format(LF + "            Credit Squad:%5d%7d", sumSquadDwn, sumSquadDed));
             }
-            buffer.append("\r\n");
+            buffer.append(LF);
         }
         return thisTeam;
     }
