@@ -256,55 +256,6 @@ public class ParseBot {
                 }
             }
 
-            //down contribution
-            for (int t = 1; t < targets.length(); t++) {
-                JSONObject target = targets.getJSONObject(t);
-                String enemyName = target.getString("name");
-                //if (target.getJSONArray("defenses").getJSONObject(0).getInt("downCount") > 0) { //or deadCount
-                int deadTime = 0;
-                int downTime = 0;
-                int startTime = 0;
-                JSONArray healthPercents = target.getJSONArray("healthPercents");
-                for (int h = healthPercents.length()-1; h > 0; h--) {
-                    JSONArray hpNode = healthPercents.getJSONArray(h);
-                    int hp = hpNode.getInt(1);
-                    int time = (int) hpNode.getInt(0) / 1000;
-                    if (hp == 0) {
-                        deadTime = time;
-                        downTime = 0;
-                        startTime = 0;
-                    } else if (time < deadTime && hp == 75) {
-                        downTime = time;
-                        //System.out.println(">>downTime " + hpNode.getInt(0) + " deadTime " + deadTime);
-                    } else if (time < deadTime && hp >= 90) {
-                        startTime = time;
-                        //System.out.println("startTime " + hpNode.getInt(0) + " downTime " + downTime + " deadTime " + deadTime);
-                        //loop players to collect dmg to target in this window
-                        for (int p = 0; p < players.length(); p++) {
-                            JSONObject player = players.getJSONObject(p);
-                            String playerName = player.getString("name");
-                            JSONArray targetDamage1S = player.getJSONArray("targetDamage1S");
-                            int startDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(startTime);
-                            int downedDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(downTime);
-                            int endDmg = targetDamage1S.getJSONArray(t).getJSONArray(0).getInt(deadTime);
-                            int downContribution = endDmg - startDmg;
-                            if (downContribution > 0) {
-                                playerMap.get(playerName).addDownContribution(downContribution);
-                                //System.out.println("    reset " + playerName + " " + enemyName + " " + startDmg + " " + endDmg + " = " + downContribution);
-                            }
-                        }
-                        //System.out.println("  " + enemyName + " time " + time + " hp " + hp);
-                        //reset start state (if revived and continues)
-                        startTime = 0;
-                        downTime = 0;
-                        deadTime = 0;
-                    }
-                    //if (deadTime > 0)
-                        //System.out.println("  " + enemyName + " time " + hpNode.getInt(0) + " hp " + hpNode.getInt(1));
-                }
-            }
-            dpsers.forEach(d -> d.setOnDowns(playerMap.get(d.getName()).getDownContribution()));
-
             //basic info
             String zone = jsonTop.getString("fightName");
             zone = zone.indexOf(" - ") > 0 ? zone.substring(zone.indexOf(" - ") + 3) : zone;
