@@ -49,6 +49,8 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
      - Typically under:  C:\Users\\<User Name\>\Documents\Guild Wars 2\addons\arcdps
   1. Double check the instructions above regarding ArcDps options.  Ensure the squad and enemy size is above the minimum.
   1. Ensure in the MzFightReporter Settings tab the 'ArcDps Log Folder #1' is correct.  If necessary edit the path accordingly and apply.
+#### > It's not working, I'm stuck.
+  1. Feel free to ask questions in the Support Discord linked above.
 ## Create a Discord Webhook
 1. In your Discord create a channel then right click it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
