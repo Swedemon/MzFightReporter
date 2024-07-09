@@ -74,13 +74,12 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot deselect twitch in the settings and apply.
 ## Sneak Peek
-<p align="center"><img src="https://i.imgur.com/YYcfalC.png"/></p>
+<p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
 <p align="center"><img height="100" src="https://i.imgur.com/F9LDo1h.png"/></p>
 
 ## About the Data
 ### Limitations
 Some data points are not provided due to a limitation in the game, arcdps or EI.
-- **Friendly players**: Data on players contributing but not in squad at this time is not possible.  If a fight shows 20v50 then take this with a bulk shipment of salt.
 - **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
 - **Outgoing CC's**: There is no data regarding knockdown, knockback, launch, pull, float, and sink.  For example, mesmer pulls, grav wells, DH pulls are not reported at this time. Also, outgoing CC durations are not considered.  However, interrupts are included which gives some indication of all effective CC's.
 - **Long Fights**: Fights exceeding ~15 minutes run the risk of not reporting and/or not uploading.  Settings exist to manage the maximum upload size.
