@@ -30,7 +30,7 @@ After the setup is complete you run the program in the background.  The program 
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Example
 <p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
-<p align="center"><img height="100" src="https://i.imgur.com/F9LDo1h.png"/></p>
+<p align="center"><img height="100" src="https://i.imgur.com/bzR4oC6.png"/></p>
 
 ## Setup Instructions (5 - 10 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` at [releases](https://github.com/Swedemon/MzFightReporter/releases).
