@@ -45,7 +45,7 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
 ## Troubleshooting
 #### > The program is not doing anything after fights complete.
-  1. Ensure ArcDps is generating log files.  Log files end with the .zevtc extension.  By default this will be in your user profile's Documents folder:
+  1. Ensure ArcDps is generating log files.  By default this will be in your user profile's Documents folder:
      - Typically under:  C:\Users\\<User Name\>\Documents\Guild Wars 2\addons\arcdps
   1. Double check the instructions above regarding ArcDps options.  Ensure the squad and enemy size is above the minimum.
   1. Ensure in the MzFightReporter Settings tab the 'ArcDps Log Folder #1' is correct.  If necessary edit the path accordingly and apply.
