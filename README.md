@@ -25,7 +25,7 @@ After the setup is complete you run the program in the background.  The program 
    - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
 - **Support Discord:** https://discord.gg/5JfZ3qpW3Q
-- **Developer:** Swedemon.4670 aka Mazz
+- **Developer:** Mazz.5792
 - **Like the program?**  [Buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Setup Instructions (5 - 10 minutes)
