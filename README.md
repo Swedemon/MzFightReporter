@@ -9,7 +9,7 @@ After the setup is complete you run the program in the background.  The program 
 - [Create a Discord Webhook](#create-a-discord-webhook)
 - [Enable Healing Stats](#enable-healing-stats)
 - [Twitch Bot Instructions](#twitch-bot-instructions)
-- [Sneak Peek](#sneak-peek)
+- [Example](#example)
 - [About the Data](#about-the-data)
 ## Overview
 - **Description:** Monitor live [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a Discord channel and optionally a Twitch channel.  This program is open source. The provided data includes:
@@ -28,6 +28,10 @@ After the setup is complete you run the program in the background.  The program 
 - **Developer:** Mazz.5792
 - **Like the program?**  [Buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
+## Example
+<p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
+<p align="center"><img height="100" src="https://i.imgur.com/F9LDo1h.png"/></p>
+
 ## Setup Instructions (5 - 10 minutes)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` at [releases](https://github.com/Swedemon/MzFightReporter/releases).
    - To unzip right click the downloaded file and select 'Extract All...'
@@ -73,10 +77,6 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
       1. Set the value of 'Twitch Channel Name' to your main channel name.
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot deselect twitch in the settings and apply.
-## Sneak Peek
-<p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
-<p align="center"><img height="100" src="https://i.imgur.com/F9LDo1h.png"/></p>
-
 ## About the Data
 ### Limitations
 Some data points are not provided due to a limitation in the game, arcdps or EI.
