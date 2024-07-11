@@ -4,7 +4,7 @@
 After the setup is complete you run the program in the background.  The program monitors ArcDps logs which are generated after each fight.  The data is collated and sent to your Discord channel and optionally Twitch.
 ## Table of Contents
 - [Overview](#overview)
-- [Example](#example)
+- [Sample](#sample)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
 - [Troubleshooting](#troubleshooting)
 - [Create a Discord Webhook](#create-a-discord-webhook)
@@ -28,7 +28,7 @@ After the setup is complete you run the program in the background.  The program 
 - **Developer:** Mazz.5792
 - **Like the program?**  [Buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
-## Example
+## Sample
 <p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
 <p align="center"><img height="100" src="https://i.imgur.com/bzR4oC6.png"/></p>
 
