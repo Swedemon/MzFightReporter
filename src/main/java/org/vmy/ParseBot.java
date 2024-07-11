@@ -387,7 +387,7 @@ public class ParseBot {
                 buffer.append(LF +
                         StringUtils.leftPad(String.valueOf(countNonSquadPlayers),
                             Parameters.getInstance().enableDiscordMobileMode ? 2 : 3)
-                        + (StringUtils.isEmpty(team) ? "" : " " + team) + " Friendlies");
+                        + (StringUtils.isEmpty(team) ? "" : " " + team) + (countNonSquadPlayers==1?" Ally":" Allies"));
         } else {
             buffer.append(" Players   Damage   DPS   Downs  Deaths" + LF);
             buffer.append("---------- ------  ----- ------- ------" + LF);
@@ -399,7 +399,7 @@ public class ParseBot {
                 buffer.append(LF +
                         StringUtils.leftPad(String.valueOf(countNonSquadPlayers),
                                 Parameters.getInstance().enableDiscordMobileMode ? 2 : 3)
-                        + (StringUtils.isEmpty(team) ? "" : " " + team) + " Friendlies");
+                        + (StringUtils.isEmpty(team) ? "" : " " + team) + (countNonSquadPlayers==1?" Ally":" Allies"));
         }
         report.setSquadSummary(buffer.toString());
         System.out.println("Squad Summary:" + LF + buffer);
@@ -716,7 +716,7 @@ public class ParseBot {
         int sumSquadDed = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
         buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d%s)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
-                countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+" Friendlies " : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
+                countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+(countNonSquadPlayers==1?" Ally ":" Allies ") : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
                 enemyDowns, enemyDeaths,  enemyDowns!=sumSquadDwn || enemyDeaths!=sumSquadDed ? ", Credit Squad: "+sumSquadDwn+"/"+sumSquadDed : ""));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
