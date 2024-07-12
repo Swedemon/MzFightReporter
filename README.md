@@ -26,7 +26,7 @@ After the setup is complete you run this app in the background.  The program mon
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
 - **Support Discord:** https://discord.gg/5JfZ3qpW3Q
 - **Developer:** Mazz.5792
-- **Like the program?**  [You can buy Mazz a coffee](https://ko-fi.com/mzfightreporter) or something in-game ^^
+- **Like the program?**  [You can buy Mazz a coffee](https://ko-fi.com/mzfightreporter)
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Sample
 <p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
