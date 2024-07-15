@@ -73,7 +73,7 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
    1. Authorize.
       - Note: You can manage these connections at https://www.twitch.tv/settings/connections
 1.  Copy the provided 'Access Token'.
-1.  In the UI click on the 'Settings' tab and enter the below settings.  Click Apply to save.
+1.  In the UI click under the 'Settings' tab, enter the below settings.  Click Apply to save.
       1. Set the value of 'Twitch Channel Name' to your main channel name.
       1. Set the value of 'Twitch Bot Token' to the copied access token.
 - Note: To disable the twitch bot deselect twitch in the settings and apply.
