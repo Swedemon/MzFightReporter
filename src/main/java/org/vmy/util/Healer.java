@@ -8,13 +8,15 @@ public class Healer implements Comparable<Healer> {
     private String profession;
     private int healing;
     private int barrier;
+    private int downedHealing;
     private int total;
 
-    public Healer(String name, String profession, int healing, int barrier) {
+    public Healer(String name, String profession, int healing, int barrier, int downedHealing) {
         this.name = name;
         this.profession = profession;
         this.healing = healing;
         this.barrier = barrier;
+        this.downedHealing = downedHealing;
         this.total = healing + barrier;
     }
 
@@ -41,6 +43,12 @@ public class Healer implements Comparable<Healer> {
         int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 13 : 18;
         return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
                 + String.format("%6s",withSuffix(barrier,barrier < 1000000 ? 0 : barrier >= 10000000 ? 1 : 2));
+    }
+
+    public String toDownedHealerString() {
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 13 : 18;
+        return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
+                + String.format("%6s",withSuffix(downedHealing,downedHealing < 1000000 ? 0 : downedHealing >= 10000000 ? 1 : 2));
     }
 
     public static String withSuffix(long count, int decimals) {
@@ -79,6 +87,14 @@ public class Healer implements Comparable<Healer> {
     public void setBarrier(int barrier) {
         this.barrier = barrier;
         this.total = healing + barrier;
+    }
+
+    public int getDownedHealing() {
+        return downedHealing;
+    }
+
+    public void setDownedHealing(int downedHealing) {
+        this.downedHealing = downedHealing;
     }
 
     public int getTotal() {
