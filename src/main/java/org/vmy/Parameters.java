@@ -16,7 +16,7 @@ public class Parameters {
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-07-01";
+    public String gw2EIDir = "\\GW2EI-2024-07-14";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
