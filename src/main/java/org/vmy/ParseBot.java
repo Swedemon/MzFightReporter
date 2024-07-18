@@ -264,11 +264,11 @@ public class ParseBot {
                         }
                     }
                 }
-                //if (healUsers.isEmpty() || healUsers.containsKey(name)) {
+                if (healUsers.isEmpty() || healUsers.containsKey(name)) {
                     Healer healer = new Healer(name, profession, healing, barrier, downedHealing);
                     if (healer.getTotal() > 0)
                         healers.add(healer);
-                //}
+                }
             }
 
             //basic info
