@@ -164,6 +164,7 @@ public class ParseBot {
                     HashMap<String, Integer> map = (HashMap<String, Integer>) a;
                     Condier c = condiers.get(name);
                     c.setInterruptCount(map.get("interrupts"));
+                    c.setHardCcCount(map.get("appliedCrowdControl"));
                     downDmgOut = map.get("downContribution");
                     condiers.put(name, c);
                 }
@@ -554,19 +555,19 @@ public class ParseBot {
             System.out.println();
         }
 
-        if (condiers.values().stream().anyMatch(x->x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)) {
+        if (condiers.values().stream().anyMatch(x->x.getHardCcCount() > 0 || x.getImmobCount() > 0 || x.getSoftCcCount() > 0 || x.getInterruptCount() > 0)) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player         " + playerPadding + "     CCs   Ints" + LF);
-            buffer.append("--- ---------------" + playerDashes  + " ----------- --" + LF);
+            buffer.append(" #  Player    " + playerPadding + " Hard Soft Immob Int" + LF);
+            buffer.append("--- ----------" + playerDashes  + " ---- ---- ----- ---" + LF);
             List<Condier> clist = new ArrayList<>(condiers.values());
             clist.sort(Comparator.naturalOrder());
             int index = 1;
             int count = Math.min(clist.size(), 10);
             for (Condier x : clist.subList(0, count))
-                if (x.getChilledCount() > 0 || x.getCrippledCount() > 0 || x.getInterruptCount() > 0 || x.getImmobCount() > 0 || x.getStunCount() > 0)
+                if (x.getHardCcCount() > 0 || x.getImmobCount() > 0 || x.getSoftCcCount() > 0 || x.getInterruptCount() > 0)
                     buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
             report.setCcs(buffer.toString());
-            System.out.println("Outgoing CCs (stuns immobs chills cripples) & Interrupts:" + LF + buffer);
+            System.out.println("Outgoing CCs & Interrupts:" + LF + buffer);
             System.out.println();
         }
 
@@ -886,22 +887,30 @@ public class ParseBot {
         Condier c = condiers.get(name);
         if (c==null)
             c = new Condier(name, "    ");
-        switch(id) { //stun=872 chilled=722 crippled=721 immob=727 slow=26766
-            case 872:
-                c.setStunCount(c.getStunCount() + 1);
-                c.setStunDur(c.getStunDur().add(me.getValue()));
-                break;
-            case 722:
-                c.setChilledCount(c.getChilledCount() + 1);
-                c.setChilledDur(c.getChilledDur().add(me.getValue()));
-                break;
-            case 721:
-                c.setCrippledCount(c.getCrippledCount() + 1);
-                c.setCrippledDur(c.getCrippledDur().add(me.getValue()));
-                break;
+        switch(id) { //chilled=722 crippled=721 immob=727 slow=26766 blind=720 daze=833 742=weakness
             case 727:
                 c.setImmobCount(c.getImmobCount() + 1);
                 c.setImmobDur(c.getImmobDur().add(me.getValue()));
+                break;
+            case 722:
+                c.setChillCount(c.getChillCount() + 1);
+                c.setChillDur(c.getChillDur().add(me.getValue()));
+                break;
+            case 721:
+                c.setCripplCount(c.getCripplCount() + 1);
+                c.setCripplDur(c.getCripplDur().add(me.getValue()));
+                break;
+            case 720:
+                c.setBlindCount(c.getBlindCount() + 1);
+                c.setBlindDur(c.getBlindDur().add(me.getValue()));
+                break;
+            case 833:
+                c.setDazeCount(c.getDazeCount() + 1);
+                c.setDazeDur(c.getDazeDur().add(me.getValue()));
+                break;
+            case 742:
+                c.setWeaknessCount(c.getWeaknessCount() + 1);
+                c.setWeaknessDur(c.getWeaknessDur().add(me.getValue()));
                 break;
             case 26766:
                 c.setSlowCount(c.getSlowCount() + 1);
