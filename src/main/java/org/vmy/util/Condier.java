@@ -34,8 +34,8 @@ public class Condier implements Comparable<Condier> {
     }
 
     public int compareTo(Condier c) {
-        double netScore = hardCcCount+immobCount+.5*interruptCount+.1*softCcCount;
-        double c_netScore = c.hardCcCount+c.immobCount+.5*c.interruptCount+.1*c.softCcCount;
+        double netScore = hardCcCount+.5*immobCount+.5*interruptCount+.1*softCcCount;
+        double c_netScore = c.hardCcCount+.5*c.immobCount+.5*c.interruptCount+.1*c.softCcCount;
         return Double.compare(c_netScore, netScore);
     }
 
