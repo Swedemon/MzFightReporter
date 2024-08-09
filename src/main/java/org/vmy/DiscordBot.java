@@ -110,7 +110,7 @@ public class DiscordBot {
         if (p.showHeals && report.getHealers()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Heals & Barrier (heal addon required)","```"+report.getHealers()+"```"));
         if (p.showCCs && report.getCcs()!=null)
-            embedFields.add(new WebhookEmbed.EmbedField(false,"Outgoing CC's (stuns immobs chills cripples) & Interrupts","```"+report.getCcs()+"```"));
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Outgoing CCs & Interrupts","```"+report.getCcs()+"```"));
         if (p.showDownsKills && report.getDownsKills()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Outgoing Downs & Kills","```"+report.getDownsKills()+"```"));
         if (p.showDefensiveBoons && report.getDbooners()!=null)
