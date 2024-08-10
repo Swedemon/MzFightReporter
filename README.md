@@ -79,10 +79,11 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
 ## About the Data
 ### Outgoing CC's
 Elite Insights provides a data point called appliedCrowdControl which indicates a total count of hard CC's.  A hard CC is when an enemy endures a temporary full loss of control having only a stun break to resolve early.
+- **Ranking Formula**: HardCC (x10) + SoftCC + Immob (x5) + Interrupts (x5)
 - Hard CC's includes: launch, knockback, knockdown, pull, sink, float, stun, fear, taunt
 - Soft CC's includes: daze, chill, cripple, slow, blind, weakness
-- Immobs can be considered a Soft CC but due to it's raised importance this attribute is separate.
-- **Ranking Formula**: HardCC (x10) + SoftCC + Immob (x5) + Interrupts (x5)
+- Immobs can be considered a Soft CC but due to it's impact this attribute is separate.
+- Note: Daze could be considered a Hard CC however ArcDps restricts Hard CC as a 'full loss of control'.
 ### Limitations
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
