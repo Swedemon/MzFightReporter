@@ -28,7 +28,7 @@ After the setup is complete run this app in the background.  The program monitor
 - **Developer:** Mazz.5792
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 ## Sample
-<p align="center"><img src="https://i.imgur.com/4p2cMEn.png"/></p>
+<p align="center"><img src="https://i.imgur.com/8PgZcrG.png"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/bzR4oC6.png"/></p>
 
 ## Setup Instructions (5 - 10 minutes)
