@@ -83,7 +83,7 @@ Elite Insights provides a data point called appliedCrowdControl which indicates 
 - Hard CC's includes: launch, knockback, knockdown, pull, sink, float, stun, fear, taunt
 - Soft CC's includes: daze, chill, cripple, slow, blind, weakness
 - Immobs can be considered a Soft CC but due to it's impact this attribute is separate.
-- Note: Daze could be considered a Hard CC however ArcDps restricts Hard CC as a 'full loss of control'.
+- Side Note: Daze could be considered a Hard CC however ArcDps restricts Hard CC as a 'full loss of control'.
 ### Limitations
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
