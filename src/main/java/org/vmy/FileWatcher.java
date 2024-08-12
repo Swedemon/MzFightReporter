@@ -140,25 +140,34 @@ public class FileWatcher {
                             p2.waitFor(parseWaitTime, TimeUnit.SECONDS);
                             System.setOut(new PrintStream(MainFrame.consoleStream));
                             System.out.println("FightReport Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p2.exitValue());
+                            MainFrame.statusLabel.setText("Status: Parsed " + f.getName());
 
                             //delete json file
                             try { jsonFile.delete(); } catch (Exception ignored) {}
 
-                            //call discordbot and twitchbot on main fight report
-                            boolean discordOkay = true;
+                            //read report file
                             FightReport report = FightReport.readReportFile();
-                            report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
                             System.out.println(report.getOverview());
+
+                            //call twitchbot
+                            if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
+                                if (p.enableTwitchBot) {
+                                    sendTwitchMsg(report);
+                                    MainFrame.statusLabel.setText("Status: Twitch sent " + f.getName());
+                                }
+                            }
+
+                            //conditionally upload (before)
+                            report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
+
+                            //call discordbot
+                            boolean discordOkay = true;
                             if (!p.getCurrentDiscordWebhooks().isEmpty() && p.enableDiscordBot) {
                                 discordOkay = sendDiscordMsg(report);
+                                MainFrame.statusLabel.setText("Status: Discord sent " + f.getName());
                             }
-                            if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
-                                if (p.enableTwitchBot)
-                                    sendTwitchMsg(report);
-                            }
-                            MainFrame.statusLabel.setText("Status: Finished " + f.getName());
 
-                            //upload
+                            //conditionally upload (after)
                             if (p.largeUploadsAfterParse && fileMegabytes >= p.largeUploadMegabytes) {
                                 String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
 
@@ -167,8 +176,10 @@ public class FileWatcher {
                                     System.setOut(new PrintStream(MainFrame.reportStream));
                                     System.out.println("Report URL = " + uploadUrl);
                                     System.setOut(new PrintStream(MainFrame.consoleStream));
-                                    if (discordOkay && p.enableDiscordBot)
+                                    if (discordOkay && p.enableDiscordBot) {
                                         discordOkay = sendDiscordUrlMsg(uploadUrl);
+                                        MainFrame.statusLabel.setText("Status: Twitch sent " + f.getName());
+                                    }
                                 }
                             }
 
