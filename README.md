@@ -24,9 +24,11 @@ After the setup is complete run this app in the background.  The program monitor
    - Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
-- **Support Discord:** https://discord.gg/5JfZ3qpW3Q
-- **Developer:** Mazz.5792
 - **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
+- **Developer:** Mazz.5792
+- **Support Discord:**
+  
+  [![](https://discordapp.com/api/guilds/1227596196823175198/widget.png?style=banner2)](https://discord.gg/5JfZ3qpW3Q)
 ## Sample
 <p align="center"><img src="https://i.imgur.com/X7AvY9k.png"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/bzR4oC6.png"/></p>
