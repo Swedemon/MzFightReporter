@@ -1,20 +1,20 @@
 # MzFightReporter (Guild Wars 2 WvW)
 ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)
 ## How does it work?
-Before fights begin run this app in the background.  It will monitor for new arcdps logs generated after each eligible combat cycle.  The data is collated and sent to your Discord channel (and optionally Twitch).
+Before fights begin run this app in the background.  It will monitor for new arcdps logs generated after each eligible combat cycle.  The data is collated and sent to your Discord channel (and optionally Twitch).  See [example](#example).
 ## Table of Contents
 - [Overview](#overview)
-- [Sample](#sample)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
 - [Troubleshooting](#troubleshooting)
 - [Create a Discord Webhook](#create-a-discord-webhook)
 - [Enable Healing Stats](#enable-healing-stats)
 - [Twitch Bot Instructions](#twitch-bot-instructions)
 - [About the Data](#about-the-data)
+- [Example](#example)
 ## Overview
 - **Description:** Monitor live [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a Discord channel and optionally a Twitch channel.  This program is open source. The provided data includes:
    - Squad Summary, Enemy Summary
-   - Player Damage, Down Contribution, Spike Damage
+   - Player Damage, Down Contribution, Burst Damage
    - Cleanses, Strips
    - Heals and Barrier (if setup)
    - Defensive and Offensive Boons
@@ -24,16 +24,12 @@ Before fights begin run this app in the background.  It will monitor for new arc
    - Link to [WvW Dps Report](https://dps.report/)
    - Squad Damage Graph
 - **Credit:** This app was originally developed to mimic the "Indo-bot" (developed by Tiff).  This is a completely separate implementation made for broader use.  Major credit to the Elite Insights, ArcDps devs and Micca with the WvW Reports website.
-- **Pre-requisites:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 - **Developer:** Mazz.5792
 - **Support Discord:**
   
   [![](https://discordapp.com/api/guilds/1227596196823175198/widget.png?style=banner2)](https://discord.gg/5JfZ3qpW3Q)
-## Sample
-<p align="center"><img src="https://i.imgur.com/X7AvY9k.png"/></p>
-<p align="center"><img height="80" src="https://i.imgur.com/bzR4oC6.png"/></p>
-
 ## Setup Instructions (5 - 10 minutes)
+**Pre-requisite:** [ArcDps addon](https://www.deltaconnected.com/arcdps/)
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` at [releases](https://github.com/Swedemon/MzFightReporter/releases).
    - To unzip right click the downloaded file and select 'Extract All...'
 1. Start the application by going into the extracted folder and double clicking the 'MzFightReporter' batch file.
@@ -90,3 +86,6 @@ Elite Insights provides a data point called appliedCrowdControl which indicates 
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
 - **Long Fights**: Fights exceeding ~15 minutes run the risk of not reporting and/or not uploading.  Settings exist to manage the maximum upload size.
+## Example
+<p align="center"><img src="https://i.imgur.com/X7AvY9k.png"/></p>
+<p align="center"><img height="80" src="https://i.imgur.com/bzR4oC6.png"/></p>
