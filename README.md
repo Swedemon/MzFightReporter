@@ -1,7 +1,7 @@
 # MzFightReporter (Guild Wars 2 WvW)
 ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)
 ## How does it work?
-Before fights begin run this app in the background.  It will monitor for new arcdps logs generated after each eligible combat cycle.  The data is collated and sent to your Discord channel (and optionally Twitch).  See [example](#example).
+You run this app in the background.  It monitors new arcdps logs generated after each eligible combat cycle.  The data is collated and sent to your Discord channel (and optionally Twitch).  See [example](#example).
 ## Table of Contents
 - [Overview](#overview)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
