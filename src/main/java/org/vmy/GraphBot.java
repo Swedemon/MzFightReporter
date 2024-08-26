@@ -153,7 +153,7 @@ public class GraphBot extends Application {
 //                            new Stop(1, Color.web("#FCE207"))),
 //                    Color.TRANSPARENT);
 
-            Scene scene = new Scene(lineChart, 800, 600);
+            Scene scene = new Scene(lineChart, 800, 650);
 
 //            try {
 //                File f = new File(org.vmy.Parameters.getInstance().homeDir + "dark-theme.css");

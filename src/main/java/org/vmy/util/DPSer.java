@@ -48,10 +48,12 @@ public class DPSer implements Comparable<DPSer> {
 
     public String toString() {
         int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 8 : 13;
+        int dmgDecimals = damage < 1000000 ? 0 : damage >= 10000000 ? 1 : 2;
+        int downsDecimals = onDowns>=10000000 ? 0 : onDowns>=1000000 ? 1 : 0;
         return  StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + mapProf(profession.substring(0,4))
-                + String.format("%6s",withSuffix(damage,damage < 1000000 ? 0 : damage >= 10000000 ? 1 : 2)) + " "
+                + String.format("%6s",withSuffix(damage,dmgDecimals)) + " "
                 + String.format("%5s",withSuffix(dps,1)) + " "
-                + String.format("%4s",withSuffix(onDowns,0));
+                + String.format("%4s",withSuffix(onDowns,  downsDecimals));
     }
 
     public static String mapProf(String p) {

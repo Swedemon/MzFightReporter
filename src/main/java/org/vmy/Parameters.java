@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.4.3";
+    public static final String appVersion = "4.4.4";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-08-05";
+    public String gw2EIDir = "\\GW2EI-2024-08-26";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
@@ -40,7 +40,7 @@ public class Parameters {
     public int maxParseMemory = 4096;
     public int graphPlayerLimit = 20;
     public int maxUploadMegabytes = 15;
-    public int largeUploadMegabytes = 8;
+    public int largeUploadMegabytes = 7;
     public boolean enableReportUpload = true;
     public boolean enableDiscordBot = true;
     public boolean enableTwitchBot = true;
@@ -48,7 +48,7 @@ public class Parameters {
     public boolean showSquadSummary = true;
     public boolean showEnemySummary = true;
     public boolean showDamage = true;
-    public boolean showSpikeDmg = true;
+    public boolean showBurstDmg = true;
     public boolean showCleanses = true;
     public boolean showStrips = true;
     public boolean showDefensiveBoons = true;
@@ -105,7 +105,7 @@ public class Parameters {
             showSquadSummary = Boolean.valueOf(props.getProperty("showSquadSummary", "true"));
             showEnemySummary = Boolean.valueOf(props.getProperty("showEnemySummary", "true"));
             showDamage = Boolean.valueOf(props.getProperty("showDamage", "true"));
-            showSpikeDmg = Boolean.valueOf(props.getProperty("showSpikeDmg", "true"));
+            showBurstDmg = Boolean.valueOf(props.getProperty("showBurstDmg", "true"));
             showCleanses = Boolean.valueOf(props.getProperty("showCleanses", "true"));
             showStrips = Boolean.valueOf(props.getProperty("showStrips", "true"));
             showDefensiveBoons = Boolean.valueOf(props.getProperty("showDefensiveBoons", "true"));
@@ -296,8 +296,8 @@ public class Parameters {
                     case "showDamage":
                         checkbox.setSelected(p.showDamage);
                         break;
-                    case "showSpikeDmg":
-                        checkbox.setSelected(p.showSpikeDmg);
+                    case "showBurstDmg":
+                        checkbox.setSelected(p.showBurstDmg);
                         break;
                     case "showCleanses":
                         checkbox.setSelected(p.showCleanses);

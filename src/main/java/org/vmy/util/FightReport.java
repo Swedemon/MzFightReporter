@@ -23,7 +23,7 @@ public class FightReport implements Serializable {
     private String overview;
     private String dbooners;
     private String obooners;
-    private String spikers;
+    private String bursters;
     private String downsKills;
     private String healers;
     private String url;
@@ -194,12 +194,12 @@ public class FightReport implements Serializable {
         this.overview = overview;
     }
 
-    public String getSpikers() {
-        return spikers;
+    public String getBursters() {
+        return bursters;
     }
 
-    public void setSpikers(String spikers) {
-        this.spikers = spikers;
+    public void setBursters(String bursters) {
+        this.bursters = bursters;
     }
 
     public String getDownsKills() {
