@@ -105,7 +105,7 @@ public class ParseBot {
             List<DefensiveBooner> aggDbooners = new ArrayList<>();
             List<OffensiveBooner> obooners = new ArrayList<>();
             List<OffensiveBooner> aggObooners = new ArrayList<>();
-            List<Spiker> spikers = new ArrayList<>();
+            List<Burster> bursters = new ArrayList<>();
             List<Healer> healers = new ArrayList<>();
             HashMap<String, Player> playerMap = new HashMap<>();
             HashMap<String, Group> groups = new HashMap<>();
@@ -209,8 +209,8 @@ public class ParseBot {
                 sumPlayerDmg += dpser.getDamage();
                 battleLength = netTargetDmgList.size();
 
-                //update top 10 spikes
-                Spiker.computeTop10(name, profession, spikers, netTargetDmgList);
+                //update top 10 bursts
+                Burster.computeTop10(name, profession, bursters, netTargetDmgList);
 
                 //active buffs
                 DefensiveBooner dBooner = new DefensiveBooner(name, profession, group);
@@ -362,7 +362,7 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, spikers, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned, countNonSquadPlayers);
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, bursters, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned, countNonSquadPlayers);
 
         } finally {
             is.close();
@@ -373,7 +373,7 @@ public class ParseBot {
 
     private static void buildReport(FightReport report, HashMap<String, Condier> condiers, List<Enemy> enemies, JSONArray players,
                                     List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
-                                    List<OffensiveBooner> aggObooners, List<Spiker> spikers, List<Healer> healers,
+                                    List<OffensiveBooner> aggObooners, List<Burster> bursters, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
                                     HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns,
                                     int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned, int countNonSquadPlayers)
@@ -459,17 +459,17 @@ public class ParseBot {
             System.out.println();
         }
 
-        if (spikers.size()>0) {
+        if (bursters.size()>0) {
             buffer = new StringBuffer();
             buffer.append(" #  Player        " + playerPadding + " 4sec 2sec  Time" + LF);
             buffer.append("--- --------------" + playerDashes  + " ---- ----  ----" + LF);
-            spikers.sort(Comparator.naturalOrder());
+            bursters.sort(Comparator.naturalOrder());
             int index = 1;
-            int count = Math.min(spikers.size(), 10);
-            for (Spiker x : spikers.subList(0, count))
+            int count = Math.min(bursters.size(), 10);
+            for (Burster x : bursters.subList(0, count))
                 buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
-            report.setSpikers(buffer.toString());
-            System.out.println("Spike Damage:" + LF + buffer);
+            report.setBursters(buffer.toString());
+            System.out.println("Burst Damage:" + LF + buffer);
             System.out.println();
         }
 
@@ -752,7 +752,7 @@ public class ParseBot {
         buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d%s)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
                 countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+(countNonSquadPlayers==1?" Ally ":" Allies ") : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
-                enemyDowns, enemyDeaths,  enemyDowns!=sumSquadDwn || enemyDeaths!=sumSquadDed ? ", Credit Squad: "+sumSquadDwn+"/"+sumSquadDed : ""));
+                enemyDowns, enemyDeaths,  enemyDowns!=sumSquadDwn ? ", Credit Squad: "+sumSquadDwn+"/"+sumSquadDed : ""));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();

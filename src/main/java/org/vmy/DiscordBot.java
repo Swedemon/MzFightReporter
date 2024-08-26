@@ -101,8 +101,8 @@ public class DiscordBot {
             embedFields.add(new WebhookEmbed.EmbedField(false,"Enemy Summary","```"+report.getEnemySummary()+"```"));
         if (p.showDamage && report.getDamage()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Damage & Down Contribution","```"+report.getDamage()+"```"));
-        if (p.showSpikeDmg && report.getSpikers()!=null)
-            embedFields.add(new WebhookEmbed.EmbedField(false,"Spike Damage","```"+report.getSpikers()+"```"));
+        if (p.showBurstDmg && report.getBursters()!=null)
+            embedFields.add(new WebhookEmbed.EmbedField(false,"Burst Damage","```"+report.getBursters()+"```"));
         if (p.showStrips && report.getStrips()!=null)
             embedFields.add(new WebhookEmbed.EmbedField(false,"Strips","```"+report.getStrips()+"```"));
         if (p.showCleanses && report.getCleanses()!=null)
