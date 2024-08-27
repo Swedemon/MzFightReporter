@@ -57,6 +57,7 @@ Setup is complete! Eligible fights will send reports to your discord channel whi
 1. On the left choose 'Integrations' then 'Webhooks'.
 1. Click on 'New Webhook' then click 'Copy Webhook URL' to copy the link.
    <p align="center"><img height="260" src="https://i.imgur.com/1WKwOuz.png"/>
+1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook'.  Click Apply to save.
 ## Enable Healing Stats
 1. Install the ArcDps healing stats addon:  [click here for instructions](https://github.com/Krappa322/arcdps_healing_stats#readme)
 1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).  Under 'Extensions' tab choose the 'healing_stats' then check 'log healing' and 'enable live sharing'.
