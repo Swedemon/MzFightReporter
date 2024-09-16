@@ -736,7 +736,7 @@ public class ParseBot {
                 buffer.append(" #  Prof  Dmg     #  Prof  Dmg").append(LF);
                 buffer.append("--- ---- -----   --- ---- -----").append(LF);
                 buildEnemyBreakdown(buffer, team1, count1, e1, half1, team2, count2, e2, half2);
-                if (existsEmptyTeams)
+                if (teamCountSummary != null && existsEmptyTeams)
                     buffer.append((Parameters.getInstance().enableDiscordMobileMode ? "" : "--> ") + teamCountSummary.trim() + LF);
                 report.setEnemyBreakdown(buffer.toString());
                 System.out.println("Enemy Breakdown:" + LF + buffer);
@@ -747,12 +747,12 @@ public class ParseBot {
         buffer = new StringBuffer();
         int enemyDowns = enemies.stream().mapToInt(Enemy::getDowns).sum();
         int enemyDeaths = enemies.stream().mapToInt(Enemy::getDeaths).sum();
-        int sumSquadDwn = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDowns).reduce(0, Integer::sum);
-        int sumSquadDed = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
+        int sumSquadEnemyDwn = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDowns).reduce(0, Integer::sum);
+        int sumSquadEnemyDed = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
         buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d%s)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
                 countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+(countNonSquadPlayers==1?" Ally ":" Allies ") : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
-                enemyDowns, enemyDeaths,  enemyDowns!=sumSquadDwn ? ", Credit Squad: "+sumSquadDwn+"/"+sumSquadDed : ""));
+                enemyDowns, enemyDeaths,  (enemyDowns > sumSquadEnemyDwn+2) ? ", Credit Squad: "+sumSquadEnemyDwn+"/"+sumSquadEnemyDed : ""));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
@@ -763,6 +763,8 @@ public class ParseBot {
         int blueCount = (int) enemies.stream().filter(e -> e.getTeam().equals("Blue")).count();
         int greenCount = (int) enemies.stream().filter(e -> e.getTeam().equals("Green")).count();
         int unknownCount = (int) enemies.stream().filter(e -> e.getTeam().equals("")).count();
+        if (unknownCount == enemies.size())
+            return null;
         return (redCount > 0 ? " Red: " + redCount : " ")
                 + (blueCount > 0 ? " Blue: " + blueCount : "")
                 + (greenCount > 0 ? " Green: " + greenCount : "")
@@ -848,18 +850,20 @@ public class ParseBot {
     }
 
     private static String mapTeamID(int teamID) {
-        //teamID = {705: 'Red', 882: 'Red', 2520: 'Red', 2739: 'Green', 2741: 'Green', 2752: 'Green', 432: 'Blue', 1277: 'Blue'}
+        //wvw teamID = {705: 'Red', 882: 'Red', 2520: 'Red', 2739: 'Green', 2741: 'Green', 2752: 'Green', 2763: 'Green', 432: 'Blue', 1277: 'Blue'}
         //guild hall teamID = {697: 'Red', 39: 'Green', 1989: 'Blue'}
         switch (teamID) {
+            case 697:
             case 705:
+            case 706:
             case 882:
             case 2520:
-            case 697:
                 return "Red";
+            case 39:
             case 2739:
             case 2741:
             case 2752:
-            case 39:
+            case 2763:
                 return "Green";
             case 432:
             case 1277:
