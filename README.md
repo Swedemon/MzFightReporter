@@ -1,7 +1,7 @@
 # MzFightReporter (Guild Wars 2 WvW Discord Bot)
 ![downloads](https://img.shields.io/github/downloads/Swedemon/MzFightReporter/total)
 ## How does it work?
-Run this app in the background.  After each combat cycle arcdps generates a log file.  The app collects the data and sends to your Discord channel and optionally Twitch.  See [example](#example).
+Run this app in the background.  After each combat cycle arcdps generates a log file.  The app collects the data and sends the numbers to your Discord channel and optionally Twitch.  See [example](#example).
 ## Table of Contents
 - [Overview](#overview)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
