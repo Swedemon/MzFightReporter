@@ -67,56 +67,66 @@ public class MainFrame {
         settingsGrandParentPanel.setLayout(new BoxLayout(settingsGrandParentPanel, BoxLayout.Y_AXIS));
         settingsGrandParentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         settingsGrandParentPanel.add(Box.createHorizontalGlue());
+        JPanel settingsHeaderPanel = new JPanel();
+        settingsHeaderPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        settingsHeaderPanel.add(new Label("To save changes click the 'Apply' button."));
+        settingsGrandParentPanel.add(settingsHeaderPanel);
         JPanel settingsParentPanel = new JPanel();
         settingsParentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JPanel settingsCheckboxPanel = new JPanel();
-        settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
-        buildCheckBox(settingsCheckboxPanel, "enableDiscordBot", "Enable Discord Bot", p.enableDiscordBot);
-        buildCheckBox(settingsCheckboxPanel, "enableTwitchBot", "Enable Twitch Upload", p.enableTwitchBot);
-        buildCheckBox(settingsCheckboxPanel, "enableDiscordMobileMode", "Enable Compressed Mobile Mode", p.enableDiscordMobileMode);
-        buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", p.enableReportUpload);
-        buildCheckBox(settingsCheckboxPanel, "largeUploadsAfterParse", "Large Uploads Process Later", p.largeUploadsAfterParse);
-        buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", p.showSquadSummary);
-        buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", p.showEnemySummary);
-        buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", p.showDamage);
-        buildCheckBox(settingsCheckboxPanel, "showBurstDmg", "Show Burst Damage", p.showBurstDmg);
-        buildCheckBox(settingsCheckboxPanel, "showCleanses", "Show Cleanses", p.showCleanses);
-        buildCheckBox(settingsCheckboxPanel, "showStrips", "Show Strips", p.showStrips);
-        buildCheckBox(settingsCheckboxPanel, "showDefensiveBoons", "Show Defensive Boons", p.showDefensiveBoons);
-        buildCheckBox(settingsCheckboxPanel, "showOffensiveBoons", "Show Offensive Boons", p.showOffensiveBoons);
-        buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", p.showHeals);
-        buildCheckBox(settingsCheckboxPanel, "showDownsKills", "Show Outgoing Downs & Kills", p.showDownsKills);
-        buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", p.showCCs);
-        buildCheckBox(settingsCheckboxPanel, "showTopEnemySkills", "Show Top Enemy Skills", p.showTopEnemySkills);
-        buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", p.showEnemyBreakdown);
-        buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", p.showQuickReport);
-        buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", p.showDamageGraph);
-        buildCheckBox(settingsCheckboxPanel, "startMinimized", "Start Minimized", p.startMinimized);
-        buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (requires restart)", p.minimizeToTray);
-        buildCheckBox(settingsCheckboxPanel, "closeToTray", "Close to System Tray (requires restart)", p.closeToTray);
         //settings label panel
         JPanel settingsTextFieldPanel = new JPanel();
         settingsTextFieldPanel.setLayout(new GridLayout(0, 2));
-        settingsTextFieldPanel.setPreferredSize(new Dimension(300,400));
-        buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook #1", p.discordWebhook, 50, true);
-        buildTextField(settingsTextFieldPanel, "discordWebhookLabel", "Label Discord #1", p.discordWebhookLabel, 50, false);
-        buildTextField(settingsTextFieldPanel, "discordWebhook2", "Discord Webhook #2", p.discordWebhook2, 50, false);
-        buildTextField(settingsTextFieldPanel, "discordWebhookLabel2", "Label Discord #2", p.discordWebhookLabel2, 50, false);
-        buildTextField(settingsTextFieldPanel, "discordWebhook3", "Discord Webhook #3", p.discordWebhook3, 50, false);
-        buildTextField(settingsTextFieldPanel, "discordWebhookLabel3", "Label Discord #3", p.discordWebhookLabel3, 50, false);
+        settingsTextFieldPanel.setPreferredSize(new Dimension(300,500));
         buildWebhookSelection(settingsTextFieldPanel, p.activeDiscordWebhook);
+        buildTextField(settingsTextFieldPanel, "discordWebhook", "Discord Webhook #1", p.discordWebhook, "Discord Webhook #1. Refer to MzFightReporter website for setup instructions.", 50, true);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel", "Label Discord #1", p.discordWebhookLabel, "Label for Discord Webhook #1", 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhook2", "Discord Webhook #2", p.discordWebhook2, "Discord Webhook #2. Refer to MzFightReporter website for setup instructions.", 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel2", "Label Discord #2", p.discordWebhookLabel2, "Label for Discord Webhook #2", 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhook3", "Discord Webhook #3", p.discordWebhook3, "Discord Webhook #3. Refer to MzFightReporter website for setup instructions.", 50, false);
+        buildTextField(settingsTextFieldPanel, "discordWebhookLabel3", "Label Discord #3", p.discordWebhookLabel3, "Label for Discord Webhook #3", 50, false);
         buildSpacer(settingsTextFieldPanel);
-        buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, 12, false);
-        buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), 2, false);
-        buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), 5, false);
-        buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), 2, false);
-        buildTextField(settingsTextFieldPanel, "defaultLogFolder", "ArcDps Log Folder #1", p.defaultLogFolder, 12, false);
-        buildTextField(settingsTextFieldPanel, "customLogFolder", "ArcDps Log Folder #2", p.customLogFolder, 12, false);
-        buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, 12, false);
-        buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, 12, false);
-        settingsParentPanel.add(settingsCheckboxPanel);
-        settingsParentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+        buildTextField(settingsTextFieldPanel, "minFightDuration", "Min Fight Duration (sec)", String.valueOf(p.minFightDuration), "The minimum fight duration in seconds required to process a report.", 3, false);
+        buildTextField(settingsTextFieldPanel, "minFightDowns", "Min Fight Downs", String.valueOf(p.minFightDowns), "The minimum number of squad plus enemy downs to process a report.", 2, false);
+        buildTextField(settingsTextFieldPanel, "minFightTotalDmg", "Min Fight Total Dmg", String.valueOf(p.minFightTotalDmg), "The minimum total squad plus enemy damage to process a report.", 8, false);
+        buildTextField(settingsTextFieldPanel, "discordThumbnail", "Discord Thumbnail", p.discordThumbnail, "Enter the URL of an image for your Discord content.", 12, false);
+        buildTextField(settingsTextFieldPanel, "graphPlayerLimit", "Graph Player Limit", String.valueOf(p.graphPlayerLimit), "Number of players to display in the Discord graph image.", 2, false);
+        buildTextField(settingsTextFieldPanel, "maxParseMemory", "Max Parse Memory (MB)", String.valueOf(p.maxParseMemory), "The maximum amount of system memory to allow this application to use.  It will be relinquished after each fight report.", 5, false);
+        buildTextField(settingsTextFieldPanel, "maxUploadMegabytes", "Max Upload Size (MB)", String.valueOf(p.maxUploadMegabytes), "The arcdps file size to upload to the Dps.Report website.  Excessively large files will cause a long delay and in the end likely fail.", 2, false);
+        buildTextField(settingsTextFieldPanel, "defaultLogFolder", "ArcDps Log Folder #1", p.defaultLogFolder, "The default arcdps log folder.  Customize this path as needed.", 12, false);
+        buildTextField(settingsTextFieldPanel, "customLogFolder", "ArcDps Log Folder #2", p.customLogFolder, "The alternate arcdps log folder.  Customize this path as needed.",12, false);
+        buildTextField(settingsTextFieldPanel, "twitchBotToken", "Twitch Bot Token", p.twitchBotToken, "Refer to MzFightReporter website for setup instructions.", 12, false);
+        buildTextField(settingsTextFieldPanel, "twitchChannelName", "Twitch Channel Name", p.twitchChannelName, "Refer to MzFightReporter website for setup instructions.", 12, false);
+        JPanel settingsCheckboxPanel = new JPanel();
+        settingsCheckboxPanel.setLayout(new BoxLayout(settingsCheckboxPanel, BoxLayout.Y_AXIS));
+        settingsCheckboxPanel.add(new Label("UI Options:"));
+        buildCheckBox(settingsCheckboxPanel, "startMinimized", "Start Minimized", "Start this app minimized to the taskbar.", p.startMinimized);
+        buildCheckBox(settingsCheckboxPanel, "minimizeToTray", "Minimize to System Tray (requires restart)", "Start this app minimized to the system tray.", p.minimizeToTray);
+        buildCheckBox(settingsCheckboxPanel, "closeToTray", "Close to System Tray (requires restart)", "Closing this app minimizes to the system tray.", p.closeToTray);
+        settingsCheckboxPanel.add(new Label("Report Options:"));
+        buildCheckBox(settingsCheckboxPanel, "enableDiscordBot", "Enable Discord Bot", "Enable the sending of data to the selected Discord webhook(s).", p.enableDiscordBot);
+        buildCheckBox(settingsCheckboxPanel, "enableTwitchBot", "Enable Twitch Upload", "Enable the sending of overview to the configured Twitch channel.", p.enableTwitchBot);
+        buildCheckBox(settingsCheckboxPanel, "enableDiscordMobileMode", "Enable Compressed Mobile Mode", "Enable sending a compressed text width to the selected Discord webhook(s).  May assist on small form mobile devices.", p.enableDiscordMobileMode);
+        buildCheckBox(settingsCheckboxPanel, "enableReportUpload", "Enable Report Upload", "Enable uploading the ArcDps data to the Dps.Report website.  Disabling this will reduce overall processing time.", p.enableReportUpload);
+        buildCheckBox(settingsCheckboxPanel, "largeUploadsAfterParse", "Large Uploads Process Later", "Enable processing the Dps.Report upload after the fight report to receive data sooner.  This threshold is 7 megabytes.", p.largeUploadsAfterParse);
+        buildCheckBox(settingsCheckboxPanel, "showSquadSummary", "Show Squad Summary", "Display the squad summary in the fight report.", p.showSquadSummary);
+        buildCheckBox(settingsCheckboxPanel, "showEnemySummary", "Show Enemy Summary", "Display the enemy summary in the fight report.", p.showEnemySummary);
+        buildCheckBox(settingsCheckboxPanel, "showDamage", "Show Damage", "Display the damage and down contribution in the fight report.", p.showDamage);
+        buildCheckBox(settingsCheckboxPanel, "showBurstDmg", "Show Burst Damage", "Display the burst damage in the fight report.", p.showBurstDmg);
+        buildCheckBox(settingsCheckboxPanel, "showCleanses", "Show Cleanses", "Display the cleanses in the fight report.", p.showCleanses);
+        buildCheckBox(settingsCheckboxPanel, "showStrips", "Show Strips", "Display the strips in the fight report.", p.showStrips);
+        buildCheckBox(settingsCheckboxPanel, "showDefensiveBoons", "Show Defensive Boons", "Display the defensive boons in the fight report.", p.showDefensiveBoons);
+        buildCheckBox(settingsCheckboxPanel, "showOffensiveBoons", "Show Offensive Boons", "Display the offensive boons in the fight report.", p.showOffensiveBoons);
+        buildCheckBox(settingsCheckboxPanel, "showHeals", "Show Heals", "Display the healing and barrier in the fight report.", p.showHeals);
+        buildCheckBox(settingsCheckboxPanel, "showDefense", "Show Defense", "Display the defense (evades, blocks, invulns) in the fight report.", p.showDefense);
+        buildCheckBox(settingsCheckboxPanel, "showDownsKills", "Show Outgoing Downs & Kills", "Display the squad downs and kills in the fight report.", p.showDownsKills);
+        buildCheckBox(settingsCheckboxPanel, "showCCs", "Show Outgoing CC's", "Display the outgoing CC's and interrupts in the fight report.", p.showCCs);
+        buildCheckBox(settingsCheckboxPanel, "showTopEnemySkills", "Show Top Enemy Skills", "Display the top enemy skills and conditions in the fight report.", p.showTopEnemySkills);
+        buildCheckBox(settingsCheckboxPanel, "showEnemyBreakdown", "Show Enemy Breakdown", "Display the enemy breakdown in the fight report.", p.showEnemyBreakdown);
+        buildCheckBox(settingsCheckboxPanel, "showQuickReport", "Show Quick Report", "Display the quick report in the fight report.", p.showQuickReport);
+        buildCheckBox(settingsCheckboxPanel, "showDamageGraph", "Show Damage Graph", "Enable sending the damage graph to the selected Discord webhook(s).", p.showDamageGraph);
         settingsParentPanel.add(settingsTextFieldPanel);
+        settingsParentPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+        settingsParentPanel.add(settingsCheckboxPanel);
         settingsGrandParentPanel.add(settingsParentPanel);
         //settings button panel
         JPanel settingsButtonPane = new JPanel();
@@ -140,17 +150,15 @@ public class MainFrame {
         settingsButtonPane.add(Box.createRigidArea(new Dimension(30, 0)));
         Button resetButton = new Button("Reset");
         settingsButtonPane.add(resetButton);
-        resetButton.addActionListener(actionEvent -> {
-            Parameters.getInstance().resetSettings(settingsMap);
-        });
+        resetButton.addActionListener(actionEvent -> Parameters.getInstance().resetSettings(settingsMap));
         settingsButtonPane.add(Box.createRigidArea(new Dimension(30, 200)));
         settingsButtonPane.add(Box.createHorizontalGlue());
         settingsGrandParentPanel.add(settingsButtonPane);
-        JPanel settingsBottonPane = new JPanel();
-        settingsBottonPane.setPreferredSize(new Dimension(320, 400));
-        settingsBottonPane.setMaximumSize(new Dimension(320, 400));
-        settingsBottonPane.setLayout(new BoxLayout(settingsBottonPane, BoxLayout.LINE_AXIS));
-        settingsGrandParentPanel.add(settingsBottonPane);
+        JPanel settingsBottomPane = new JPanel();
+        settingsBottomPane.setPreferredSize(new Dimension(320, 280));
+        settingsBottomPane.setMaximumSize(new Dimension(320, 280));
+        settingsBottomPane.setLayout(new BoxLayout(settingsBottomPane, BoxLayout.LINE_AXIS));
+        settingsGrandParentPanel.add(settingsBottomPane);
 
         //about panel
         JPanel aboutPanel = new JPanel();
@@ -183,9 +191,9 @@ public class MainFrame {
         component.setForeground(FGCOLOR);
     }
 
-    private static void buildCheckBox(JPanel jPanel, String property, String label, boolean selected) {
+    private static void buildCheckBox(JPanel jPanel, String property, String label, String tooltip, boolean selected) {
         JCheckBox checkbox = new JCheckBox(label);
-        checkbox.setToolTipText(property);
+        checkbox.setToolTipText(tooltip);
         checkbox.setSelected(selected);
         checkbox.setName(property);
         addMouseOver(checkbox);
@@ -196,7 +204,7 @@ public class MainFrame {
     private static void buildWebhookSelection(JPanel panel, int value) {
         GridBagConstraints c = new GridBagConstraints();
         JLabel jLabel = new JLabel("Active Discord Webhook #");
-        //jLabel.setToolTipText("Select the active");
+        jLabel.setToolTipText("Choose the active Discord webhook(s).");
         jLabel.setSize(50, 20);
         jLabel.setPreferredSize(new Dimension(50, 20));
         jLabel.setMinimumSize(new Dimension(50, 20));
@@ -206,14 +214,15 @@ public class MainFrame {
         panel.add(jLabel, c);
         JComboBox jComboBox = new JComboBox(new String[]{"1", "2", "3", "1 and 2", "1 and 3", "2 and 3", "1, 2 and 3", "None"});
         jComboBox.setSelectedIndex(value-1);
+        jComboBox.setToolTipText("Choose the active Discord webhook(s).");
         panel.add(jComboBox);
         settingsMap.put("activeDiscordWebhook", jComboBox);
     }
 
-    private static void buildTextField(JPanel panel, String property, String label, String value, int columns, boolean isBold) {
+    private static void buildTextField(JPanel panel, String property, String label, String value, String tooltip, int columns, boolean isBold) {
         GridBagConstraints c = new GridBagConstraints();
         JLabel jLabel = new JLabel(label);
-        jLabel.setToolTipText(property);
+        jLabel.setToolTipText(tooltip);
         jLabel.setSize(50, 20);
         jLabel.setPreferredSize(new Dimension(50, 20));
         jLabel.setMinimumSize(new Dimension(50, 20));
@@ -223,7 +232,7 @@ public class MainFrame {
         c.gridx = 100;
         panel.add(jLabel, c);
         JTextField textField = new JTextField(value, columns);
-        textField.setToolTipText(property);
+        textField.setToolTipText(tooltip);
         textField.setSize(70, 20);
         textField.setPreferredSize(new Dimension(70, 20));
         textField.setMinimumSize(new Dimension(70, 20));

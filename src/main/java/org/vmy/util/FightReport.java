@@ -11,6 +11,9 @@ public class FightReport implements Serializable {
     private String zone;
     private String duration;
     private int durationMS;
+    private int totalSeconds;
+    private int totalDowns;
+    private int totalDmg;
     private String commander;
     private String squadSummary;
     private String enemySummary;
@@ -18,6 +21,7 @@ public class FightReport implements Serializable {
     private String cleanses;
     private String strips;
     private String ccs;
+    private String defense;
     private String enemySkillDmg;
     private String enemyBreakdown;
     private String overview;
@@ -86,6 +90,30 @@ public class FightReport implements Serializable {
 
     public void setDurationMS(int durationMS) {
         this.durationMS = durationMS;
+    }
+
+    public int getTotalSeconds() {
+        return totalSeconds;
+    }
+
+    public void setTotalSeconds(int totalSeconds) {
+        this.totalSeconds = totalSeconds;
+    }
+
+    public int getTotalDowns() {
+        return totalDowns;
+    }
+
+    public void setTotalDowns(int totalDowns) {
+        this.totalDowns = totalDowns;
+    }
+
+    public int getTotalDmg() {
+        return totalDmg;
+    }
+
+    public void setTotalDmg(int totalDmg) {
+        this.totalDmg = totalDmg;
     }
 
     public String getCommander() {
@@ -168,6 +196,14 @@ public class FightReport implements Serializable {
 
     public void setCcs(String ccs) {
         this.ccs = ccs;
+    }
+
+    public String getDefense() {
+        return defense;
+    }
+
+    public void setDefense(String defense) {
+        this.defense = defense;
     }
 
     public String getEnemySkillDmg() {

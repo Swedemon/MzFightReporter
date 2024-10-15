@@ -45,7 +45,6 @@ public class ParseBot {
             JSONArray targets = jsonTop.getJSONArray("targets");
             HashMap<String, Condier> condiers = new HashMap<>();
             HashMap<String, Integer> enemyDmgBySkill = new HashMap<>();
-            HashMap<String, Set<String>> enemyInteracts = new HashMap<>();
             List<Enemy> enemies = new ArrayList<>();
             int sumEnemyDmg = 0;
             for (int i = 1; i < targets.length(); i++) {
@@ -109,6 +108,7 @@ public class ParseBot {
             List<Healer> healers = new ArrayList<>();
             HashMap<String, Player> playerMap = new HashMap<>();
             HashMap<String, Group> groups = new HashMap<>();
+            HashMap<String, Defensive> defensives = new HashMap<>();
             int sumPlayerDmg = 0;
             int battleLength = 0;
             int countEnemyDowns = 0;
@@ -167,6 +167,27 @@ public class ParseBot {
                     c.setHardCcCount(map.get("appliedCrowdControl"));
                     downDmgOut = map.get("downContribution");
                     condiers.put(name, c);
+                }
+
+                //defenses
+                List<Object> playerDefenses = currPlayer.getJSONArray("defenses").toList();
+                for (Object a : playerDefenses) {
+                    HashMap<String, Integer> map = (HashMap<String, Integer>) a;
+                    Defensive d = defensives.get(name);
+                    if (d == null) {
+                        d = new Defensive(name, profession, group);
+                        defensives.put(name, d);
+                    }
+                    d.setBlocked(map.get("blockedCount"));
+                    d.setEvaded(map.get("evadedCount"));
+                    d.setMissed(map.get("missedCount"));
+                    d.setInvulned(map.get("invulnedCount"));
+                    d.setDmgBarrier(map.get("damageBarrier"));
+                    d.setDmgTaken(map.get("damageTaken"));
+                    d.setDowned(map.get("downCount"));
+                    d.setDead(map.get("deadCount"));
+                    d.setCced(map.get("receivedCrowdControl"));
+                    d.computeScore();
                 }
 
                 //support
@@ -362,7 +383,9 @@ public class ParseBot {
                 aggObooners.add(aggObooner);
             }
 
-            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, bursters, healers, playerMap, groups, enemyDmgBySkill, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths, sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned, countNonSquadPlayers);
+            buildReport(report, condiers, enemies, players, dpsers, cleansers, strippers, aggDbooners, aggObooners, bursters,
+                    healers, playerMap, groups, enemyDmgBySkill, defensives, sumPlayerDmg, battleLength, countEnemyDowns, countEnemyDeaths,
+                    sumEnemyDmg, team, totalPlayersDead, totalPlayersDowned, countNonSquadPlayers);
 
         } finally {
             is.close();
@@ -375,7 +398,7 @@ public class ParseBot {
                                     List<DPSer> dpsers, List<Cleanser> cleansers, List<Stripper> strippers, List<DefensiveBooner> aggDbooners,
                                     List<OffensiveBooner> aggObooners, List<Burster> bursters, List<Healer> healers,
                                     HashMap<String, Player> playerMap, HashMap<String, Group> groups,
-                                    HashMap<String, Integer> enemyDmgBySkill, int sumPlayerDmg, int battleLength, int countEnemyDowns,
+                                    HashMap<String, Integer> enemyDmgBySkill, HashMap<String, Defensive> defensives, int sumPlayerDmg, int battleLength, int countEnemyDowns,
                                     int countEnemyDeaths, int sumEnemyDmg, String team, int totalPlayersDead, int totalPlayersDowned, int countNonSquadPlayers)
     {
         boolean existsEmptyTeams = enemies.stream().anyMatch(e -> e.getTeam().equals(""));
@@ -552,6 +575,21 @@ public class ParseBot {
             }
             report.setHealers(buffer.toString());
             System.out.println("Heals & Barrier (heal addon required):" + LF + buffer);
+        }
+
+        if (defensives.values().stream().anyMatch(x->x.getDefensiveScore() >= 5)) {
+            buffer = new StringBuffer();
+            buffer.append(" #  Player      " + playerPadding + "Invuln Evade Block" + LF);
+            buffer.append("--- -------------" + playerDashes  + "  ---   ---   ---" + LF);
+            List<Defensive> dlist = new ArrayList<>(defensives.values());
+            dlist.sort(Comparator.naturalOrder());
+            int index = 1;
+            int count = Math.min(dlist.size(), 10);
+            for (Defensive x : dlist.subList(0, count))
+                if (x.getDefensiveScore() >= 5)
+                    buffer.append(String.format("%2s", (index++)) + "  " + x + LF);
+            report.setDefense(buffer.toString());
+            System.out.println("Defense:" + LF + buffer);
             System.out.println();
         }
 
@@ -756,6 +794,11 @@ public class ParseBot {
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
+        System.out.println("Time: " + report.getEndTime());
+
+        report.setTotalSeconds(report.getDurationMS()/1000);
+        report.setTotalDowns(totalPlayersDowned + sumSquadEnemyDwn);
+        report.setTotalDmg(sumPlayerDmg + sumEnemyDmg);
     }
 
     private static String buildTeamCountSummary(List<Enemy> enemies) {
