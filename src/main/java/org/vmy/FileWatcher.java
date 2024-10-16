@@ -149,6 +149,20 @@ public class FileWatcher {
                             FightReport report = FightReport.readReportFile();
                             System.out.println(report.getOverview());
 
+                            //check fight minimums
+                            if (report.getTotalSeconds() < p.minFightDuration) {
+                                System.out.println("SKIPPING:  Fight duration is below minimum defined in the Settings.");
+                                break;
+                            }
+                            if (report.getTotalDowns() < p.minFightDowns) {
+                                System.out.println("SKIPPING:  Total downs is below the minimum defined in the Settings.");
+                                break;
+                            }
+                            if (report.getTotalDmg() < p.minFightTotalDmg) {
+                                System.out.println("SKIPPING:  Total damage is below the minimum defined in the Settings.");
+                                break;
+                            }
+
                             //call twitchbot
                             if (!StringUtils.isEmpty(p.twitchBotToken) && !StringUtils.isEmpty(p.twitchChannelName)) {
                                 if (p.enableTwitchBot) {

@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.4.5";
+    public static final String appVersion = "4.4.6";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EI-2024-09-15";
+    public String gw2EIDir = "\\GW2EI-2024-10-13";
     public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
@@ -41,6 +41,9 @@ public class Parameters {
     public int graphPlayerLimit = 20;
     public int maxUploadMegabytes = 15;
     public int largeUploadMegabytes = 7;
+    public int minFightDuration = 20;
+    public int minFightDowns = 1;
+    public int minFightTotalDmg = 50000;
     public boolean enableReportUpload = true;
     public boolean enableDiscordBot = true;
     public boolean enableTwitchBot = true;
@@ -54,6 +57,7 @@ public class Parameters {
     public boolean showDefensiveBoons = true;
     public boolean showOffensiveBoons = true;
     public boolean showHeals = true;
+    public boolean showDefense = true;
     public boolean showDownsKills = true;
     public boolean showCCs = true;
     public boolean showTopEnemySkills = true;
@@ -95,6 +99,9 @@ public class Parameters {
             discordWebhookLabel3 = props.getProperty("discordWebhookLabel3",discordWebhookLabel3);
             twitchChannelName = props.getProperty("twitchChannelName",twitchChannelName);
             twitchBotToken = props.getProperty("twitchBotToken",twitchBotToken);
+            minFightDuration = Integer.parseInt(props.getProperty("minFightDuration", minFightDuration+""));
+            minFightDowns = Integer.parseInt(props.getProperty("minFightDowns", minFightDowns+""));
+            minFightTotalDmg = Integer.parseInt(props.getProperty("minFightTotalDmg", minFightTotalDmg+""));
             maxParseMemory = Integer.parseInt(props.getProperty("maxParseMemory", maxParseMemory+""));
             maxUploadMegabytes = Integer.parseInt(props.getProperty("maxUploadMegabytes", maxUploadMegabytes +""));
             graphPlayerLimit = Integer.parseInt(props.getProperty("graphPlayerLimit", graphPlayerLimit+""));
@@ -112,6 +119,7 @@ public class Parameters {
             showOffensiveBoons = Boolean.valueOf(props.getProperty("showOffensiveBoons", "true"));
             showDownsKills = Boolean.valueOf(props.getProperty("showDownsKills", "true"));
             showCCs = Boolean.valueOf(props.getProperty("showCCs", "true"));
+            showDefense = Boolean.valueOf(props.getProperty("showDefense", "true"));
             showHeals = Boolean.valueOf(props.getProperty("showHeals", "true"));
             showTopEnemySkills = Boolean.valueOf(props.getProperty("showTopEnemySkills", "true"));
             showEnemyBreakdown = Boolean.valueOf(props.getProperty("showEnemyBreakdown", "true"));
@@ -316,6 +324,9 @@ public class Parameters {
                         break;
                     case "showCCs":
                         checkbox.setSelected(p.showCCs);
+                        break;
+                    case "showDefense":
+                        checkbox.setSelected(p.showDefense);
                         break;
                     case "showHeals":
                         checkbox.setSelected(p.showHeals);
