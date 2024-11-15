@@ -5,11 +5,11 @@ Run this app in the background.  After each combat cycle arcdps generates a log 
 ## Table of Contents
 - [Overview](#overview)
 - [Setup Instructions (5 - 10 minutes)](#setup-instructions-5---10-minutes)
-- [Troubleshooting](#troubleshooting)
 - [Create a Discord Webhook](#create-a-discord-webhook)
 - [Enable Healing Stats](#enable-healing-stats)
 - [Twitch Bot Instructions](#twitch-bot-instructions)
 - [About the Data](#about-the-data)
+- [Troubleshooting](#troubleshooting)
 - [Example](#example)
 ## Overview
 - **Description:** Monitor live [ArcDps](https://www.deltaconnected.com/arcdps/) logs, parse data using [Elite Insights](https://github.com/baaron4/GW2-Elite-Insights-Parser), and send descriptive WvW fight reports to a Discord channel and optionally a Twitch channel.  This program is open source. The provided data includes:
@@ -44,14 +44,6 @@ Run this app in the background.  After each combat cycle arcdps generates a log 
    <p align="center"><img height="160" src="https://i.imgur.com/y4sDiN1.png"/></p>
 Setup is complete! Eligible fights will send reports to your discord channel while this program is running.
 - Note: To enable healing stats [click here](#enable-healing-stats).  To enable the Twitch bot [click here](#twitch-bot-instructions).
-## Troubleshooting
-#### > The program is not doing anything after fights complete.
-  1. Ensure ArcDps is generating log files.  By default this will be in your user profile's Documents folder:
-     - Typically under:  C:\Users\\<User Name\>\Documents\Guild Wars 2\addons\arcdps
-  1. Double check the instructions above regarding ArcDps options.  Ensure the squad and enemy size is above the minimum.
-  1. Ensure in the MzFightReporter Settings tab the 'ArcDps Log Folder #1' is correct.  If necessary edit the path accordingly and apply.
-#### > It's not working, I'm stuck.
-  1. Feel free to ask questions in the [Support Discord](https://discord.gg/5JfZ3qpW3Q).
 ## Create a Discord Webhook
 1. In your Discord create a channel then right click it and choose 'Edit Channel'.
 1. On the left choose 'Integrations' then 'Webhooks'.
@@ -87,6 +79,14 @@ Elite Insights provides a data point called appliedCrowdControl which indicates 
 Some data points are not provided due to a limitation in the game, arcdps or EI.
 - **Healing**:  Only players using the Heal Addon on their side with Live Sharing enabled will be represented.
 - **Long Fights**: Fights exceeding ~15 minutes run the risk of not reporting and/or not uploading.  Settings exist to manage the maximum upload size.
+## Troubleshooting
+#### > The program is not doing anything after fights complete.
+  1. Ensure ArcDps is generating log files.  By default this will be in your user profile's Documents folder:
+     - Typically under:  C:\Users\\<User Name\>\Documents\Guild Wars 2\addons\arcdps
+  1. Double check the instructions above regarding ArcDps options.  Ensure the squad and enemy size is above the minimum.
+  1. Ensure in the MzFightReporter Settings tab the 'ArcDps Log Folder #1' is correct.  If necessary edit the path accordingly and apply.
+#### > It's not working, I'm stuck.
+  1. Feel free to ask questions in the [Support Discord](https://discord.gg/5JfZ3qpW3Q).
 ## Example
 <p align="center"><img src="https://i.imgur.com/X7AvY9k.png"/></p>
 <p align="center"><img height="80" src="https://i.imgur.com/bzR4oC6.png"/></p>
