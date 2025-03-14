@@ -35,7 +35,7 @@ Run this app in the background.  After each combat cycle arcdps generates a log 
 1. Start the application by going into the extracted folder and double clicking the 'MzFightReporter' batch file.
    - Note: If windows gives a warning message you can click on 'More Info' then 'Run Anyways'.
    <p align="center"><img height="140" src="https://i.imgur.com/JfOU4Vs.png"/></p>
-1. In the UI click on the 'Settings' tab and paste in your 'Discord Webhook #1'.  Click Apply to save.
+1. In the UI click on the 'Settings' tab and paste in your Discord webhook into 'Discord Webhook #1' as shown.  Click Apply to save.
    - For help creating a discord webhook [click here](#create-a-discord-webhook).
    <p align="center"><img height="60" src="https://i.imgur.com/AtqXIJV.png"/></p>
 1. Enter Guild Wars 2 and open the ArcDps options (alt-shift-t).
