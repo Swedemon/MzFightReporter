@@ -254,10 +254,12 @@ public class ParseBot {
                     if(!ehObject.isNull("outgoingHealingAllies")) {
                         JSONArray ohArray = ehObject.getJSONArray("outgoingHealingAllies");
                         for (int q=0; q<ohArray.length(); q++) {
-                            JSONArray ihArray = ohArray.getJSONArray(q);
-                            JSONObject healObj = (JSONObject) ihArray.get(0);
-                            healing += healObj.getInt("healing");
-                            downedHealing += healObj.getInt("downedHealing");
+                            if (i != q) { // exclude this player healing themself
+                                JSONArray ihArray = ohArray.getJSONArray(q);
+                                JSONObject healObj = (JSONObject) ihArray.get(0);
+                                healing += healObj.getInt("healing");
+                                downedHealing += healObj.getInt("downedHealing");
+                            }
                         }
                     }
 //                    if(!ehObject.isNull("alliedHealingDist")) {
@@ -280,9 +282,11 @@ public class ParseBot {
                     if(!ehObject.isNull("outgoingBarrierAllies")) {
                         JSONArray ohArray = ehObject.getJSONArray("outgoingBarrierAllies");
                         for (int q=0; q<ohArray.length(); q++) {
-                            JSONArray ihArray = ohArray.getJSONArray(q);
-                            JSONObject healObj = (JSONObject) ihArray.get(0);
-                            barrier += healObj.getInt("barrier");
+                            if (i != q) { // exclude this player applying barrier to themself
+                                JSONArray ihArray = ohArray.getJSONArray(q);
+                                JSONObject healObj = (JSONObject) ihArray.get(0);
+                                barrier += healObj.getInt("barrier");
+                            }
                         }
                     }
                 }
