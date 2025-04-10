@@ -193,6 +193,7 @@ public class ParseBot {
                 //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
                 int cleanses = currPlayerSupport.getBigInteger("condiCleanse").intValue();
+                cleanses += currPlayerSupport.getBigInteger("condiCleanseSelf").intValue();
                 if (cleanses > 0)
                     cleansers.add(new Cleanser(name, profession, cleanses));
                 int strips = currPlayerSupport.getBigInteger("boonStrips").intValue();
