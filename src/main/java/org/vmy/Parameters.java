@@ -11,13 +11,13 @@ import java.util.List;
 
 public class Parameters {
 
-    public static final String appVersion = "4.4.7";
+    public static final String appVersion = "4.4.8";
 
     public String repoUrl = "https://api.github.com/repos/Swedemon/MzFightReporter/releases/latest";
     public String homeDir = "";
     public String curlExe = "\\curl\\bin\\curl.exe";
-    public String gw2EIDir = "\\GW2EICLI-2025-03-31";
-    public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights-CLI.exe";
+    public String gw2EIDir = "\\GW2EI-2024-10-13";
+    public String gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
     public String gw2EISettings = gw2EIDir + "\\Settings\\";
     public String defaultLogFolder = System.getenv("USERPROFILE") + "\\Documents\\Guild Wars 2\\addons\\arcdps\\arcdps.cbtlogs\\";
     public String customLogFolder = "";
@@ -85,7 +85,7 @@ public class Parameters {
             props.load(file);
 
             //set properties
-            gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights-CLI.exe";
+            gw2EIExe = gw2EIDir + "\\GuildWars2EliteInsights.exe";
             curlExe = homeDir + "\\curl\\bin\\curl.exe";
             defaultLogFolder = props.getProperty("defaultLogFolder", defaultLogFolder);
             customLogFolder = props.getProperty("customLogFolder");
