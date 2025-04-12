@@ -6,27 +6,30 @@ import org.vmy.Parameters;
 public class Cleanser implements Comparable<Cleanser> {
     private String name;
     private String profession;
-    private int cleanses;
+    private int totalCleanses;
+    private int outgoingCleanses;
 
-    public Cleanser(String name, String profession, int cleanses) {
+    public Cleanser(String name, String profession, int totalCleanses, int outgoingCleanses) {
         this.name = name;
         this.profession = profession;
-        this.cleanses = cleanses;
+        this.totalCleanses = totalCleanses;
+        this.outgoingCleanses = outgoingCleanses;
     }
 
     public int compareTo(Cleanser c) {
-        if (cleanses==c.cleanses)
+        if (totalCleanses==c.totalCleanses)
             return 0;
-        else if (cleanses>c.cleanses)
+        else if (totalCleanses>c.totalCleanses)
             return -1;
         else
             return 1;
     }
 
     public String toString() {
-        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 14 : 19;
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 10 : 15;
         return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
-                + StringUtils.leftPad(String.valueOf(cleanses), 5);
+                + StringUtils.leftPad(String.valueOf(totalCleanses), 5)
+                + StringUtils.leftPad(String.valueOf(outgoingCleanses), 5);
     }
 
     public String getName() {
@@ -41,9 +44,15 @@ public class Cleanser implements Comparable<Cleanser> {
 
     public void setProfession(String profession) { this.profession = profession; }
 
-    public int getCleanses() { return cleanses; }
+    public int getTotalCleanses() { return totalCleanses; }
 
-    public void setCleanses(int cleanses) {
-        this.cleanses = cleanses;
+    public void setTotalCleanses(int cleanses) {
+        this.totalCleanses = cleanses;
+    }
+
+    public int getOutgoingCleanses() { return outgoingCleanses; }
+
+    public void setOutgoingCleanses(int cleanses) {
+        this.outgoingCleanses = cleanses;
     }
 }
