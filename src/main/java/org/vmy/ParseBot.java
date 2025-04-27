@@ -938,31 +938,31 @@ public class ParseBot {
         switch(id) { //chilled=722 crippled=721 immob=727 slow=26766 blind=720 daze=833 742=weakness
             case 727:
                 c.setImmobCount(c.getImmobCount() + 1);
-                c.setImmobDur(c.getImmobDur().add(me.getValue()));
+                c.setImmobDur(c.getImmobDur().add(getBigDecimal(me.getValue())));
                 break;
             case 722:
                 c.setChillCount(c.getChillCount() + 1);
-                c.setChillDur(c.getChillDur().add(me.getValue()));
+                c.setChillDur(c.getChillDur().add(getBigDecimal(me.getValue())));
                 break;
             case 721:
                 c.setCripplCount(c.getCripplCount() + 1);
-                c.setCripplDur(c.getCripplDur().add(me.getValue()));
+                c.setCripplDur(c.getCripplDur().add(getBigDecimal(me.getValue())));
                 break;
             case 720:
                 c.setBlindCount(c.getBlindCount() + 1);
-                c.setBlindDur(c.getBlindDur().add(me.getValue()));
+                c.setBlindDur(c.getBlindDur().add(getBigDecimal(me.getValue())));
                 break;
             case 833:
                 c.setDazeCount(c.getDazeCount() + 1);
-                c.setDazeDur(c.getDazeDur().add(me.getValue()));
+                c.setDazeDur(c.getDazeDur().add(getBigDecimal(me.getValue())));
                 break;
             case 742:
                 c.setWeaknessCount(c.getWeaknessCount() + 1);
-                c.setWeaknessDur(c.getWeaknessDur().add(me.getValue()));
+                c.setWeaknessDur(c.getWeaknessDur().add(getBigDecimal(me.getValue())));
                 break;
             case 26766:
                 c.setSlowCount(c.getSlowCount() + 1);
-                c.setSlowDur(c.getSlowDur().add(me.getValue()));
+                c.setSlowDur(c.getSlowDur().add(getBigDecimal(me.getValue())));
                 break;
         }
         condiers.put(name, c);
@@ -1064,23 +1064,28 @@ public class ParseBot {
     public static void main(String[] args) throws Exception {
         File jsonFile = new File(args[1]);
         String homeDir = args[2];
-        String uploadUrl = args[3];
-        if (jsonFile.exists()) {
-            FightReport report = processWvwJsonLog(jsonFile, uploadUrl);
+        String uploadUrl = args.length > 3 ? args[3] : "";
+        try {
+            if (jsonFile.exists()) {
+                FightReport report = processWvwJsonLog(jsonFile, uploadUrl);
 
-            FileOutputStream frf = null;
-            ObjectOutputStream o = null;
-            try {
-                frf = new FileOutputStream(homeDir + File.separator + "fightreport.bin");
-                o = new ObjectOutputStream(frf);
-                // Write objects to file
-                o.writeObject(report);
-            } finally {
-                if (o!=null)
-                    o.close();
-                if (frf!=null)
-                    frf.close();
+                FileOutputStream frf = null;
+                ObjectOutputStream o = null;
+                try {
+                    frf = new FileOutputStream(homeDir + File.separator + "fightreport.bin");
+                    o = new ObjectOutputStream(frf);
+                    // Write objects to file
+                    o.writeObject(report);
+                } finally {
+                    if (o != null)
+                        o.close();
+                    if (frf != null)
+                        frf.close();
+                }
             }
+        } catch(Exception e) {
+            e.printStackTrace(System.out);
+            System.out.println(e.getMessage());
         }
     }
 }
