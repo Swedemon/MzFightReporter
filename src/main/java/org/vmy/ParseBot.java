@@ -1029,17 +1029,26 @@ public class ParseBot {
             if (buffData!=null && buffData.size()>0) {
                 HashMap bdMap = (HashMap) buffData.get(0);
                 if (!doUptime && bdMap.containsKey("presence")) {
-                    BigDecimal presence = (BigDecimal) bdMap.get("presence");
+                    BigDecimal presence = getBigDecimal(bdMap.get("presence"));
                     if (presence.compareTo(BigDecimal.ZERO) > 0)
                         return presence.multiply(new BigDecimal(1000)).intValue();
                 }
                 if (bdMap.containsKey("uptime")) {
-                    BigDecimal uptime = (BigDecimal) bdMap.get("uptime");
+                    BigDecimal uptime = getBigDecimal(bdMap.get("uptime"));
                     return uptime.multiply(new BigDecimal(1000)).intValue();
                 }
             }
         }
         return 0;
+    }
+
+    private static BigDecimal getBigDecimal(Object obj) {
+        if (obj instanceof Integer) {
+            return new BigDecimal((Integer) obj);
+        } else if (obj instanceof BigDecimal) {
+            return (BigDecimal) obj;
+        }
+        return BigDecimal.ZERO;
     }
 
     private static void addBoons(DefensiveBooner sumBoons, DefensiveBooner player) {
