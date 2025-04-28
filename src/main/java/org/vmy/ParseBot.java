@@ -193,9 +193,9 @@ public class ParseBot {
                 //support
                 JSONObject currPlayerSupport = currPlayer.getJSONArray("support").getJSONObject(0);
                 int cleanses = currPlayerSupport.getBigInteger("condiCleanse").intValue();
-                cleanses += currPlayerSupport.getBigInteger("condiCleanseSelf").intValue();
+                int selfCleanses = currPlayerSupport.getBigInteger("condiCleanseSelf").intValue();
                 if (cleanses > 0)
-                    cleansers.add(new Cleanser(name, profession, cleanses));
+                    cleansers.add(new Cleanser(name, profession, cleanses+selfCleanses, cleanses));
                 int strips = currPlayerSupport.getBigInteger("boonStrips").intValue();
                 if (strips > 0)
                     strippers.add(new Stripper(name, profession, strips));
@@ -248,7 +248,8 @@ public class ParseBot {
                 obooners.add(oBooner);
 
                 //healing
-                int healing = 0;
+                int totalHealing = 0;
+                int outgoingHealing = 0;
                 int downedHealing = 0;
                 if (!currPlayer.isNull("extHealingStats")) {
                     JSONObject ehObject = currPlayer.getJSONObject("extHealingStats");
@@ -257,8 +258,11 @@ public class ParseBot {
                         for (int q=0; q<ohArray.length(); q++) {
                             JSONArray ihArray = ohArray.getJSONArray(q);
                             JSONObject healObj = (JSONObject) ihArray.get(0);
-                            healing += healObj.getInt("healing");
+                            totalHealing += healObj.getInt("healing");
                             downedHealing += healObj.getInt("downedHealing");
+                            if (q != i) { // player index different from outgoingHealingAllies index
+                                outgoingHealing += healObj.getInt("healing");
+                            }
                         }
                     }
 //                    if(!ehObject.isNull("alliedHealingDist")) {
@@ -275,7 +279,8 @@ public class ParseBot {
 //                        }
 //                    }
                 }
-                int barrier = 0;
+                int totalBarrier = 0;
+                int outgoingBarrier = 0;
                 if (!currPlayer.isNull("extBarrierStats")) {
                     JSONObject ehObject = currPlayer.getJSONObject("extBarrierStats");
                     if(!ehObject.isNull("outgoingBarrierAllies")) {
@@ -283,12 +288,15 @@ public class ParseBot {
                         for (int q=0; q<ohArray.length(); q++) {
                             JSONArray ihArray = ohArray.getJSONArray(q);
                             JSONObject healObj = (JSONObject) ihArray.get(0);
-                            barrier += healObj.getInt("barrier");
+                            totalBarrier += healObj.getInt("barrier");
+                            if (q != i) { // player index different from outgoingBarrierAllies index
+                                outgoingBarrier += healObj.getInt("barrier");
+                            }
                         }
                     }
                 }
                 if (healUsers.isEmpty() || healUsers.containsKey(name)) {
-                    Healer healer = new Healer(name, profession, healing, barrier, downedHealing);
+                    Healer healer = new Healer(name, profession, totalHealing, outgoingHealing, totalBarrier, outgoingBarrier, downedHealing);
                     if (healer.getTotal() > 0)
                         healers.add(healer);
                 }
@@ -516,15 +524,15 @@ public class ParseBot {
 
         if (cleansers.size()>0) {
             buffer = new StringBuffer();
-            buffer.append(" #  Player             " + playerPadding + "Total  CPS" + LF);
-            buffer.append("--- -------------------" + playerDashes  + " ----  ----" + LF);
+            buffer.append(" #  Player      " + playerPadding + "Total Outgoing CPS" + LF);
+            buffer.append("--- ---------------" + playerDashes  + " ---- ---- ----" + LF);
             cleansers.sort(Comparator.naturalOrder());
             int index = 1;
             int count = Math.min(cleansers.size(), 10);
             for (Cleanser x : cleansers.subList(0, count)) {
-                BigDecimal rate = BigDecimal.valueOf(x.getCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
+                BigDecimal rate = BigDecimal.valueOf(x.getTotalCleanses()).divide(sec, 2, RoundingMode.HALF_UP);
                 buffer.append(String.format("%2s", (index++)) + "  " + x
-                        + String.format("%6s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
+                        + String.format("%5s", new DecimalFormat("#0.00").format(rate).replaceAll(",", "")) + LF);
             }
             report.setCleanses(buffer.toString());
             System.out.println("Cleanses:" + LF + buffer);
@@ -533,29 +541,29 @@ public class ParseBot {
 
         if (healers.stream().anyMatch(h -> h.getTotal()>0)) {
             buffer = new StringBuffer();
-            if (healers.stream().anyMatch(h -> h.getHealing() > 0)) {
-                healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getHealing(), o1.getHealing())).collect(Collectors.toList());
-                buffer.append(" #  Player            " + playerPadding + " Heals  HPS" + LF);
-                buffer.append("--- ------------------" + playerDashes + " ----- -----" + LF);
+            if (healers.stream().anyMatch(h -> h.getTotalHealing() > 0)) {
+                healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getTotalHealing(), o1.getTotalHealing())).collect(Collectors.toList());
+                buffer.append(" #  Player      " + playerPadding + "Heals Outgoing HPS" + LF);
+                buffer.append("--- ------------" + playerDashes + " ----- ----- -----" + LF);
                 int index = 1;
                 int count = Math.min(healers.size(), 5);
                 for (Healer x : healers.subList(0, count))
-                    if (x.getHealing() > 0) {
-                        String hps = DPSer.withSuffix(x.getHealing() / battleLength, 1);
+                    if (x.getTotalHealing() > 0) {
+                        String hps = DPSer.withSuffix(x.getTotalHealing() / battleLength, 1);
                         buffer.append(String.format("%2s", (index++)) + "  " + x.toHealerString()
                                 + String.format("%6s", hps) + LF);
                     }
             }
             buffer.append(LF);
-            if (healers.stream().anyMatch(h -> h.getBarrier() > 0)) {
-                healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getBarrier(), o1.getBarrier())).collect(Collectors.toList());
-                buffer.append(" #  Player            " + playerPadding + "Barrier BPS" + LF);
-                buffer.append("--- ------------------" + playerDashes + " ----- -----" + LF);
+            if (healers.stream().anyMatch(h -> h.getTotalBarrier() > 0)) {
+                healers = healers.stream().sorted((o1, o2) -> Integer.compare(o2.getTotalBarrier(), o1.getTotalBarrier())).collect(Collectors.toList());
+                buffer.append(" #  Player    " + playerPadding + "Barrier Outgoing BPS" + LF);
+                buffer.append("--- ------------" + playerDashes + " ----- ----- -----" + LF);
                 int index = 1;
                 int count = Math.min(healers.size(), 5);
                 for (Healer x : healers.subList(0, count))
-                    if (x.getBarrier() > 0) {
-                        String hps = DPSer.withSuffix(x.getBarrier() / battleLength, 1);
+                    if (x.getTotalBarrier() > 0) {
+                        String hps = DPSer.withSuffix(x.getTotalBarrier() / battleLength, 1);
                         buffer.append(String.format("%2s", (index++)) + "  " + x.toBarrierString()
                                 + String.format("%6s", hps) + LF);
                     }
