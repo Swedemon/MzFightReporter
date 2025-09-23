@@ -97,7 +97,7 @@ public class FileWatcher {
                         break; //exit loop
                     } else if (lastModified == f.lastModified()) {
                         String confFolder = p.homeDir + p.gw2EISettings;
-                        String parseConfig = confFolder + "wvwnoupload.conf";
+                        String parseConfig = confFolder + "wvwupload.conf";
 
                         int fileMegabytes = (int) f.length() / 1048576;
                         int sizeFactor = 1 + ((int) f.length() / 5000000);
@@ -172,7 +172,7 @@ public class FileWatcher {
                             }
 
                             //conditionally upload (before)
-                            report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
+                            //report.setUrl(!p.largeUploadsAfterParse || fileMegabytes < p.largeUploadMegabytes ? processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime) : "");
 
                             //call discordbot
                             boolean discordOkay = true;
@@ -182,20 +182,20 @@ public class FileWatcher {
                             }
 
                             //conditionally upload (after)
-                            if (p.largeUploadsAfterParse && fileMegabytes >= p.largeUploadMegabytes) {
-                                String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
+                            //if (p.largeUploadsAfterParse && fileMegabytes >= p.largeUploadMegabytes) {
+                            //    String uploadUrl = processUpload(p, fullFilePath, fileMegabytes, uploadWaitTime);
 
-                                //call discordbot on report URL
-                                if (!StringUtils.isEmpty(uploadUrl) && !p.getCurrentDiscordWebhooks().isEmpty()) {
-                                    System.setOut(new PrintStream(MainFrame.reportStream));
-                                    System.out.println("Report URL = " + uploadUrl);
-                                    System.setOut(new PrintStream(MainFrame.consoleStream));
-                                    if (discordOkay && p.enableDiscordBot) {
-                                        discordOkay = sendDiscordUrlMsg(uploadUrl);
-                                        MainFrame.statusLabel.setText("Status: Twitch sent " + f.getName());
-                                    }
-                                }
-                            }
+                            //    //call discordbot on report URL
+                            //    if (!StringUtils.isEmpty(uploadUrl) && !p.getCurrentDiscordWebhooks().isEmpty()) {
+                            //        System.setOut(new PrintStream(MainFrame.reportStream));
+                            //        System.out.println("Report URL = " + uploadUrl);
+                            //        System.setOut(new PrintStream(MainFrame.consoleStream));
+                            //        if (discordOkay && p.enableDiscordBot) {
+                            //            discordOkay = sendDiscordUrlMsg(uploadUrl);
+                            //            MainFrame.statusLabel.setText("Status: Twitch sent " + f.getName());
+                            //        }
+                            //    }
+                            //}
 
                             //call graphbot
                             if (p2.exitValue() == 0) {
@@ -221,6 +221,14 @@ public class FileWatcher {
 
                             //finished
                             MainFrame.statusLabel.setText("Status: Finished " + f.getName());
+                        } else {
+                            // if no json file but EI was successful this implies (probably) the user needs to install .NET Framework version 8.0
+                            if (p1.exitValue() == 0) {
+                                System.out.println("\r\n");
+                                System.out.println(".NET FRAMEWORK 8.0 IS MISSING.  \r\nPlease google \"Download .NET Framework 8.0\" and proceed to install to correct this issue.\r\n\r\n");
+                                System.out.println(".NET FRAMEWORK 8.0 IS MISSING.  \r\nPlease google \"Download .NET Framework 8.0\" and proceed to install to correct this issue.\r\n\r\n");
+                                System.out.println(".NET FRAMEWORK 8.0 IS MISSING.  \r\nPlease google \"Download .NET Framework 8.0\" and proceed to install to correct this issue.\r\n\r\n");
+                            }
                         }
                         break; //exit loop
                     } else { //else keep looping until file is no longer being modified

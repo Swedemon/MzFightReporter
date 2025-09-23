@@ -44,7 +44,7 @@ public class MainFrame {
         consoleStream = new TextAreaOutputStream(consoleArea, consoleScroll);
         consoleArea.append("Welcome to MzFightReporter v" + Parameters.appVersion);
         consoleArea.append("\r\nHosted at https://github.com/Swedemon/MzFightReporter");
-        consoleArea.append("\r\nSupport Discord at https://discord.gg/5JfZ3qpW3Q");
+        consoleArea.append("\r\nSupport Discord invite is available at the github page above.");
         consoleArea.append("\r\n\r\nClick on the Settings tab to apply changes.\r\n\r\n");
 
         //report logs panel
@@ -167,7 +167,7 @@ public class MainFrame {
         aboutPanel.add(Box.createHorizontalGlue());
         aboutPanel.add(new JLabel("MzFightReporter v" + Parameters.appVersion));
         aboutPanel.add(buildURLButton("https://github.com/Swedemon/MzFightReporter", "App Website"));
-        aboutPanel.add(buildURLButton("https://discord.gg/5JfZ3qpW3Q", "Support Discord"));
+        aboutPanel.add(new JLabel("Support Discord invite is available on the above App Website."));
 
         //add tab panels
         tabbedPane.addTab("Console", consolePanel);
