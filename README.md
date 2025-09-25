@@ -30,7 +30,7 @@ Run this app in the background.  After each combat cycle arcdps generates a log 
   [![](https://discordapp.com/api/guilds/1227596196823175198/widget.png?style=banner2)](https://discord.gg/TUXgCetPmX)
 ## Setup Instructions (5 - 10 minutes)
 **Pre-requisite:** [ArcDps](https://www.deltaconnected.com/arcdps/)
-1. $\color{DarkOrange}\large{\textbf{(NEW)}}$ Go [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) and install .NET SDK version 8 for Windows x64.
+1. $\color{DarkOrange}\large{\textbf{(NEW)}}$ Go [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) to install .NET SDK version 8 for Windows x64.
    - Note: This is required for the latest Elite Insights parser.
 1. Download and unzip to any directory the latest version of ```MzFightReporter_X.zip``` at [releases](https://github.com/Swedemon/MzFightReporter/releases).
    - To unzip right click the downloaded file and select 'Extract All...'
