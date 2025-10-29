@@ -901,6 +901,7 @@ public class ParseBot {
             case 705:
             case 706:
             case 882:
+            case 885:
             case 2520:
                 return "Red";
             case 39:
