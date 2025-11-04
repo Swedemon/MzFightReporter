@@ -896,10 +896,14 @@ public class ParseBot {
     private static String mapTeamID(int teamID) {
         //wvw teamID = {705: 'Red', 882: 'Red', 2520: 'Red', 2739: 'Green', 2741: 'Green', 2752: 'Green', 2763: 'Green', 432: 'Blue', 1277: 'Blue'}
         //guild hall teamID = {697: 'Red', 39: 'Green', 1989: 'Blue'}
+        //433:"Blue",
+        //707:"Red",
+        //2767:"Green"
         switch (teamID) {
             case 697:
             case 705:
             case 706:
+            case 707:
             case 882:
             case 885:
             case 2520:
@@ -909,8 +913,10 @@ public class ParseBot {
             case 2741:
             case 2752:
             case 2763:
+            case 2767:
                 return "Green";
             case 432:
+            case 433:
             case 1277:
             case 1989:
                 return "Blue";
