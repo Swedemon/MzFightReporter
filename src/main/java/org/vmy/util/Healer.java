@@ -6,18 +6,22 @@ import org.vmy.Parameters;
 public class Healer implements Comparable<Healer> {
     private String name;
     private String profession;
-    private int healing;
-    private int barrier;
+    private int totalHealing;
+    private int outgoingHealing;
+    private int totalBarrier;
+    private int outgoingBarrier;
     private int downedHealing;
     private int total;
 
-    public Healer(String name, String profession, int healing, int barrier, int downedHealing) {
+    public Healer(String name, String profession, int totalHealing, int outgoingHealing, int totalBarrier, int outgoingBarrier, int downedHealing) {
         this.name = name;
         this.profession = profession;
-        this.healing = healing;
-        this.barrier = barrier;
+        this.totalHealing = totalHealing;
+        this.outgoingHealing = outgoingHealing;
+        this.totalBarrier = totalBarrier;
+        this.outgoingBarrier = outgoingBarrier;
         this.downedHealing = downedHealing;
-        this.total = healing + barrier;
+        this.total = totalHealing + totalBarrier;
     }
 
     public int compareTo(Healer c) {
@@ -34,15 +38,17 @@ public class Healer implements Comparable<Healer> {
     }
 
     public String toHealerString() {
-        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 13 : 18;
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 7 : 12;
         return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
-                + String.format("%6s",withSuffix(healing,healing < 1000000 ? 0 : healing >= 10000000 ? 1 : 2));
+                + String.format("%6s",withSuffix(totalHealing,totalHealing < 1000000 ? 0 : totalHealing >= 10000000 ? 1 : 2))
+                + String.format("%6s",withSuffix(outgoingHealing,outgoingHealing < 1000000 ? 0 : outgoingHealing >= 10000000 ? 1 : 2));
     }
 
     public String toBarrierString() {
-        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 13 : 18;
+        int playerLength = Parameters.getInstance().enableDiscordMobileMode ? 7 : 12;
         return StringUtils.rightPad( StringUtils.left(name, playerLength), playerLength) + " " + DPSer.mapProf(profession.substring(0,4))
-                + String.format("%6s",withSuffix(barrier,barrier < 1000000 ? 0 : barrier >= 10000000 ? 1 : 2));
+                + String.format("%6s",withSuffix(totalBarrier,totalBarrier < 1000000 ? 0 : totalBarrier >= 10000000 ? 1 : 2))
+                + String.format("%6s",withSuffix(outgoingBarrier,outgoingBarrier < 1000000 ? 0 : outgoingBarrier >= 10000000 ? 1 : 2));
     }
 
     public String toDownedHealerString() {
@@ -71,22 +77,38 @@ public class Healer implements Comparable<Healer> {
 
     public void setProfession(String profession) { this.profession = profession; }
 
-    public int getHealing() {
-        return healing;
+    public int getTotalHealing() {
+        return totalHealing;
     }
 
-    public void setHealing(int healing) {
-        this.healing = healing;
-        this.total = healing + barrier;
+    public void setTotalHealing(int healing) {
+        this.totalHealing = healing;
+        this.total = healing + totalBarrier;
     }
 
-    public int getBarrier() {
-        return barrier;
+    public int getTotalBarrier() {
+        return totalBarrier;
     }
 
-    public void setBarrier(int barrier) {
-        this.barrier = barrier;
-        this.total = healing + barrier;
+    public void setTotalBarrier(int barrier) {
+        this.totalBarrier = barrier;
+        this.total = totalHealing + barrier;
+    }
+
+    public int getOutgoingHealing() {
+        return outgoingHealing;
+    }
+
+    public void setOutgoingHealing(int healing) {
+        this.outgoingHealing = healing;
+    }
+
+    public int getOutgoingBarrier() {
+        return outgoingBarrier;
+    }
+
+    public void setOutgoingBarrier(int barrier) {
+        this.outgoingBarrier = barrier;
     }
 
     public int getDownedHealing() {
