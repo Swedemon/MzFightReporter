@@ -118,6 +118,11 @@ public class FileWatcher {
                             System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): " + p1.exitValue());
                         } else {
                             System.out.println("GW2EI Status [" + ((int) ((System.currentTimeMillis() - startTime) / 1000)) + "s] (0=success): 1");
+                            p1.destroyForcibly();
+                        }
+
+                        if (!finished || p1.exitValue() != 0) {
+                            continue;
                         }
 
                         File jsonFile = new File(fullFilePath.substring(0,fullFilePath.lastIndexOf('.'))+"_detailed_wvw_kill.json");
