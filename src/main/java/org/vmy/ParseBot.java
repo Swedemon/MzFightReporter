@@ -788,10 +788,10 @@ public class ParseBot {
         int enemyDeaths = enemies.stream().mapToInt(Enemy::getDeaths).sum();
         int sumSquadEnemyDwn = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDowns).reduce(0, Integer::sum);
         int sumSquadEnemyDed = enemies.stream().filter(Enemy::isHasSquadActivity).map(Enemy::getDeaths).reduce(0, Integer::sum);
-        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d%s)",
+        buffer.append(String.format("[Report] Squad Players: %d (Dmg: %s, Down/Dead: %d/%d) %s| Enemy Players: %d (Dmg: %s, Down/Dead: %d/%d)",
                 players.length() - countNonSquadPlayers, DPSer.withSuffix(sumPlayerDmg, sumPlayerDmg < 1000000 ? 0 : sumPlayerDmg >= 10000000 ? 1 : 2), totalPlayersDowned, totalPlayersDead,
                 countNonSquadPlayers > 0 ? "+"+countNonSquadPlayers+(countNonSquadPlayers==1?" Ally ":" Allies ") : "", enemies.size(), DPSer.withSuffix(sumEnemyDmg, sumEnemyDmg < 1000000 ? 0 : sumEnemyDmg >= 10000000 ? 1 : 2),
-                enemyDowns, enemyDeaths,  (enemyDowns > sumSquadEnemyDwn+2) ? ", Credit Squad: "+sumSquadEnemyDwn+"/"+sumSquadEnemyDed : ""));
+                enemyDowns, enemyDeaths));
         report.setOverview(buffer.toString());
         System.out.println(buffer);
         System.out.println();
@@ -879,14 +879,10 @@ public class ParseBot {
                 buffer.append(String.format("%9s%6s%6s%5d%7d", playerText,
                         DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                         sumDwn, sumDed));
-                if (sumDwn != sumSquadDwn || sumDed != sumSquadDed)
-                    buffer.append(String.format(LF + "         Credit Squad:%4d%7d", sumSquadDwn, sumSquadDed));
             } else {
                 buffer.append(String.format("%9s%7s%7s%6d%7d", playerText,
                         DPSer.withSuffix(sumDmg, sumDmg < 1000000 ? 0 : sumDmg >= 10000000 ? 1 : 2), DPSer.withSuffix(sumDps, 1),
                         sumDwn, sumDed));
-                if (sumDwn != sumSquadDwn || sumDed != sumSquadDed)
-                    buffer.append(String.format(LF + "            Credit Squad:%5d%7d", sumSquadDwn, sumSquadDed));
             }
             buffer.append(LF);
         }
@@ -906,7 +902,9 @@ public class ParseBot {
             case 707:
             case 882:
             case 885:
+            case 886:
             case 2520:
+            case 2543:
                 return "Red";
             case 39:
             case 2739:
@@ -918,6 +916,7 @@ public class ParseBot {
             case 432:
             case 433:
             case 1277:
+            case 1282:
             case 1989:
                 return "Blue";
             default:
