@@ -903,8 +903,10 @@ public class ParseBot {
             case 882:
             case 885:
             case 886:
+            case 887:
             case 2520:
             case 2543:
+            case 2552:
                 return "Red";
             case 39:
             case 2739:
@@ -912,11 +914,13 @@ public class ParseBot {
             case 2752:
             case 2763:
             case 2767:
+            case 2778:
                 return "Green";
             case 432:
             case 433:
             case 1277:
             case 1282:
+            case 1283:
             case 1989:
                 return "Blue";
             default:
