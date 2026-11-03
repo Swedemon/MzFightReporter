@@ -98,6 +98,8 @@ public class FileWatcher {
                     } else if (lastModified == f.lastModified()) {
                         String confFolder = p.homeDir + p.gw2EISettings;
                         String parseConfig = confFolder + "wvwupload.conf";
+                        if (!p.enableReportUpload)
+                            parseConfig = confFolder + "wvwnoupload.conf";
 
                         int fileMegabytes = (int) f.length() / 1048576;
                         int sizeFactor = 1 + ((int) f.length() / 5000000);
